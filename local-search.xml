@@ -4,6 +4,44 @@
   
   
   <entry>
+    <title>stm32</title>
+    <link href="/2022/05/10/stm32/"/>
+    <url>/2022/05/10/stm32/</url>
+    
+    <content type="html"><![CDATA[<p>1.更改定时器的占空比</p><figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs c">TIM_SetCompare1(TIM3,i);<br></code></pre></td></tr></table></figure><p>2.更新定时器的分频（第一级分频)和自动重装载（ARR)<br>ARR可以理解为这次计数计到顶之后重新设置阈值的意思<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">TIM8-&gt;PSC = usPrescaler;<br>   TIM8-&gt;ARR = usPeriod; <br>   TIM8-&gt;EGR = TIM_EGR_UG;         <span class="hljs-comment">//修改之后要更新寄存器</span><br></code></pre></td></tr></table></figure></p><hr><p>date: 2022-05-10 17:22:52<br>tags: tim</p><hr>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>tim</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>5.10MQTT ESP8266</title>
+    <link href="/2022/05/10/5-10MQTT/"/>
+    <url>/2022/05/10/5-10MQTT/</url>
+    
+    <content type="html"><![CDATA[<p>1.百度智能云虽然写着8884端口，但是客户端连接的时候还是1883<br>MQTT并不会想不冲突，也不会谁把谁顶下线，原因就是因为<br>           使用了相同的Client ID<br>2.串口读数据</p><figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">while</span> (Serial.available()&gt;<span class="hljs-number">0</span>)<br>  &#123;<br>String datafd= Serial.readString();<br>Serial.println(datafd);<br>  &#125;<br></code></pre></td></tr></table></figure><p>3.arduino关于esp32使用指定串口</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">HardwareSerial <span class="hljs-title function_">mySerial1</span><span class="hljs-params">(<span class="hljs-number">1</span>)</span>;<br>mySerial1.begin(<span class="hljs-number">115200</span>,SERIAL_8N1,<span class="hljs-number">5</span>,<span class="hljs-number">18</span>);<br>mySerial1.print(symbol);<br>mySerial1.println(data);<br></code></pre></td></tr></table></figure><p>4.AI2制作MQTTAPP<br>在论坛搜索MQTT的拓展，然后导入即可</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>MQTT 串口</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>外部中断</title>
     <link href="/2022/05/09/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/"/>
     <url>/2022/05/09/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/</url>
