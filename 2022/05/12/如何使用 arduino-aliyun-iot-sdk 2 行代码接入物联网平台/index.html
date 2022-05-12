@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Castiel">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="文中提到的 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，也可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。   github 地址：https:&#x2F;&#x2F;github.com&#x2F;xinyu198736&#x2F;arduino-ali">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日志">
+<meta property="og:url" content="http://example.com/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/index.html">
+<meta property="og:site_name" content="日志">
+<meta property="og:description" content="文中提到的 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，也可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。   github 地址：https:&#x2F;&#x2F;github.com&#x2F;xinyu198736&#x2F;arduino-ali">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568620395927-b7090d59-5958-4050-a0e7-7205faafb455.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568620350930-270bbfa3-22b8-4711-b6b8-ff6f38a8d49a.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568642438839-a595c156-3afb-4ef8-8213-d67433be474a.jpeg">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568630094545-d440e173-23f0-4d63-81e7-00d6b6ce8811.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568630244900-18ee8b99-1e80-409a-8482-981fd596d095.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568630294665-d5cf7a85-ad06-491c-a7bf-65f6439450f8.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568642695402-cc25fedc-8c3f-4e32-90a9-89c0eec2f712.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568643025480-f10c038d-8a9b-44a1-b270-51625b56a137.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568643229960-62754bc2-4ddf-4724-ba99-ed81459f9bc2.png">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568643588452-48f528a4-29e2-41f9-99bb-0a004600bd8a.jpeg">
+<meta property="og:image" content="https://blog.souche.com/content/images/2019/09/1568643652167-2f7d14b9-77d4-4a36-8172-ad7e9b9bc2ae.png">
+<meta property="article:published_time" content="2022-05-12T02:48:25.278Z">
+<meta property="article:modified_time" content="2019-09-17T03:30:43.000Z">
+<meta property="article:author" content="Castiel">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.souche.com/content/images/2019/09/1568620395927-b7090d59-5958-4050-a0e7-7205faafb455.png">
+  
+  
+  <title>日志</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-12 10:48" pubdate>
+        May 12, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      35 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none"></h1>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>文中提到的 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，也可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</p>
+</blockquote>
+<blockquote>
+<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
+</blockquote>
+<blockquote>
+<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
+</blockquote>
+<h2 id="阿里云物联网平台简介"><a href="#阿里云物联网平台简介" class="headerlink" title="阿里云物联网平台简介"></a>阿里云物联网平台简介</h2><p>阿里云物联网平台提供接入物联网场景的一整套基础设施，强大的在线配置能力，基本可以实现无代码开发接入各类应用，实现大规模的物联网应用场景。</p>
+<p>核心能力模块包括：</p>
+<ul>
+<li>产品&amp;设备创建和管理</li>
+<li>服务可视化开发</li>
+<li>控制界面可视化开发</li>
+<li>数据分析和监控运维等辅助设施</li>
+</ul>
+<p>基于以上功能模块，可以快速在阿里云定义设备模型和事件等信息，然后快速创建和接入设备，再利用可视化的开发平台，可以零代码实现非常强大的功能。</p>
+<p>不过，今天我们要介绍一个比较特殊的接入场景，使用嵌入式系统快速接入阿里云物联网平台，这里以 esp8266 为例。</p>
+<blockquote>
+<p>esp8266 是一款集成网络模块的嵌入式芯片，自带 32 位处理器，各种外设接口，wifi 模块等，可以使用 arduino 平台进行编程，兼容大量 arduino 库。</p>
+</blockquote>
+<p>本文就是以 arduino 编程方式，使用的 esp8266 开发板为 NodeMCU 1.0 ，淘宝成本仅为 8~10 元。</p>
+<p><a name="c931653c"></a></p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>本次我们想利用 ESP8266 芯片实现一个简单的可远程控制的空调控制器，具备以下功能：</p>
+<ul>
+<li>批量部署，可通过云平台集中管理和远程控制空调开关、温度、模式等</li>
+<li>芯片可感知环境温度、亮度，并上报物联网平台</li>
+<li>芯片可远程触发事件，上报物联网平台</li>
+<li>成本尽量低，不超过 30 元</li>
+</ul>
+<p>首先，我们进行硬件选型，经过功能评估，选用以下硬件：</p>
+<ul>
+<li>nodemcu 核心板（基于 esp8266） 10.89元/个</li>
+<li>DS18B20模块 温度传感 3.18元/个</li>
+<li>GY-30  光照传感 4.38元/个</li>
+<li>红外发射板 3.5元/个</li>
+<li>杜邦线母对母 1.45元/串</li>
+<li>电源插头  1.4元/个</li>
+<li>数据线 1.8元/个</li>
+<li>按钮开关 0.75元/个</li>
+</ul>
+<p><a name="dfe89ca1"></a></p>
+<h2 id="开始接入"><a href="#开始接入" class="headerlink" title="开始接入"></a>开始接入</h2><p>具体的连线，我们这里不展开，我们主要探讨如何使用 arduino 快速接入物联网平台。</p>
+<p>第一步，在物联网创建产品，建立物模型，并创建设备，获取设备配置信息。</p>
+<p><img src="https://blog.souche.com/content/images/2019/09/1568620395927-b7090d59-5958-4050-a0e7-7205faafb455.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>创建产品，并定义物模型</p>
+<p><img src="https://blog.souche.com/content/images/2019/09/1568620350930-270bbfa3-22b8-4711-b6b8-ff6f38a8d49a.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>创建设备，与产品绑定，获取设备鉴权信息<br /><br><br />第二步，用 arduino 连接 nodemcu 开发板，开始硬件端的开发。<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642438839-a595c156-3afb-4ef8-8213-d67433be474a.jpeg" srcset="/img/loading.gif" lazyload alt="IMG_2546.JPG"><br>具体接线可以自己研究，这里只是个展示，哈哈<br /></p>
+<p><a name="qMAHi"></a></p>
+<h2 id="硬件端开发"><a href="#硬件端开发" class="headerlink" title="硬件端开发"></a>硬件端开发</h2><p>这里不讨论如何使用 arduino 进行 esp8266 芯片开发，直接进入代码环节，相关基础知识可以百度一下。</p>
+<p>首先，亮相一个我自己封装的 aliyun iot 上层 SDK（ <a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">arduino-aliyun-iot-sdk</a> ），底层连接基于 PubSubClient 库，并且对模型操作做了一些上层封装，可以方便的发送数据和订阅远程指令。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></div></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 引入 wifi 模块，并实例化，不同的芯片这里的依赖可能不同</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;ESP8266WiFi.h&gt;</span></span><br><span class="hljs-type">static</span> WiFiClient espClient;<br><br><span class="hljs-comment">// 引入阿里云 IoT SDK</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;AliyunIoTSDK.h&gt;</span></span><br><br><span class="hljs-comment">// 设置产品和设备的信息，从阿里云设备信息里查看</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PRODUCT_KEY <span class="hljs-string">&quot;xxx&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> DEVICE_NAME <span class="hljs-string">&quot;Device_D&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> DEVICE_SECRET <span class="hljs-string">&quot;xxxxxxxxxxxxxx&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> REGION_ID <span class="hljs-string">&quot;cn-shanghai&quot;</span></span><br><br><span class="hljs-comment">// 设置 wifi 信息</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> WIFI_SSID <span class="hljs-string">&quot;xxxxx&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> WIFI_PASSWD <span class="hljs-string">&quot;xxxxx&quot;</span></span><br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    Serial.<span class="hljs-built_in">begin</span>(<span class="hljs-number">115200</span>);<br>    <br>    <span class="hljs-comment">// 初始化 wifi</span><br>    <span class="hljs-built_in">wifiInit</span>(WIFI_SSID, WIFI_PASSWD);<br>    <br>    <span class="hljs-comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span><br>    AliyunIoTSDK::<span class="hljs-built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);<br>    <br>    <span class="hljs-comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span><br>    <span class="hljs-comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span><br>    AliyunIoTSDK::<span class="hljs-built_in">bindData</span>(<span class="hljs-string">&quot;PowerSwitch&quot;</span>, powerCallback);<br>    <br>    <span class="hljs-comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span><br>    AliyunIoTSDK::<span class="hljs-built_in">send</span>(<span class="hljs-string">&quot;LightLuminance&quot;</span>, <span class="hljs-number">100</span>);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    AliyunIoTSDK::<span class="hljs-built_in">loop</span>();<br>&#125;<br><br><span class="hljs-comment">// 初始化 wifi 连接</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">wifiInit</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *ssid, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *passphrase)</span></span><br><span class="hljs-function"></span>&#123;<br>    WiFi.<span class="hljs-built_in">mode</span>(WIFI_STA);<br>    WiFi.<span class="hljs-built_in">begin</span>(ssid, passphrase);<br>    <span class="hljs-keyword">while</span> (WiFi.<span class="hljs-built_in">status</span>() != WL_CONNECTED)<br>    &#123;<br>        <span class="hljs-built_in">delay</span>(<span class="hljs-number">1000</span>);<br>        Serial.<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;WiFi not Connect&quot;</span>);<br>    &#125;<br>    Serial.<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;Connected to AP&quot;</span>);<br>&#125;<br><br><span class="hljs-comment">// 电源属性修改的回调函数</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">powerCallback</span><span class="hljs-params">(JsonVariant p)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> PowerSwitch = p[<span class="hljs-string">&quot;PowerSwitch&quot;</span>];<br>    <span class="hljs-keyword">if</span> (PowerSwitch == <span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-comment">// 启动设备</span><br>    &#125; <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>核心代码只有三句：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span><br>AliyunIoTSDK::<span class="hljs-built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);<br><br><span class="hljs-comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span><br><span class="hljs-comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span><br>AliyunIoTSDK::<span class="hljs-built_in">bindData</span>(<span class="hljs-string">&quot;PowerSwitch&quot;</span>, powerCallback);<br><br><span class="hljs-comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span><br>AliyunIoTSDK::<span class="hljs-built_in">send</span>(<span class="hljs-string">&quot;LightLuminance&quot;</span>, <span class="hljs-number">100</span>);<br></code></pre></td></tr></table></figure>
+
+<p>注意这里的数据绑定和数据发送，是非常有用和方便的，不需要自己去写做匹配的代码，也不需要自己组装数据，并且会自动合并数据，节约上报的频率。</p>
+<p>将设备配置信息配置进代码，烧录到板子，运行即可，是不是炒鸡方便呢。</p>
+<p>注意事项：</p>
+<ul>
+<li>阿里云对客户端的链接参数有一些限制，需要修改  PubSubClient 的连接参数，否则无法使用<ul>
+<li>PubSubClient 中的 MQTT_MAX_PACKET_SIZE 修改为 1024</li>
+<li>PubSubClient 中的 MQTT_KEEPALIVE 修改为 60</li>
+</ul>
+</li>
+<li>默认 5000ms 检测一次连接状态，可以通过 AliyunIoTSDK.cpp 中的 CHECK_INTERVAL 修改此值</li>
+<li>掉线后会一直尝试重新连接，可能会触发阿里云的一些限流规则（已经做了规避），并且会导致挤掉其他同设备 ID 的设备<br><a name="ZzbqJ"></a><h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3>目前 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</li>
+</ul>
+<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
+<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
+<p><a name="gycpL"></a></p>
+<h2 id="可视化开发界面和服务"><a href="#可视化开发界面和服务" class="headerlink" title="可视化开发界面和服务"></a>可视化开发界面和服务</h2><p>完成了设备的连接之后，已经迈出了第一步，如果你想要自己开发一个界面，可视化的控制空调，或者想利用一些远程设备的数据触发一些自定义的规则和逻辑（例如如果某个数据超标，报警到钉钉群等），用阿里云的物联网平台的话，这些都不需要自己去开发，直接使用物联网平台的“开发服务”拖拖拽拽即可完成。</p>
+<p><a name="7z0mV"></a></p>
+<h3 id="界面开发"><a href="#界面开发" class="headerlink" title="界面开发"></a>界面开发</h3><p>界面开发的核心是 拖动布局、数据源绑定、交互绑定、自定义变量等。<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630094545-d440e173-23f0-4d63-81e7-00d6b6ce8811.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>布局界面，右侧可以设置各种控件属性<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630244900-18ee8b99-1e80-409a-8482-981fd596d095.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>数据源绑定，可以方便的和产品模型数据绑定<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630294665-d5cf7a85-ad06-491c-a7bf-65f6439450f8.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>交互绑定，可以与服务进行绑定，触发某个服务，并传入设备属性<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642695402-cc25fedc-8c3f-4e32-90a9-89c0eec2f712.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>控件可以给自定义变量赋值，其他组件可以与变量绑定</p>
+<p>使用上述的功能，加上各种设备绑定功能，基本可以完成一个很复杂的界面的开发，但是如果你需要通过交互触发远程指令，或者监听远程的数据做一些判断逻辑，光有界面是不够的。</p>
+<p><a name="D26H8"></a></p>
+<h3 id="服务开发"><a href="#服务开发" class="headerlink" title="服务开发"></a>服务开发</h3><p>上面提到的逻辑开发，就需要使用“服务开发”了，服务开发的触发点主要是两类：设备触发、界面交互触发。</p>
+<p><img src="https://blog.souche.com/content/images/2019/09/1568643025480-f10c038d-8a9b-44a1-b270-51625b56a137.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>设备触发的服务，中间的路径选择是用来做条件判断分流的，最右侧是触发通知逻辑节点<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643229960-62754bc2-4ddf-4724-ba99-ed81459f9bc2.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>一个温度控制服务，通过界面控件触发，最终生成设备控制逻辑<br /></p>
+<p><a name="UnwgK"></a></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文不是 arduino 教学，也不是 esp8266 教学，更不是硬件教学，所以没有展开细节，需要读者具备一定的基础，请各位谅解，如果对 arduino 开发感兴趣，可以加我微信交流（微信号：mier963，注明 arduino）。</p>
+<p>最后展示一下成果：<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643588452-48f528a4-29e2-41f9-99bb-0a004600bd8a.jpeg" srcset="/img/loading.gif" lazyload alt="IMG_7254.JPG"><br>一个成品，包含四个传感器模块，包括一个硬件按钮<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643652167-2f7d14b9-77d4-4a36-8172-ad7e9b9bc2ae.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>空调远程控制界面<br /><br><br />另外，还可以给这个控制器加入一些很有意思的功能，例如定点关闭所有设备，根据环境亮度开关空调等。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/11/5-11/">
+                        <span class="hidden-mobile">5-11</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
