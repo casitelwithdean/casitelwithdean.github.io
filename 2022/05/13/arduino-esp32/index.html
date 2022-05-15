@@ -24,7 +24,7 @@
 <meta property="og:description" content="1.arduino-ledc  三步走 如果忘记了那一步可能就会reboot 1234ledcSetup(PWMLightChannel, PWMFreq, PWMResolution); pinMode(LIGHT_PIN, OUTPUT);    ledcAttachPin(LIGHT_PIN, PWMLightChannel);ledcWrite(PWMLightChannel, value">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-05-13T02:38:43.000Z">
-<meta property="article:modified_time" content="2022-05-13T04:48:45.552Z">
+<meta property="article:modified_time" content="2022-05-14T15:53:10.008Z">
 <meta property="article:author" content="Castiel">
 <meta property="article:tag" content="arduino-ledc">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      227 字
+      1.4k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2 分钟
+      12 分钟
     </span>
   
 
@@ -240,8 +240,10 @@
             <div class="markdown-body">
               <p>1.arduino-ledc  三步走 如果忘记了那一步可能就会reboot</p>
 <figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><pre><code class="hljs c">ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);<br> pinMode(LIGHT_PIN, OUTPUT);    <br>ledcAttachPin(LIGHT_PIN, PWMLightChannel);<br>ledcWrite(PWMLightChannel, valueInt); <br></code></pre></td></tr></table></figure>
-<p>2.IIC<br> 1.引入Wire.h<br> 2.Wire.begin(SDA,SCL)</p>
 
+<hr>
+<h2 id="date-2022-05-14-23-52-45"><a href="#date-2022-05-14-23-52-45" class="headerlink" title="date: 2022-05-14 23:52:45"></a>date: 2022-05-14 23:52:45</h2><p>2.IIC<br> 1.引入Wire.h<br> 2.Wire.begin(SDA,SCL)<br> 如下为MCP23017写操作<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"> <br>Wire.begin(<span class="hljs-number">21</span>, <span class="hljs-number">22</span>);<br>Wire.beginTransmission(<span class="hljs-number">0x20</span>);<br>Wire.write(<span class="hljs-number">0x00</span>);<br>Wire.write(<span class="hljs-number">0x00</span>);<br>Wire.endTransmission() ;<br><br><br>Wire.beginTransmission(<span class="hljs-number">0x20</span>);<br>Wire.write(<span class="hljs-number">0x12</span>);<br>Wire.write(<span class="hljs-number">0xF0</span>);<br>Wire.endTransmission() ;<br><br><br><br></code></pre></td></tr></table></figure><br>不过呢。。。还是库比较香<br>注意点<br>1.去掉不需要的头文件<br>2.Adafruit_MCP23X17 mcp;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//#include &lt;Adafruit_MCP23X08.h&gt;</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Adafruit_MCP23X17.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Wire.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BUTTON_PIN 1  <span class="hljs-comment">// MCP23XXX pin button is attached to</span></span><br><br><span class="hljs-comment">// only used for SPI</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CS_PIN 6</span><br><br><span class="hljs-comment">// uncomment appropriate line</span><br><span class="hljs-comment">//Adafruit_MCP23X08 mcp;</span><br>Adafruit_MCP23X17 mcp;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">setup</span><span class="hljs-params">()</span> &#123;<br>  Serial.begin(<span class="hljs-number">112500</span>);<br>  Wire.begin(<span class="hljs-number">21</span>, <span class="hljs-number">22</span>);<br>  <span class="hljs-comment">//while (!Serial);</span><br>  Serial.println(<span class="hljs-string">&quot;MCP23xxx Button Test!&quot;</span>);<br><br>  <span class="hljs-comment">// uncomment appropriate mcp.begin</span><br>  <span class="hljs-keyword">if</span> (!mcp.begin_I2C()) &#123;<br>  <span class="hljs-comment">//if (!mcp.begin_SPI(CS_PIN)) &#123;</span><br>    Serial.println(<span class="hljs-string">&quot;Error.&quot;</span>);<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>);<br>  &#125;<br><br>  <span class="hljs-comment">// configure pin for input with pull up</span><br>  mcp.pinMode(BUTTON_PIN, INPUT_PULLUP);<br><br>  mcp.pinMode(<span class="hljs-number">5</span>, OUTPUT);<br><br>  Serial.println(<span class="hljs-string">&quot;Looping...&quot;</span>);<br>  mcp.digitalWrite(<span class="hljs-number">5</span>, HIGH);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">loop</span><span class="hljs-params">()</span> &#123;<br>  <span class="hljs-comment">// LOW = pressed, HIGH = not pressed</span><br>  <span class="hljs-keyword">if</span> (!mcp.digitalRead(BUTTON_PIN)) &#123;<br>    Serial.println(<span class="hljs-string">&quot;Button Pressed!&quot;</span>);<br>    delay(<span class="hljs-number">250</span>);<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
             </div>
             <hr>
             <div>
