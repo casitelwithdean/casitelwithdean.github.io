@@ -4,11 +4,56 @@
   
   
   <entry>
+    <title>矩阵键盘</title>
+    <link href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/"/>
+    <url>/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/</url>
+    
+    <content type="html"><![CDATA[<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><br><span class="hljs-keyword">if</span> (gpio_get_level(arg)==<span class="hljs-number">1</span>)<br>&#123;<br>    gpio_set_level(output,<span class="hljs-number">0</span>);<br>    vTaskDelay(<span class="hljs-number">2</span>);<br>    <span class="hljs-keyword">if</span> (gpio_get_level(arg)==<span class="hljs-number">0</span>)<br>    &#123;<br>        ESP_LOGI(TAG,<span class="hljs-string">&quot;就是%d了&quot;</span>,output<span class="hljs-number">-12</span>+<span class="hljs-number">4</span>*(arg<span class="hljs-number">-16</span>));<br>       <br>    &#125;<br>    gpio_set_level(output,<span class="hljs-number">1</span>);<span class="hljs-comment">//必须放外边 要不然延时的那2ms有风险</span><br>&#125;<br><span class="hljs-type">void</span> <span class="hljs-title function_">app_main</span><span class="hljs-params">()</span><br>&#123;<br>  <span class="hljs-type">gpio_config_t</span> gp;<br>    gp.intr_type = GPIO_INTR_DISABLE;<br>    gp.mode =GPIO_MODE_INPUT;<br>    gp.pin_bit_mask = GPIO_SEL_16|GPIO_SEL_17|GPIO_SEL_18|GPIO_SEL_19|GPIO_SEL_5;<br>    gpio_config(&amp;gp);<span class="hljs-comment">//r1-r4</span><br>    <br>    gp.intr_type = GPIO_INTR_DISABLE;<br>    gp.mode = GPIO_MODE_OUTPUT ;<br>    gp.pin_bit_mask = GPIO_SEL_12|GPIO_SEL_15|GPIO_SEL_13|GPIO_SEL_14;<br>    gpio_config(&amp;gp);<span class="hljs-comment">//c1-c4</span><br><br>gpio_set_level(<span class="hljs-number">12</span>,<span class="hljs-number">1</span>);<br>gpio_set_level(<span class="hljs-number">13</span>,<span class="hljs-number">1</span>);<br>gpio_set_level(<span class="hljs-number">14</span>,<span class="hljs-number">1</span>);<br>gpio_set_level(<span class="hljs-number">15</span>,<span class="hljs-number">1</span>);<br><br><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>&#123;<br>   <br>ESP_LOGI(TAG,<span class="hljs-string">&quot;%d    %d      %d      %d&quot;</span>,gpio_get_level(<span class="hljs-number">16</span>),gpio_get_level(<span class="hljs-number">17</span>),gpio_get_level(<span class="hljs-number">18</span>),gpio_get_level(<span class="hljs-number">5</span>));<br>key_detect(<span class="hljs-number">12</span>,<span class="hljs-number">16</span>);<br>key_detect(<span class="hljs-number">13</span>,<span class="hljs-number">16</span>);<br>key_detect(<span class="hljs-number">14</span>,<span class="hljs-number">16</span>);<br>key_detect(<span class="hljs-number">15</span>,<span class="hljs-number">16</span>);<br><br>key_detect(<span class="hljs-number">12</span>,<span class="hljs-number">17</span>);<br>key_detect(<span class="hljs-number">13</span>,<span class="hljs-number">17</span>);<br>key_detect(<span class="hljs-number">14</span>,<span class="hljs-number">17</span>);<br>key_detect(<span class="hljs-number">15</span>,<span class="hljs-number">17</span>);<br><br>key_detect(<span class="hljs-number">12</span>,<span class="hljs-number">18</span>);<br>key_detect(<span class="hljs-number">13</span>,<span class="hljs-number">18</span>);<br>key_detect(<span class="hljs-number">14</span>,<span class="hljs-number">18</span>);<br>key_detect(<span class="hljs-number">15</span>,<span class="hljs-number">18</span>);<br><br>key_detect(<span class="hljs-number">12</span>,<span class="hljs-number">5</span>);<br>key_detect(<span class="hljs-number">13</span>,<span class="hljs-number">5</span>);<br>key_detect(<span class="hljs-number">14</span>,<span class="hljs-number">5</span>);<br>key_detect(<span class="hljs-number">15</span>,<span class="hljs-number">5</span>);<br><br>vTaskDelay(<span class="hljs-number">300</span>);<br><br>&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>矩阵键盘</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>立创EDA</title>
+    <link href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/"/>
+    <url>/2022/05/18/%E7%AB%8B%E5%88%9BEDA/</url>
+    
+    <content type="html"><![CDATA[<p>1.更新PCB图的时候会把元件的名称改为默认的  所以以后使用TEXT来当丝印，直接把那些元件名称删了即可<br>2.</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>5-15无刷电机</title>
+    <link href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/"/>
+    <url>/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/</url>
+    
+    <content type="html"><![CDATA[<p>1.无刷电机有上下桥臂，上下桥臂不能够同时导通，用驱动板驱动无刷电机，使用PWM驱动还是？</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>esp32</title>
     <link href="/2022/05/14/esp32/"/>
     <url>/2022/05/14/esp32/</url>
     
-    <content type="html"><![CDATA[<p>1.其中 GPIO 34­39 仅用作输入管脚，</p>]]></content>
+    <content type="html"><![CDATA[<p>1.其中 GPIO 34­39 仅用作输入管脚，</p><p>2.串口下载<br>首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0<br>然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）<br>RST和BOOT是可以正常使用的。<br>如果第一次就不可以正常烧录，RST一下，注意要RST前就要拉低IO0。所以怀疑烧录的本质就是先拉底IO0,然后重启。<br>一般会出现下载一次之后无法再下载的问题，此时拔下重插电源即可 ，怀疑是EN没给低电平 没复位</p>]]></content>
     
     
     
@@ -105,7 +150,7 @@
     <link href="/2022/05/10/stm32/"/>
     <url>/2022/05/10/stm32/</url>
     
-    <content type="html"><![CDATA[<p>1.更改定时器的占空比</p><figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs c">TIM_SetCompare1(TIM3,i);<br></code></pre></td></tr></table></figure><p>2.更新定时器的分频（第一级分频)和自动重装载（ARR)<br>ARR可以理解为这次计数计到顶之后重新设置阈值的意思<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">TIM8-&gt;PSC = usPrescaler;<br>   TIM8-&gt;ARR = usPeriod; <br>   TIM8-&gt;EGR = TIM_EGR_UG;         <span class="hljs-comment">//修改之后要更新寄存器</span><br></code></pre></td></tr></table></figure></p><hr><p>date: 2022-05-10 17:22:52<br>tags: tim</p><hr>]]></content>
+    <content type="html"><![CDATA[<p>1.更改定时器的占空比</p><figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs c">TIM_SetCompare1(TIM3,i);<br></code></pre></td></tr></table></figure><p>2.更新定时器的分频（第一级分频)和自动重装载（ARR)<br>ARR可以理解为这次计数计到顶之后重新设置阈值的意思<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">TIM8-&gt;PSC = usPrescaler;<br>   TIM8-&gt;ARR = usPeriod; <br>   TIM8-&gt;EGR = TIM_EGR_UG;         <span class="hljs-comment">//修改之后要更新寄存器</span><br></code></pre></td></tr></table></figure></p><hr><p>date: 2022-05-10 17:22:52<br>tags: tim</p><hr><p>一个流畅的流水灯 ，摁一下开关，从哪儿停下来，从哪儿再开始<br>按键中断</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> stop=<span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> now=<span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> temp=<span class="hljs-number">0</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">HAL_GPIO_EXTI_Callback</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> GPIO_Pin)</span><br>&#123;<br><span class="hljs-keyword">if</span>(GPIO_Pin==GPIO_PIN_8)<br>&#123;<br><span class="hljs-keyword">if</span>(stop==<span class="hljs-number">0</span>)<br>&#123;<br><span class="hljs-comment">// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);</span><br>stop=<span class="hljs-number">1</span>;<br>now=<span class="hljs-number">8</span>;<br>temp=i;<br>&#125;<br><br><span class="hljs-keyword">else</span><br>&#123;<br> <span class="hljs-comment">//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);</span><br>stop=<span class="hljs-number">0</span>;<br>now=temp+<span class="hljs-number">1</span>;<br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>主程序</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>&#123;<br><br><span class="hljs-keyword">if</span>(stop==<span class="hljs-number">0</span>)<br>&#123;<br><span class="hljs-keyword">for</span>(i=now;i&lt;<span class="hljs-number">8</span>;i++)<br>&#123;<br><br><span class="hljs-keyword">if</span>(stop==<span class="hljs-number">0</span>)<br>&#123;<br>HAL_GPIO_TogglePin(GPIOC, <span class="hljs-number">1</span>&lt;&lt;i);<br><br><br>HAL_Delay(<span class="hljs-number">100</span>);<br> now=<span class="hljs-number">0</span>;<br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>}</p>]]></content>
     
     
     

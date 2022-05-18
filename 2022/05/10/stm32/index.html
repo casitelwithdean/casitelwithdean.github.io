@@ -24,7 +24,7 @@
 <meta property="og:description" content="1.更改定时器的占空比 1TIM_SetCompare1(TIM3,i);  2.更新定时器的分频（第一级分频)和自动重装载（ARR)ARR可以理解为这次计数计到顶之后重新设置阈值的意思 123TIM8-&gt;PSC &#x3D; usPrescaler;   TIM8-&gt;ARR &#x3D; usPeriod;    TIM8-&gt;EGR &#x3D; TIM_EGR_UG;         &#x2F;&#x2F;修改之后要更新寄">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-05-10T09:22:52.000Z">
-<meta property="article:modified_time" content="2022-05-10T09:31:37.033Z">
+<meta property="article:modified_time" content="2022-05-17T07:11:23.657Z">
 <meta property="article:author" content="Castiel">
 <meta property="article:tag" content="tim">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      207 字
+      743 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2 分钟
+      7 分钟
     </span>
   
 
@@ -245,6 +245,13 @@
 <hr>
 <p>date: 2022-05-10 17:22:52<br>tags: tim</p>
 <hr>
+<p>一个流畅的流水灯 ，摁一下开关，从哪儿停下来，从哪儿再开始<br>按键中断</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> stop=<span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> now=<span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> temp=<span class="hljs-number">0</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">HAL_GPIO_EXTI_Callback</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> GPIO_Pin)</span><br>&#123;<br>	<span class="hljs-keyword">if</span>(GPIO_Pin==GPIO_PIN_8)<br>	&#123;<br>		<span class="hljs-keyword">if</span>(stop==<span class="hljs-number">0</span>)<br>		&#123;<br>	<span class="hljs-comment">// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);	</span><br>	stop=<span class="hljs-number">1</span>;<br>now=<span class="hljs-number">8</span>;<br>			temp=i;<br>&#125;<br>	<br>	<span class="hljs-keyword">else</span><br>	&#123;<br>		 <span class="hljs-comment">//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);</span><br>	stop=<span class="hljs-number">0</span>;<br>		now=temp+<span class="hljs-number">1</span>;<br>&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>主程序</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>&#123;<br><br><span class="hljs-keyword">if</span>(stop==<span class="hljs-number">0</span>)<br>&#123;<br><span class="hljs-keyword">for</span>(i=now;i&lt;<span class="hljs-number">8</span>;i++)<br>&#123;<br><br>	<span class="hljs-keyword">if</span>(stop==<span class="hljs-number">0</span>)<br>&#123;<br>	HAL_GPIO_TogglePin(GPIOC, <span class="hljs-number">1</span>&lt;&lt;i);<br><br><br>	HAL_Delay(<span class="hljs-number">100</span>);<br>	 now=<span class="hljs-number">0</span>;<br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>}</p>
 
             </div>
             <hr>
