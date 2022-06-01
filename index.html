@@ -1,9 +1,642 @@
-{% extends 'includes/layout.swig' %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block body %}
-<div class="blog-main-post">
-	<div class="index-post-br"></div>
-  {% include 'includes/recent-posts.swig' %}
-  {% include 'includes/pagination.swig' %}
- </div>
-{% endblock %}
+  
+  <title>日志</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="日志">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="日志">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Castiel">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="日志" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">日志</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-掉电存储" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/" class="article-date">
+  <time datetime="2022-05-22T08:48:14.000Z" itemprop="datePublished">2022-05-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#esp32<br>直接用FlashDB就好<br>1.引入compoent<br>2.修改main/Cmakelist<br>大致这个样子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">idf_component_register(SRCS <span class="string">&quot;main.c&quot;</span><span class="string">&quot;oled.c&quot;</span><span class="string">&quot;fonts.c&quot;</span><span class="string">&quot;kvdb_basic_sample.c&quot;</span><span class="string">&quot;kvdb_type_blob_sample.c&quot;</span><span class="string">&quot;kvdb_type_string_sample.c&quot;</span><span class="string">&quot;tsdb_sample.c&quot;</span><span class="string">&quot;../../../src/fdb.c&quot;</span> <span class="string">&quot;../../../src/fdb_file.c&quot;</span> <span class="string">&quot;../../../src/fdb_kvdb.c&quot;</span> <span class="string">&quot;../../../src/fdb_tsdb.c&quot;</span> <span class="string">&quot;../../../src/fdb_utils.c&quot;</span><span class="string">&quot;../../../port/fal/src/fal_flash.c&quot;</span> <span class="string">&quot;../../../port/fal/src/fal_partition.c&quot;</span> <span class="string">&quot;../../../port/fal/src/fal_rtt.c&quot;</span> <span class="string">&quot;../../../port/fal/src/fal.c&quot;</span></span><br><span class="line">                                       INCLUDE_DIRS <span class="string">&quot;../components/FlashDB/inc&quot;</span> <span class="string">&quot;../../../inc&quot;</span> <span class="string">&quot;../../../port/fal/inc&quot;</span></span><br><span class="line">                    REQUIRES <span class="string">&quot;spi_flash&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>注意cmakelist仍然有可能报错，要记得忘记修改1.中的compoenent里面的cmakelist<br>3.注意还需要把port和src这两个文件夹印出来，根据不同的目录，选择适合的../<br>4.添加分区表<br>复制femo里面的分区表，然后idf.py menuconfig里面启用自己的分区表</p>
+<p>#stm32<br>使用一个.c和一个.h文件即可</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stmflash.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stdint.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;main.h&quot;</span></span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////////////////////////////////////	 </span></span><br><span class="line"><span class="comment">//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾</span></span><br><span class="line"><span class="comment">//ALIENTEK NANO STM32¿ª·¢°å</span></span><br><span class="line"><span class="comment">//STM32 FLASH Çý¶¯´úÂë   </span></span><br><span class="line"><span class="comment">//ÕýµãÔ­×Ó@ALIENTEK</span></span><br><span class="line"><span class="comment">//¼¼ÊõÂÛÌ³:www.openedv.com</span></span><br><span class="line"><span class="comment">//ÐÞ¸ÄÈÕÆÚ:2018/3/27</span></span><br><span class="line"><span class="comment">//°æ±¾£ºV1.0</span></span><br><span class="line"><span class="comment">//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£</span></span><br><span class="line"><span class="comment">//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2018-2028</span></span><br><span class="line"><span class="comment">//All rights reserved									  </span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">//¶ÁÈ¡Ö¸¶¨µØÖ·µÄ°ë×Ö(16Î»Êý¾Ý) </span></span><br><span class="line"><span class="comment">//faddr:¶ÁµØÖ· </span></span><br><span class="line"><span class="comment">//·µ»ØÖµ:¶ÔÓ¦Êý¾Ý.</span></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">STMFLASH_ReadHalfWord</span><span class="params">(<span class="type">uint32_t</span> faddr)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> *(<span class="type">uint16_t</span>*)faddr; </span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> STM32_FLASH_WREN	<span class="comment">//Èç¹ûÊ¹ÄÜÁËÐ´   </span></span></span><br><span class="line"><span class="comment">//²»¼ì²éµÄÐ´Èë</span></span><br><span class="line"><span class="comment">//WriteAddr:ÆðÊ¼µØÖ·</span></span><br><span class="line"><span class="comment">//pBuffer:Êý¾ÝÖ¸Õë</span></span><br><span class="line"><span class="comment">//NumToWrite:°ë×Ö(16Î»)Êý   </span></span><br><span class="line"><span class="type">void</span> <span class="title function_">STMFLASH_Write_NoCheck</span><span class="params">(<span class="type">uint32_t</span> WriteAddr,<span class="type">uint16_t</span> *pBuffer,<span class="type">uint16_t</span> NumToWrite)</span>   </span><br><span class="line">&#123; 			 		 </span><br><span class="line">	<span class="type">uint16_t</span> i;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;NumToWrite;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD,WriteAddr,pBuffer[i]);</span><br><span class="line">	    WriteAddr+=<span class="number">2</span>;<span class="comment">//µØÖ·Ôö¼Ó2.</span></span><br><span class="line">	&#125;  </span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">//´ÓÖ¸¶¨µØÖ·¿ªÊ¼Ð´ÈëÖ¸¶¨³¤¶ÈµÄÊý¾Ý</span></span><br><span class="line"><span class="comment">//WriteAddr:ÆðÊ¼µØÖ·(´ËµØÖ·±ØÐëÎª2µÄ±¶Êý!!)</span></span><br><span class="line"><span class="comment">//pBuffer:Êý¾ÝÖ¸Õë</span></span><br><span class="line"><span class="comment">//NumToWrite:°ë×Ö(16Î»)Êý(¾ÍÊÇÒªÐ´ÈëµÄ16Î»Êý¾ÝµÄ¸öÊý.)</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> STM32_FLASH_SIZE&lt;256</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STM_SECTOR_SIZE 1024 <span class="comment">//×Ö½Ú</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STM_SECTOR_SIZE	2048</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>		 </span></span><br><span class="line"><span class="type">uint16_t</span> STMFLASH_BUF[STM_SECTOR_SIZE/<span class="number">2</span>];<span class="comment">//×î¶àÊÇ2K×Ö½Ú</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">STMFLASH_Write</span><span class="params">(<span class="type">uint32_t</span> WriteAddr,<span class="type">uint16_t</span> *pBuffer,<span class="type">uint16_t</span> NumToWrite)</span>	</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">uint32_t</span> secpos;	   <span class="comment">//ÉÈÇøµØÖ·</span></span><br><span class="line">	<span class="type">uint16_t</span> secoff;	   <span class="comment">//ÉÈÇøÄÚÆ«ÒÆµØÖ·(16Î»×Ö¼ÆËã)</span></span><br><span class="line">	<span class="type">uint16_t</span> secremain; <span class="comment">//ÉÈÇøÄÚÊ£ÓàµØÖ·(16Î»×Ö¼ÆËã)	   </span></span><br><span class="line"> 	<span class="type">uint16_t</span> i;    </span><br><span class="line">	<span class="type">uint32_t</span> offaddr;   <span class="comment">//È¥µô0X08000000ºóµÄµØÖ·</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(WriteAddr&lt;STM32_FLASH_BASE||(WriteAddr&gt;=(STM32_FLASH_BASE+<span class="number">1024</span>*STM32_FLASH_SIZE)))<span class="keyword">return</span>;<span class="comment">//·Ç·¨µØÖ·</span></span><br><span class="line">	</span><br><span class="line">	HAL_FLASH_Unlock();					    <span class="comment">//½âËø</span></span><br><span class="line">	offaddr=WriteAddr-STM32_FLASH_BASE;		<span class="comment">//Êµ¼ÊÆ«ÒÆµØÖ·.</span></span><br><span class="line">	secpos=offaddr/STM_SECTOR_SIZE;			<span class="comment">//ÉÈÇøµØÖ·  0~127 for STM32F103RBT6</span></span><br><span class="line">	secoff=(offaddr%STM_SECTOR_SIZE)/<span class="number">2</span>;		<span class="comment">//ÔÚÉÈÇøÄÚµÄÆ«ÒÆ(2¸ö×Ö½ÚÎª»ù±¾µ¥Î».)</span></span><br><span class="line">	secremain=STM_SECTOR_SIZE/<span class="number">2</span>-secoff;		<span class="comment">//ÉÈÇøÊ£Óà¿Õ¼ä´óÐ¡   </span></span><br><span class="line">	<span class="keyword">if</span>(NumToWrite&lt;=secremain)secremain=NumToWrite;<span class="comment">//²»´óÓÚ¸ÃÉÈÇø·¶Î§</span></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>) </span><br><span class="line">	&#123;	</span><br><span class="line">		STMFLASH_Read(secpos*STM_SECTOR_SIZE+STM32_FLASH_BASE,STMFLASH_BUF,STM_SECTOR_SIZE/<span class="number">2</span>);<span class="comment">//¶Á³öÕû¸öÉÈÇøµÄÄÚÈÝ</span></span><br><span class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;secremain;i++)	<span class="comment">//Ð£ÑéÊý¾Ý</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(STMFLASH_BUF[secoff+i]!=<span class="number">0XFFFF</span>)<span class="keyword">break</span>;<span class="comment">//ÐèÒª²Á³ý  	  </span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(i&lt;secremain)				<span class="comment">//ÐèÒª²Á³ý</span></span><br><span class="line">		&#123;</span><br><span class="line">			FLASH_PageErase(secpos*STM_SECTOR_SIZE+STM32_FLASH_BASE);	<span class="comment">//²Á³ýÕâ¸öÉÈÇø</span></span><br><span class="line">			FLASH_WaitForLastOperation(FLASH_WAITETIME);            	<span class="comment">//µÈ´ýÉÏ´Î²Ù×÷Íê³É</span></span><br><span class="line">			CLEAR_BIT(FLASH-&gt;CR, FLASH_CR_PER);							<span class="comment">//Çå³ýCR¼Ä´æÆ÷µÄPERÎ»£¬´Ë²Ù×÷Ó¦¸ÃÔÚFLASH_PageErase()ÖÐÍê³É£¡</span></span><br><span class="line">																		<span class="comment">//µ«ÊÇHAL¿âÀïÃæ²¢Ã»ÓÐ×ö£¬Ó¦¸ÃÊÇHAL¿âbug£¡</span></span><br><span class="line">			<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;secremain;i++)<span class="comment">//¸´ÖÆ</span></span><br><span class="line">			&#123;</span><br><span class="line">				STMFLASH_BUF[i+secoff]=pBuffer[i];	  </span><br><span class="line">			&#125;</span><br><span class="line">			STMFLASH_Write_NoCheck(secpos*STM_SECTOR_SIZE+STM32_FLASH_BASE,STMFLASH_BUF,STM_SECTOR_SIZE/<span class="number">2</span>);<span class="comment">//Ð´ÈëÕû¸öÉÈÇø  </span></span><br><span class="line">		&#125;<span class="keyword">else</span> </span><br><span class="line">		&#123;</span><br><span class="line">			FLASH_WaitForLastOperation(FLASH_WAITETIME);       	<span class="comment">//µÈ´ýÉÏ´Î²Ù×÷Íê³É</span></span><br><span class="line">			STMFLASH_Write_NoCheck(WriteAddr,pBuffer,secremain);<span class="comment">//Ð´ÒÑ¾­²Á³ýÁËµÄ,Ö±½ÓÐ´ÈëÉÈÇøÊ£ÓàÇø¼ä. </span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(NumToWrite==secremain)<span class="keyword">break</span>;<span class="comment">//Ð´Èë½áÊøÁË</span></span><br><span class="line">		<span class="keyword">else</span><span class="comment">//Ð´ÈëÎ´½áÊø</span></span><br><span class="line">		&#123;</span><br><span class="line">			secpos++;				<span class="comment">//ÉÈÇøµØÖ·Ôö1</span></span><br><span class="line">			secoff=<span class="number">0</span>;				<span class="comment">//Æ«ÒÆÎ»ÖÃÎª0 	 </span></span><br><span class="line">		   	pBuffer+=secremain;  	<span class="comment">//Ö¸ÕëÆ«ÒÆ</span></span><br><span class="line">			WriteAddr+=secremain*<span class="number">2</span>;	<span class="comment">//Ð´µØÖ·Æ«ÒÆ(16Î»Êý¾ÝµØÖ·,ÐèÒª*2)	   </span></span><br><span class="line">		   	NumToWrite-=secremain;	<span class="comment">//×Ö½Ú(16Î»)ÊýµÝ¼õ</span></span><br><span class="line">			<span class="keyword">if</span>(NumToWrite&gt;(STM_SECTOR_SIZE/<span class="number">2</span>))secremain=STM_SECTOR_SIZE/<span class="number">2</span>;<span class="comment">//ÏÂÒ»¸öÉÈÇø»¹ÊÇÐ´²»Íê</span></span><br><span class="line">			<span class="keyword">else</span> secremain=NumToWrite;<span class="comment">//ÏÂÒ»¸öÉÈÇø¿ÉÒÔÐ´ÍêÁË</span></span><br><span class="line">		&#125;	 </span><br><span class="line">	&#125;;	</span><br><span class="line">	HAL_FLASH_Lock();		<span class="comment">//ÉÏËø</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">STMFLASH_Read</span><span class="params">(<span class="type">uint32_t</span> ReadAddr,<span class="type">uint16_t</span> *pBuffer,<span class="type">uint16_t</span> NumToRead)</span>   	</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">uint16_t</span> i;</span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;NumToRead;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		pBuffer[i]=STMFLASH_ReadHalfWord(ReadAddr);<span class="comment">//¶ÁÈ¡2¸ö×Ö½Ú.</span></span><br><span class="line">		ReadAddr+=<span class="number">2</span>;<span class="comment">//Æ«ÒÆ2¸ö×Ö½Ú.	</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//////////////////////////////////////////²âÊÔÓÃ///////////////////////////////////////////</span></span><br><span class="line"><span class="comment">//WriteAddr:ÆðÊ¼µØÖ·</span></span><br><span class="line"><span class="comment">//WriteData:ÒªÐ´ÈëµÄÊý¾Ý</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">Test_Write</span><span class="params">(<span class="type">uint32_t</span> WriteAddr,<span class="type">uint16_t</span> WriteData)</span>   	</span><br><span class="line">&#123;</span><br><span class="line">	STMFLASH_Write(WriteAddr,&amp;WriteData,<span class="number">1</span>);<span class="comment">//Ð´ÈëÒ»¸ö×Ö </span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>下面是.h文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __STMFLASH_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __STMFLASH_H__</span></span><br><span class="line"><span class="comment">//#include &quot;sys.h&quot;  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stdint.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STM32_FLASH_SIZE 	128 	 	</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STM32_FLASH_WREN 	1              </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FLASH_WAITETIME  	50000        </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STM32_FLASH_BASE 0x08000000 	</span></span><br><span class="line"></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">STMFLASH_GetStatus</span><span class="params">(<span class="type">void</span>)</span>;				  <span class="comment">//»ñµÃ×´Ì¬</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">STMFLASH_WaitDone</span><span class="params">(<span class="type">uint16_t</span> time)</span>;				  <span class="comment">//µÈ´ý²Ù×÷½áÊø</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">STMFLASH_ErasePage</span><span class="params">(<span class="type">uint32_t</span> paddr)</span>;			  <span class="comment">//²Á³ýÒ³</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">STMFLASH_WriteHalfWord</span><span class="params">(<span class="type">uint32_t</span> faddr, <span class="type">uint16_t</span> dat)</span>;<span class="comment">//Ð´Èë°ë×Ö</span></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">STMFLASH_ReadHalfWord</span><span class="params">(<span class="type">uint32_t</span> faddr)</span>;		  <span class="comment">//¶Á³ö°ë×Ö  </span></span><br><span class="line"><span class="type">void</span> <span class="title function_">STMFLASH_WriteLenByte</span><span class="params">(<span class="type">uint32_t</span> WriteAddr,<span class="type">uint32_t</span> DataToWrite,<span class="type">uint16_t</span> Len)</span>;	<span class="comment">//Ö¸¶¨µØÖ·¿ªÊ¼Ð´ÈëÖ¸¶¨³¤¶ÈµÄÊý¾Ý</span></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">STMFLASH_ReadLenByte</span><span class="params">(<span class="type">uint32_t</span> ReadAddr,<span class="type">uint16_t</span> Len)</span>;						<span class="comment">//Ö¸¶¨µØÖ·¿ªÊ¼¶ÁÈ¡Ö¸¶¨³¤¶ÈÊý¾Ý</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">STMFLASH_Write</span><span class="params">(<span class="type">uint32_t</span> WriteAddr,<span class="type">uint16_t</span> *pBuffer,<span class="type">uint16_t</span> NumToWrite)</span>;		<span class="comment">//´ÓÖ¸¶¨µØÖ·¿ªÊ¼Ð´ÈëÖ¸¶¨³¤¶ÈµÄÊý¾Ý</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">STMFLASH_Read</span><span class="params">(<span class="type">uint32_t</span> ReadAddr,<span class="type">uint16_t</span> *pBuffer,<span class="type">uint16_t</span> NumToRead)</span>;   		<span class="comment">//´ÓÖ¸¶¨µØÖ·¿ªÊ¼¶Á³öÖ¸¶¨³¤¶ÈµÄÊý¾Ý</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//²âÊÔÐ´Èë</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">Test_Write</span><span class="params">(<span class="type">uint32_t</span> WriteAddr,<span class="type">uint16_t</span> WriteData)</span>;								   </span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>下面是主函数中的调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stmflash.h&quot;</span>  </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			temo++;</span><br><span class="line">			<span class="built_in">sprintf</span>((<span class="type">char</span> *)TEXT_Buffer,<span class="string">&quot;%d&quot;</span>,temo);</span><br><span class="line">				STMFLASH_Read(FLASH_SAVE_ADDR,(<span class="type">uint16_t</span> *)datatemp,SIZE);</span><br><span class="line">			OLED_ShowStr(<span class="number">1</span>, <span class="number">5</span>, datatemp, <span class="number">2</span>);<span class="comment">//?????</span></span><br><span class="line">				HAL_Delay(<span class="number">2000</span>);</span><br><span class="line">			STMFLASH_Write(FLASH_SAVE_ADDR,(<span class="type">uint16_t</span> *)TEXT_Buffer,SIZE);</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    	<span class="type">uint8_t</span> temo=<span class="number">22</span>;</span><br><span class="line"> <span class="type">uint8_t</span> TEXT_Buffer[]=&#123;<span class="string">&quot;STM32 FLASH TEST&quot;</span>&#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SIZE sizeof(TEXT_Buffer)	 	<span class="comment">//Êý×é³¤¶È</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FLASH_SAVE_ADDR  0X08010000 	<span class="comment">//ÉèÖÃFLASH ±£´æµØÖ·(±ØÐëÎªÅ¼Êý£¬ÇÒÆäÖµÒª´óÓÚ±¾´úÂëËùÕ¼ÓÃFLASHµÄ´óÐ¡+0X08000000)</span></span></span><br><span class="line">	<span class="type">uint8_t</span> datatemp[SIZE];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/" data-id="cl3v46dur000hlsv72t8uces6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-矩阵键盘" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" class="article-date">
+  <time datetime="2022-05-18T15:44:45.000Z" itemprop="datePublished">2022-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/">矩阵键盘</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (gpio_get_level(arg)==<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    gpio_set_level(output,<span class="number">0</span>);</span><br><span class="line">    vTaskDelay(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">if</span> (gpio_get_level(arg)==<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ESP_LOGI(TAG,<span class="string">&quot;就是%d了&quot;</span>,output<span class="number">-12</span>+<span class="number">4</span>*(arg<span class="number">-16</span>));</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    gpio_set_level(output,<span class="number">1</span>);<span class="comment">//必须放外边 要不然延时的那2ms有风险</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">app_main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">gpio_config_t</span> gp;</span><br><span class="line">    gp.intr_type = GPIO_INTR_DISABLE;</span><br><span class="line">    gp.mode =GPIO_MODE_INPUT;</span><br><span class="line">    gp.pin_bit_mask = GPIO_SEL_16|GPIO_SEL_17|GPIO_SEL_18|GPIO_SEL_19|GPIO_SEL_5;</span><br><span class="line">    gpio_config(&amp;gp);<span class="comment">//r1-r4</span></span><br><span class="line">    </span><br><span class="line">    gp.intr_type = GPIO_INTR_DISABLE;</span><br><span class="line">    gp.mode = GPIO_MODE_OUTPUT ;</span><br><span class="line">    gp.pin_bit_mask = GPIO_SEL_12|GPIO_SEL_15|GPIO_SEL_13|GPIO_SEL_14;</span><br><span class="line">    gpio_config(&amp;gp);<span class="comment">//c1-c4</span></span><br><span class="line"></span><br><span class="line">gpio_set_level(<span class="number">12</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">13</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">14</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">15</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">   </span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%d    %d      %d      %d&quot;</span>,gpio_get_level(<span class="number">16</span>),gpio_get_level(<span class="number">17</span>),gpio_get_level(<span class="number">18</span>),gpio_get_level(<span class="number">5</span>));</span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">17</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">18</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">vTaskDelay(<span class="number">300</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" data-id="cl3v46duw000jlsv7dsyghvi9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" rel="tag">矩阵键盘</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-立创EDA" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/" class="article-date">
+  <time datetime="2022-05-18T15:41:40.000Z" itemprop="datePublished">2022-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.更新PCB图的时候会把元件的名称改为默认的  所以以后使用TEXT来当丝印，直接把那些元件名称删了即可<br>2.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/18/%E7%AB%8B%E5%88%9BEDA/" data-id="cl3v46duy000llsv73ip51uom" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-5-15无刷电机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" class="article-date">
+  <time datetime="2022-05-15T14:10:18.000Z" itemprop="datePublished">2022-05-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/">5-15无刷电机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.无刷电机有上下桥臂，上下桥臂不能够同时导通，用驱动板驱动无刷电机，使用PWM驱动还是？</p>
+<p>2.按键的判断并不容易，如果放在while循环里面说没检测到一次低电平就切换状态，就算消抖了，也会相当于发生了很多次，最后只有二分之一的概率落在彼此</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" data-id="cl3v46dtn0003lsv7b4iffpm8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-esp32" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/14/esp32/" class="article-date">
+  <time datetime="2022-05-14T15:52:45.000Z" itemprop="datePublished">2022-05-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/14/esp32/">esp32</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.其中 GPIO 34­39 仅用作输入管脚，</p>
+<p>2.串口下载<br>首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0<br>然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）<br>RST和BOOT是可以正常使用的。<br>如果第一次就不可以正常烧录，RST一下，注意要RST前就要拉低IO0。所以怀疑烧录的本质就是先拉底IO0,然后重启。<br>一般会出现下载一次之后无法再下载的问题，此时拔下重插电源即可 ，怀疑是EN没给低电平 没复位</p>
+<p>时间获取</p>
+<p>(66条消息) 【ESP32-IDF】 05-3 WIFI-esp32获取网络时间_Ciaran-byte的博客-CSDN博客_esp32获取网络时间<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41741344/article/details/118613486">https://blog.csdn.net/qq_41741344/article/details/118613486</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/14/esp32/" data-id="cl3v46dub000alsv75f8p3xod" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mcp23017" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/mcp23017/" class="article-date">
+  <time datetime="2022-05-13T04:38:10.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/mcp23017/">mcp23017</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.bank=0是指的IIC协议<br>2.IODIR就是用来决定输出还是输入   默认是输入<br>3。若想设置上拉输出的话  GPPU寄存器<br>4.若想写高低电平 就用GPIO    若想读GPIO也用读GPIO</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">       <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//FF就是全输入</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">            cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x0C</span>, ACK_CHECK_EN);<span class="comment">//Access GPPU</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//全部上拉</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//下面读取输入的值</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> data=<span class="number">11</span>;</span><br><span class="line">    cmd = i2c_cmd_link_create();</span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_WRITE, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X12</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_READ, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_read(cmd, &amp;data, <span class="number">100</span>, I2C_MASTER_LAST_NACK);<span class="comment">//</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/mcp23017/" data-id="cl3v46duj000clsv7atv26mny" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-aliyun" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/aliyun/" class="article-date">
+  <time datetime="2022-05-13T02:54:06.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/aliyun/">aliyun</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一个很好的博主<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f0d46324a2c6">https://www.jianshu.com/p/f0d46324a2c6</a><br>1.阿里云的网页制作很方便 类似于json那种结构体 现在功能定义一个功能，然后发布，标识符就是相当于指引，然后后面的””就是内容</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/aliyun/" data-id="cl3v46du20005lsv7g0634uzf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-esp32-cam" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/esp32-cam/" class="article-date">
+  <time datetime="2022-05-13T02:40:33.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/esp32-cam/">esp32-cam</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.引脚4是默认led<br>有些引脚不能够使用IIC     SDA 13  SCL 15是可以的   12好像不太行</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/esp32-cam/" data-id="cl3v46du80008lsv721r5c4xi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-arduino-esp32" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/arduino-esp32/" class="article-date">
+  <time datetime="2022-05-13T02:38:43.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/arduino-esp32/">esp32</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.arduino-ledc  三步走 如果忘记了那一步可能就会reboot</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);</span><br><span class="line"> pinMode(LIGHT_PIN, OUTPUT);    </span><br><span class="line">ledcAttachPin(LIGHT_PIN, PWMLightChannel);</span><br><span class="line">ledcWrite(PWMLightChannel, valueInt); </span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="date-2022-05-14-23-52-45"><a href="#date-2022-05-14-23-52-45" class="headerlink" title="date: 2022-05-14 23:52:45"></a>date: 2022-05-14 23:52:45</h2><p>2.IIC<br> 1.引入Wire.h<br> 2.Wire.begin(SDA,SCL)<br> 如下为MCP23017写操作<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">Wire.begin(<span class="number">21</span>, <span class="number">22</span>);</span><br><span class="line">Wire.beginTransmission(<span class="number">0x20</span>);</span><br><span class="line">Wire.write(<span class="number">0x00</span>);</span><br><span class="line">Wire.write(<span class="number">0x00</span>);</span><br><span class="line">Wire.endTransmission() ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Wire.beginTransmission(<span class="number">0x20</span>);</span><br><span class="line">Wire.write(<span class="number">0x12</span>);</span><br><span class="line">Wire.write(<span class="number">0xF0</span>);</span><br><span class="line">Wire.endTransmission() ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure><br>不过呢。。。还是库比较香<br>注意点<br>1.去掉不需要的头文件<br>2.Adafruit_MCP23X17 mcp;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//#include &lt;Adafruit_MCP23X08.h&gt;</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Adafruit_MCP23X17.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Wire.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUTTON_PIN 1  <span class="comment">// MCP23XXX pin button is attached to</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// only used for SPI</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CS_PIN 6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// uncomment appropriate line</span></span><br><span class="line"><span class="comment">//Adafruit_MCP23X08 mcp;</span></span><br><span class="line">Adafruit_MCP23X17 mcp;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">  Serial.begin(<span class="number">112500</span>);</span><br><span class="line">  Wire.begin(<span class="number">21</span>, <span class="number">22</span>);</span><br><span class="line">  <span class="comment">//while (!Serial);</span></span><br><span class="line">  Serial.println(<span class="string">&quot;MCP23xxx Button Test!&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// uncomment appropriate mcp.begin</span></span><br><span class="line">  <span class="keyword">if</span> (!mcp.begin_I2C()) &#123;</span><br><span class="line">  <span class="comment">//if (!mcp.begin_SPI(CS_PIN)) &#123;</span></span><br><span class="line">    Serial.println(<span class="string">&quot;Error.&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// configure pin for input with pull up</span></span><br><span class="line">  mcp.pinMode(BUTTON_PIN, INPUT_PULLUP);</span><br><span class="line"></span><br><span class="line">  mcp.pinMode(<span class="number">5</span>, OUTPUT);</span><br><span class="line"></span><br><span class="line">  Serial.println(<span class="string">&quot;Looping...&quot;</span>);</span><br><span class="line">  mcp.digitalWrite(<span class="number">5</span>, HIGH);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// LOW = pressed, HIGH = not pressed</span></span><br><span class="line">  <span class="keyword">if</span> (!mcp.digitalRead(BUTTON_PIN)) &#123;</span><br><span class="line">    Serial.println(<span class="string">&quot;Button Pressed!&quot;</span>);</span><br><span class="line">    delay(<span class="number">250</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/arduino-esp32/" data-id="cl3v46du60007lsv7fqdga9qd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/arduino-ledc/" rel="tag">arduino-ledc</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-如何使用 arduino-aliyun-iot-sdk 2 行代码接入物联网平台" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" class="article-date">
+  <time datetime="2022-05-12T02:48:25.278Z" itemprop="datePublished">2022-05-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>文中提到的 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，也可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</p>
+</blockquote>
+<blockquote>
+<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
+</blockquote>
+<blockquote>
+<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
+</blockquote>
+<h2 id="阿里云物联网平台简介"><a href="#阿里云物联网平台简介" class="headerlink" title="阿里云物联网平台简介"></a>阿里云物联网平台简介</h2><p>阿里云物联网平台提供接入物联网场景的一整套基础设施，强大的在线配置能力，基本可以实现无代码开发接入各类应用，实现大规模的物联网应用场景。</p>
+<p>核心能力模块包括：</p>
+<ul>
+<li>产品&amp;设备创建和管理</li>
+<li>服务可视化开发</li>
+<li>控制界面可视化开发</li>
+<li>数据分析和监控运维等辅助设施</li>
+</ul>
+<p>基于以上功能模块，可以快速在阿里云定义设备模型和事件等信息，然后快速创建和接入设备，再利用可视化的开发平台，可以零代码实现非常强大的功能。</p>
+<p>不过，今天我们要介绍一个比较特殊的接入场景，使用嵌入式系统快速接入阿里云物联网平台，这里以 esp8266 为例。</p>
+<blockquote>
+<p>esp8266 是一款集成网络模块的嵌入式芯片，自带 32 位处理器，各种外设接口，wifi 模块等，可以使用 arduino 平台进行编程，兼容大量 arduino 库。</p>
+</blockquote>
+<p>本文就是以 arduino 编程方式，使用的 esp8266 开发板为 NodeMCU 1.0 ，淘宝成本仅为 8~10 元。</p>
+<p><a name="c931653c"></a></p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>本次我们想利用 ESP8266 芯片实现一个简单的可远程控制的空调控制器，具备以下功能：</p>
+<ul>
+<li>批量部署，可通过云平台集中管理和远程控制空调开关、温度、模式等</li>
+<li>芯片可感知环境温度、亮度，并上报物联网平台</li>
+<li>芯片可远程触发事件，上报物联网平台</li>
+<li>成本尽量低，不超过 30 元</li>
+</ul>
+<p>首先，我们进行硬件选型，经过功能评估，选用以下硬件：</p>
+<ul>
+<li>nodemcu 核心板（基于 esp8266） 10.89元/个</li>
+<li>DS18B20模块 温度传感 3.18元/个</li>
+<li>GY-30  光照传感 4.38元/个</li>
+<li>红外发射板 3.5元/个</li>
+<li>杜邦线母对母 1.45元/串</li>
+<li>电源插头  1.4元/个</li>
+<li>数据线 1.8元/个</li>
+<li>按钮开关 0.75元/个</li>
+</ul>
+<p><a name="dfe89ca1"></a></p>
+<h2 id="开始接入"><a href="#开始接入" class="headerlink" title="开始接入"></a>开始接入</h2><p>具体的连线，我们这里不展开，我们主要探讨如何使用 arduino 快速接入物联网平台。</p>
+<p>第一步，在物联网创建产品，建立物模型，并创建设备，获取设备配置信息。</p>
+<p><img src="http://waipian1.com/statics/images/qrcode.png" alt="image.png"><br>创建产品，并定义物模型</p>
+<p><img src="https://blog.souche.com/content/images/2019/09/1568620350930-270bbfa3-22b8-4711-b6b8-ff6f38a8d49a.png" alt="image.png"><br>创建设备，与产品绑定，获取设备鉴权信息<br /><br><br />第二步，用 arduino 连接 nodemcu 开发板，开始硬件端的开发。<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642438839-a595c156-3afb-4ef8-8213-d67433be474a.jpeg" alt="IMG_2546.JPG"><br>具体接线可以自己研究，这里只是个展示，哈哈<br /></p>
+<p><a name="qMAHi"></a></p>
+<h2 id="硬件端开发"><a href="#硬件端开发" class="headerlink" title="硬件端开发"></a>硬件端开发</h2><p>这里不讨论如何使用 arduino 进行 esp8266 芯片开发，直接进入代码环节，相关基础知识可以百度一下。</p>
+<p>首先，亮相一个我自己封装的 aliyun iot 上层 SDK（ <a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">arduino-aliyun-iot-sdk</a> ），底层连接基于 PubSubClient 库，并且对模型操作做了一些上层封装，可以方便的发送数据和订阅远程指令。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 引入 wifi 模块，并实例化，不同的芯片这里的依赖可能不同</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ESP8266WiFi.h&gt;</span></span></span><br><span class="line"><span class="type">static</span> WiFiClient espClient;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入阿里云 IoT SDK</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;AliyunIoTSDK.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置产品和设备的信息，从阿里云设备信息里查看</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PRODUCT_KEY <span class="string">&quot;xxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEVICE_NAME <span class="string">&quot;Device_D&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEVICE_SECRET <span class="string">&quot;xxxxxxxxxxxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REGION_ID <span class="string">&quot;cn-shanghai&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置 wifi 信息</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIFI_SSID <span class="string">&quot;xxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIFI_PASSWD <span class="string">&quot;xxxxx&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setup</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Serial.<span class="built_in">begin</span>(<span class="number">115200</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化 wifi</span></span><br><span class="line">    <span class="built_in">wifiInit</span>(WIFI_SSID, WIFI_PASSWD);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span></span><br><span class="line">    <span class="comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">bindData</span>(<span class="string">&quot;PowerSwitch&quot;</span>, powerCallback);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">send</span>(<span class="string">&quot;LightLuminance&quot;</span>, <span class="number">100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">loop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    AliyunIoTSDK::<span class="built_in">loop</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化 wifi 连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">wifiInit</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *ssid, <span class="type">const</span> <span class="type">char</span> *passphrase)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    WiFi.<span class="built_in">mode</span>(WIFI_STA);</span><br><span class="line">    WiFi.<span class="built_in">begin</span>(ssid, passphrase);</span><br><span class="line">    <span class="keyword">while</span> (WiFi.<span class="built_in">status</span>() != WL_CONNECTED)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">delay</span>(<span class="number">1000</span>);</span><br><span class="line">        Serial.<span class="built_in">println</span>(<span class="string">&quot;WiFi not Connect&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Serial.<span class="built_in">println</span>(<span class="string">&quot;Connected to AP&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 电源属性修改的回调函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">powerCallback</span><span class="params">(JsonVariant p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> PowerSwitch = p[<span class="string">&quot;PowerSwitch&quot;</span>];</span><br><span class="line">    <span class="keyword">if</span> (PowerSwitch == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 启动设备</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>核心代码只有三句：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span></span><br><span class="line"><span class="comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">bindData</span>(<span class="string">&quot;PowerSwitch&quot;</span>, powerCallback);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">send</span>(<span class="string">&quot;LightLuminance&quot;</span>, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意这里的数据绑定和数据发送，是非常有用和方便的，不需要自己去写做匹配的代码，也不需要自己组装数据，并且会自动合并数据，节约上报的频率。</p>
+<p>将设备配置信息配置进代码，烧录到板子，运行即可，是不是炒鸡方便呢。</p>
+<p>注意事项：</p>
+<ul>
+<li>阿里云对客户端的链接参数有一些限制，需要修改  PubSubClient 的连接参数，否则无法使用<ul>
+<li>PubSubClient 中的 MQTT_MAX_PACKET_SIZE 修改为 1024</li>
+<li>PubSubClient 中的 MQTT_KEEPALIVE 修改为 60</li>
+</ul>
+</li>
+<li>默认 5000ms 检测一次连接状态，可以通过 AliyunIoTSDK.cpp 中的 CHECK_INTERVAL 修改此值</li>
+<li>掉线后会一直尝试重新连接，可能会触发阿里云的一些限流规则（已经做了规避），并且会导致挤掉其他同设备 ID 的设备<br><a name="ZzbqJ"></a><h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3>目前 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</li>
+</ul>
+<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
+<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
+<p><a name="gycpL"></a></p>
+<h2 id="可视化开发界面和服务"><a href="#可视化开发界面和服务" class="headerlink" title="可视化开发界面和服务"></a>可视化开发界面和服务</h2><p>完成了设备的连接之后，已经迈出了第一步，如果你想要自己开发一个界面，可视化的控制空调，或者想利用一些远程设备的数据触发一些自定义的规则和逻辑（例如如果某个数据超标，报警到钉钉群等），用阿里云的物联网平台的话，这些都不需要自己去开发，直接使用物联网平台的“开发服务”拖拖拽拽即可完成。</p>
+<p><a name="7z0mV"></a></p>
+<h3 id="界面开发"><a href="#界面开发" class="headerlink" title="界面开发"></a>界面开发</h3><p>界面开发的核心是 拖动布局、数据源绑定、交互绑定、自定义变量等。<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630094545-d440e173-23f0-4d63-81e7-00d6b6ce8811.png" alt="image.png"><br>布局界面，右侧可以设置各种控件属性<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630244900-18ee8b99-1e80-409a-8482-981fd596d095.png" alt="image.png"><br>数据源绑定，可以方便的和产品模型数据绑定<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630294665-d5cf7a85-ad06-491c-a7bf-65f6439450f8.png" alt="image.png"><br>交互绑定，可以与服务进行绑定，触发某个服务，并传入设备属性<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642695402-cc25fedc-8c3f-4e32-90a9-89c0eec2f712.png" alt="image.png"><br>控件可以给自定义变量赋值，其他组件可以与变量绑定</p>
+<p>使用上述的功能，加上各种设备绑定功能，基本可以完成一个很复杂的界面的开发，但是如果你需要通过交互触发远程指令，或者监听远程的数据做一些判断逻辑，光有界面是不够的。</p>
+<p><a name="D26H8"></a></p>
+<h3 id="服务开发"><a href="#服务开发" class="headerlink" title="服务开发"></a>服务开发</h3><p>上面提到的逻辑开发，就需要使用“服务开发”了，服务开发的触发点主要是两类：设备触发、界面交互触发。</p>
+<p><img src="https://blog.souche.com/content/images/2019/09/1568643025480-f10c038d-8a9b-44a1-b270-51625b56a137.png" alt="image.png"><br>设备触发的服务，中间的路径选择是用来做条件判断分流的，最右侧是触发通知逻辑节点<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643229960-62754bc2-4ddf-4724-ba99-ed81459f9bc2.png" alt="image.png"><br>一个温度控制服务，通过界面控件触发，最终生成设备控制逻辑<br /></p>
+<p><a name="UnwgK"></a></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文不是 arduino 教学，也不是 esp8266 教学，更不是硬件教学，所以没有展开细节，需要读者具备一定的基础，请各位谅解，如果对 arduino 开发感兴趣，可以加我微信交流（微信号：mier963，注明 arduino）。</p>
+<p>最后展示一下成果：<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643588452-48f528a4-29e2-41f9-99bb-0a004600bd8a.jpeg" alt="IMG_7254.JPG"><br>一个成品，包含四个传感器模块，包括一个硬件按钮<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643652167-2f7d14b9-77d4-4a36-8172-ad7e9b9bc2ae.png" alt="image.png"><br>空调远程控制界面<br /><br><br />另外，还可以给这个控制器加入一些很有意思的功能，例如定点关闭所有设备，根据环境亮度开关空调等。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" data-id="cl3v46duu000ilsv792cj71wk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQTT-%E4%B8%B2%E5%8F%A3/" rel="tag">MQTT,串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/arduino-ledc/" rel="tag">arduino-ledc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tim-us/" rel="tag">tim,us</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" rel="tag">矩阵键盘</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/MQTT-%E4%B8%B2%E5%8F%A3/" style="font-size: 10px;">MQTT,串口</a> <a href="/tags/arduino-ledc/" style="font-size: 10px;">arduino-ledc</a> <a href="/tags/tim-us/" style="font-size: 10px;">tim,us</a> <a href="/tags/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" style="font-size: 10px;">矩阵键盘</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/">矩阵键盘</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/">5-15无刷电机</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/14/esp32/">esp32</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 Castiel<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
