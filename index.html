@@ -64,6 +64,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-BS8112触摸芯片" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" class="article-date">
+  <time datetime="2022-07-04T01:09:45.843Z" itemprop="datePublished">2022-07-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>1.key12或者16有两个模式 一个是什么中断 一个就是当作按键<br>但是要操作寄存器 因为模式是中断的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line"></span><br><span class="line"><span class="comment">// uint8_t bs[17]=&#123;0X00,0x00,0x83,0xF3,0x98,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90&#125;;</span></span><br><span class="line"><span class="type">uint8_t</span> bs[<span class="number">17</span>]=&#123;<span class="number">0X01</span>,<span class="number">0x00</span>,<span class="number">0x83</span>,<span class="number">0xF3</span>,<span class="number">0xD8</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>&#125;;</span><br><span class="line"><span class="type">uint8_t</span> sum=<span class="number">0</span>;</span><br><span class="line"> cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0XB0</span>, ACK_CHECK_EN);<span class="comment">//确定地址 B0</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">17</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    sum+=bs[i];</span><br><span class="line">    i2c_master_write_byte(cmd, bs[i], ACK_CHECK_EN);<span class="comment">//  开始沿着B0依次写入数据 </span></span><br><span class="line">  <span class="comment">/* code */</span></span><br><span class="line">&#125; </span><br><span class="line">    i2c_master_write_byte(cmd, sum, ACK_CHECK_DIS);<span class="comment">//   校验和</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_0, cmd, <span class="number">10</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br><span class="line"> ESP_LOGI(TAG,<span class="string">&quot;第一个寄存器%d&quot;</span>,SHUJU);</span><br></pre></td></tr></table></figure>
+
+
+<p>下面是读取按键状态 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X08</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span>| READ_BIT, ACK_CHECK_EN);</span><br><span class="line"><span class="comment">//    i2c_master_read_byte(cmd, &amp;SHUJU,ACK_CHECK_DIS);</span></span><br><span class="line">    <span class="comment">// i2c_master_read(cmd, &amp;SHUJU, 8, ACK_CHECK_DIS);//  如果直接read会把后面的寄存器赋给变量后面的指针</span></span><br><span class="line">i2c_master_read_byte(cmd,&amp;SHUJU, ACK_CHECK_EN);<span class="comment">//手册写的no ack 但实际上还是要加的  不然会一直busy</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">   <span class="type">esp_err_t</span> ret =  i2c_master_cmd_begin(I2C_NUM_0, cmd,<span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
+
+<p>下面是arduino  寻找从机地址的方法 非常的6</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Wire.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  Wire.begin(<span class="number">19</span>,<span class="number">18</span>);</span><br><span class="line">  Serial.begin(<span class="number">115200</span>);</span><br><span class="line">  Serial.println(<span class="string">&quot;nI2C Scanner&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  byte error, address;</span><br><span class="line">  <span class="type">int</span> nDevices;</span><br><span class="line">  Serial.println(<span class="string">&quot;Scanning...&quot;</span>);</span><br><span class="line">  nDevices = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(address = <span class="number">1</span>; address &lt; <span class="number">127</span>; address++ ) </span><br><span class="line">  &#123;</span><br><span class="line">    Wire.beginTransmission(address);</span><br><span class="line">    error = Wire.endTransmission();</span><br><span class="line">    <span class="keyword">if</span> (error == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      Serial.print(<span class="string">&quot;I2C device found at address 0x&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (address&lt;<span class="number">16</span>) </span><br><span class="line">        Serial.print(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">      Serial.print(address,HEX);</span><br><span class="line">      Serial.println(<span class="string">&quot;  !&quot;</span>);</span><br><span class="line">      nDevices++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (error==<span class="number">4</span>) </span><br><span class="line">    &#123;</span><br><span class="line">      Serial.print(<span class="string">&quot;Unknow error at address 0x&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (address&lt;<span class="number">16</span>) </span><br><span class="line">        Serial.print(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">      Serial.println(address,HEX);</span><br><span class="line">    &#125;    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (nDevices == <span class="number">0</span>)</span><br><span class="line">    Serial.println(<span class="string">&quot;No I2C devices foundn&quot;</span>);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    Serial.println(<span class="string">&quot;donen&quot;</span>);</span><br><span class="line">  delay(<span class="number">5000</span>);           <span class="comment">// wait 5 seconds for next scan</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是arduino  读取寄存器的方式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   Wire.beginTransmission(<span class="number">0x50</span>);</span><br><span class="line">  Wire.write(<span class="number">0x08</span>);</span><br><span class="line">  Wire.endTransmission();</span><br><span class="line">  delay(<span class="number">5</span>);</span><br><span class="line"> </span><br><span class="line">Wire.requestFrom(<span class="number">0x50</span>,<span class="number">1</span>); <span class="comment">// 请求 DS1307 一个字节</span></span><br><span class="line">   <span class="keyword">if</span>(Wire.available() == <span class="number">1</span>) &#123; <span class="comment">// 可否获取1个数据</span></span><br><span class="line">       SHUJU = Wire.read();  <span class="comment">// </span></span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" data-id="cl56nc29w00009cv72mr91rmi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-蓝牙键盘" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/" class="article-date">
+  <time datetime="2022-07-03T12:34:15.462Z" itemprop="datePublished">2022-07-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>arduino很方便但是不支持c3</p>
+<p>idf 有两个hid device  人机交互设备的意思<br>ble里面的可以连接手机  并且控制音量和播放暂停 以及控制输入法 但是不能够连接我的电脑<br>ble里面的支持c3<br>外面的就不支持c3</p>
+<p>python的sendkeys不能够弹响我的钢琴</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/" data-id="cl56nc2an00029cv784sk3jor" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-掉电存储" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/" class="article-date">
@@ -286,7 +353,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1.bank=0是指的IIC协议<br>2.IODIR就是用来决定输出还是输入   默认是输入<br>3。若想设置上拉输出的话  GPPU寄存器<br>4.若想写高低电平 就用GPIO    若想读GPIO也用读GPIO</p>
+        <p>1.bank=0是指的IIC协议<br>2.IODIR就是用来决定输出还是输入   默认是输入<br>3。若想设置上拉输出的话  GPPU寄存器<br>4.若想写高低电平 就用GPIO    若想读GPIO也用读GPIO<br>下面是写</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">     	i2c_master_start(cmd);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Set all as outputs on A</span></span><br><span class="line">     	i2c_master_stop(cmd);</span><br><span class="line">     i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">     	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">         cmd = i2c_cmd_link_create();</span><br><span class="line">     	i2c_master_start(cmd);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x12</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0xF0</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">     	i2c_master_stop(cmd);</span><br><span class="line">     i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">     	i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
+<p>下面是读</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">       <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//FF就是全输入</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">            cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x0C</span>, ACK_CHECK_EN);<span class="comment">//Access GPPU</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//全部上拉</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//下面读取输入的值</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> data=<span class="number">11</span>;</span><br><span class="line">    cmd = i2c_cmd_link_create();</span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_WRITE, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X12</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_READ, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_read(cmd, &amp;data, <span class="number">100</span>, I2C_MASTER_LAST_NACK);<span class="comment">//</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
       
     </div>
@@ -375,155 +444,6 @@
 
 
   
-    <article id="post-arduino-esp32" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/13/arduino-esp32/" class="article-date">
-  <time datetime="2022-05-13T02:38:43.000Z" itemprop="datePublished">2022-05-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/arduino-esp32/">esp32</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.arduino-ledc  三步走 如果忘记了那一步可能就会reboot</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);</span><br><span class="line"> pinMode(LIGHT_PIN, OUTPUT);    </span><br><span class="line">ledcAttachPin(LIGHT_PIN, PWMLightChannel);</span><br><span class="line">ledcWrite(PWMLightChannel, valueInt); </span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="date-2022-05-14-23-52-45"><a href="#date-2022-05-14-23-52-45" class="headerlink" title="date: 2022-05-14 23:52:45"></a>date: 2022-05-14 23:52:45</h2><p>2.IIC<br> 1.引入Wire.h<br> 2.Wire.begin(SDA,SCL)<br> 如下为MCP23017写操作<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">Wire.begin(<span class="number">21</span>, <span class="number">22</span>);</span><br><span class="line">Wire.beginTransmission(<span class="number">0x20</span>);</span><br><span class="line">Wire.write(<span class="number">0x00</span>);</span><br><span class="line">Wire.write(<span class="number">0x00</span>);</span><br><span class="line">Wire.endTransmission() ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Wire.beginTransmission(<span class="number">0x20</span>);</span><br><span class="line">Wire.write(<span class="number">0x12</span>);</span><br><span class="line">Wire.write(<span class="number">0xF0</span>);</span><br><span class="line">Wire.endTransmission() ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure><br>不过呢。。。还是库比较香<br>注意点<br>1.去掉不需要的头文件<br>2.Adafruit_MCP23X17 mcp;</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//#include &lt;Adafruit_MCP23X08.h&gt;</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Adafruit_MCP23X17.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Wire.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUTTON_PIN 1  <span class="comment">// MCP23XXX pin button is attached to</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// only used for SPI</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CS_PIN 6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// uncomment appropriate line</span></span><br><span class="line"><span class="comment">//Adafruit_MCP23X08 mcp;</span></span><br><span class="line">Adafruit_MCP23X17 mcp;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">  Serial.begin(<span class="number">112500</span>);</span><br><span class="line">  Wire.begin(<span class="number">21</span>, <span class="number">22</span>);</span><br><span class="line">  <span class="comment">//while (!Serial);</span></span><br><span class="line">  Serial.println(<span class="string">&quot;MCP23xxx Button Test!&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// uncomment appropriate mcp.begin</span></span><br><span class="line">  <span class="keyword">if</span> (!mcp.begin_I2C()) &#123;</span><br><span class="line">  <span class="comment">//if (!mcp.begin_SPI(CS_PIN)) &#123;</span></span><br><span class="line">    Serial.println(<span class="string">&quot;Error.&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// configure pin for input with pull up</span></span><br><span class="line">  mcp.pinMode(BUTTON_PIN, INPUT_PULLUP);</span><br><span class="line"></span><br><span class="line">  mcp.pinMode(<span class="number">5</span>, OUTPUT);</span><br><span class="line"></span><br><span class="line">  Serial.println(<span class="string">&quot;Looping...&quot;</span>);</span><br><span class="line">  mcp.digitalWrite(<span class="number">5</span>, HIGH);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// LOW = pressed, HIGH = not pressed</span></span><br><span class="line">  <span class="keyword">if</span> (!mcp.digitalRead(BUTTON_PIN)) &#123;</span><br><span class="line">    Serial.println(<span class="string">&quot;Button Pressed!&quot;</span>);</span><br><span class="line">    delay(<span class="number">250</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/arduino-esp32/" data-id="cl3v46du60007lsv7fqdga9qd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/arduino-ledc/" rel="tag">arduino-ledc</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-如何使用 arduino-aliyun-iot-sdk 2 行代码接入物联网平台" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" class="article-date">
-  <time datetime="2022-05-12T02:48:25.278Z" itemprop="datePublished">2022-05-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>文中提到的 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，也可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</p>
-</blockquote>
-<blockquote>
-<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
-</blockquote>
-<blockquote>
-<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
-</blockquote>
-<h2 id="阿里云物联网平台简介"><a href="#阿里云物联网平台简介" class="headerlink" title="阿里云物联网平台简介"></a>阿里云物联网平台简介</h2><p>阿里云物联网平台提供接入物联网场景的一整套基础设施，强大的在线配置能力，基本可以实现无代码开发接入各类应用，实现大规模的物联网应用场景。</p>
-<p>核心能力模块包括：</p>
-<ul>
-<li>产品&amp;设备创建和管理</li>
-<li>服务可视化开发</li>
-<li>控制界面可视化开发</li>
-<li>数据分析和监控运维等辅助设施</li>
-</ul>
-<p>基于以上功能模块，可以快速在阿里云定义设备模型和事件等信息，然后快速创建和接入设备，再利用可视化的开发平台，可以零代码实现非常强大的功能。</p>
-<p>不过，今天我们要介绍一个比较特殊的接入场景，使用嵌入式系统快速接入阿里云物联网平台，这里以 esp8266 为例。</p>
-<blockquote>
-<p>esp8266 是一款集成网络模块的嵌入式芯片，自带 32 位处理器，各种外设接口，wifi 模块等，可以使用 arduino 平台进行编程，兼容大量 arduino 库。</p>
-</blockquote>
-<p>本文就是以 arduino 编程方式，使用的 esp8266 开发板为 NodeMCU 1.0 ，淘宝成本仅为 8~10 元。</p>
-<p><a name="c931653c"></a></p>
-<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>本次我们想利用 ESP8266 芯片实现一个简单的可远程控制的空调控制器，具备以下功能：</p>
-<ul>
-<li>批量部署，可通过云平台集中管理和远程控制空调开关、温度、模式等</li>
-<li>芯片可感知环境温度、亮度，并上报物联网平台</li>
-<li>芯片可远程触发事件，上报物联网平台</li>
-<li>成本尽量低，不超过 30 元</li>
-</ul>
-<p>首先，我们进行硬件选型，经过功能评估，选用以下硬件：</p>
-<ul>
-<li>nodemcu 核心板（基于 esp8266） 10.89元/个</li>
-<li>DS18B20模块 温度传感 3.18元/个</li>
-<li>GY-30  光照传感 4.38元/个</li>
-<li>红外发射板 3.5元/个</li>
-<li>杜邦线母对母 1.45元/串</li>
-<li>电源插头  1.4元/个</li>
-<li>数据线 1.8元/个</li>
-<li>按钮开关 0.75元/个</li>
-</ul>
-<p><a name="dfe89ca1"></a></p>
-<h2 id="开始接入"><a href="#开始接入" class="headerlink" title="开始接入"></a>开始接入</h2><p>具体的连线，我们这里不展开，我们主要探讨如何使用 arduino 快速接入物联网平台。</p>
-<p>第一步，在物联网创建产品，建立物模型，并创建设备，获取设备配置信息。</p>
-<p><img src="http://waipian1.com/statics/images/qrcode.png" alt="image.png"><br>创建产品，并定义物模型</p>
-<p><img src="https://blog.souche.com/content/images/2019/09/1568620350930-270bbfa3-22b8-4711-b6b8-ff6f38a8d49a.png" alt="image.png"><br>创建设备，与产品绑定，获取设备鉴权信息<br /><br><br />第二步，用 arduino 连接 nodemcu 开发板，开始硬件端的开发。<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642438839-a595c156-3afb-4ef8-8213-d67433be474a.jpeg" alt="IMG_2546.JPG"><br>具体接线可以自己研究，这里只是个展示，哈哈<br /></p>
-<p><a name="qMAHi"></a></p>
-<h2 id="硬件端开发"><a href="#硬件端开发" class="headerlink" title="硬件端开发"></a>硬件端开发</h2><p>这里不讨论如何使用 arduino 进行 esp8266 芯片开发，直接进入代码环节，相关基础知识可以百度一下。</p>
-<p>首先，亮相一个我自己封装的 aliyun iot 上层 SDK（ <a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">arduino-aliyun-iot-sdk</a> ），底层连接基于 PubSubClient 库，并且对模型操作做了一些上层封装，可以方便的发送数据和订阅远程指令。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 引入 wifi 模块，并实例化，不同的芯片这里的依赖可能不同</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ESP8266WiFi.h&gt;</span></span></span><br><span class="line"><span class="type">static</span> WiFiClient espClient;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入阿里云 IoT SDK</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;AliyunIoTSDK.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置产品和设备的信息，从阿里云设备信息里查看</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PRODUCT_KEY <span class="string">&quot;xxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEVICE_NAME <span class="string">&quot;Device_D&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEVICE_SECRET <span class="string">&quot;xxxxxxxxxxxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REGION_ID <span class="string">&quot;cn-shanghai&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置 wifi 信息</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIFI_SSID <span class="string">&quot;xxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIFI_PASSWD <span class="string">&quot;xxxxx&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setup</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Serial.<span class="built_in">begin</span>(<span class="number">115200</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化 wifi</span></span><br><span class="line">    <span class="built_in">wifiInit</span>(WIFI_SSID, WIFI_PASSWD);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span></span><br><span class="line">    <span class="comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">bindData</span>(<span class="string">&quot;PowerSwitch&quot;</span>, powerCallback);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">send</span>(<span class="string">&quot;LightLuminance&quot;</span>, <span class="number">100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">loop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    AliyunIoTSDK::<span class="built_in">loop</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化 wifi 连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">wifiInit</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *ssid, <span class="type">const</span> <span class="type">char</span> *passphrase)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    WiFi.<span class="built_in">mode</span>(WIFI_STA);</span><br><span class="line">    WiFi.<span class="built_in">begin</span>(ssid, passphrase);</span><br><span class="line">    <span class="keyword">while</span> (WiFi.<span class="built_in">status</span>() != WL_CONNECTED)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">delay</span>(<span class="number">1000</span>);</span><br><span class="line">        Serial.<span class="built_in">println</span>(<span class="string">&quot;WiFi not Connect&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Serial.<span class="built_in">println</span>(<span class="string">&quot;Connected to AP&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 电源属性修改的回调函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">powerCallback</span><span class="params">(JsonVariant p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> PowerSwitch = p[<span class="string">&quot;PowerSwitch&quot;</span>];</span><br><span class="line">    <span class="keyword">if</span> (PowerSwitch == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 启动设备</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>核心代码只有三句：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span></span><br><span class="line"><span class="comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">bindData</span>(<span class="string">&quot;PowerSwitch&quot;</span>, powerCallback);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">send</span>(<span class="string">&quot;LightLuminance&quot;</span>, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
-
-<p>注意这里的数据绑定和数据发送，是非常有用和方便的，不需要自己去写做匹配的代码，也不需要自己组装数据，并且会自动合并数据，节约上报的频率。</p>
-<p>将设备配置信息配置进代码，烧录到板子，运行即可，是不是炒鸡方便呢。</p>
-<p>注意事项：</p>
-<ul>
-<li>阿里云对客户端的链接参数有一些限制，需要修改  PubSubClient 的连接参数，否则无法使用<ul>
-<li>PubSubClient 中的 MQTT_MAX_PACKET_SIZE 修改为 1024</li>
-<li>PubSubClient 中的 MQTT_KEEPALIVE 修改为 60</li>
-</ul>
-</li>
-<li>默认 5000ms 检测一次连接状态，可以通过 AliyunIoTSDK.cpp 中的 CHECK_INTERVAL 修改此值</li>
-<li>掉线后会一直尝试重新连接，可能会触发阿里云的一些限流规则（已经做了规避），并且会导致挤掉其他同设备 ID 的设备<br><a name="ZzbqJ"></a><h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3>目前 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</li>
-</ul>
-<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
-<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
-<p><a name="gycpL"></a></p>
-<h2 id="可视化开发界面和服务"><a href="#可视化开发界面和服务" class="headerlink" title="可视化开发界面和服务"></a>可视化开发界面和服务</h2><p>完成了设备的连接之后，已经迈出了第一步，如果你想要自己开发一个界面，可视化的控制空调，或者想利用一些远程设备的数据触发一些自定义的规则和逻辑（例如如果某个数据超标，报警到钉钉群等），用阿里云的物联网平台的话，这些都不需要自己去开发，直接使用物联网平台的“开发服务”拖拖拽拽即可完成。</p>
-<p><a name="7z0mV"></a></p>
-<h3 id="界面开发"><a href="#界面开发" class="headerlink" title="界面开发"></a>界面开发</h3><p>界面开发的核心是 拖动布局、数据源绑定、交互绑定、自定义变量等。<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630094545-d440e173-23f0-4d63-81e7-00d6b6ce8811.png" alt="image.png"><br>布局界面，右侧可以设置各种控件属性<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630244900-18ee8b99-1e80-409a-8482-981fd596d095.png" alt="image.png"><br>数据源绑定，可以方便的和产品模型数据绑定<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630294665-d5cf7a85-ad06-491c-a7bf-65f6439450f8.png" alt="image.png"><br>交互绑定，可以与服务进行绑定，触发某个服务，并传入设备属性<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642695402-cc25fedc-8c3f-4e32-90a9-89c0eec2f712.png" alt="image.png"><br>控件可以给自定义变量赋值，其他组件可以与变量绑定</p>
-<p>使用上述的功能，加上各种设备绑定功能，基本可以完成一个很复杂的界面的开发，但是如果你需要通过交互触发远程指令，或者监听远程的数据做一些判断逻辑，光有界面是不够的。</p>
-<p><a name="D26H8"></a></p>
-<h3 id="服务开发"><a href="#服务开发" class="headerlink" title="服务开发"></a>服务开发</h3><p>上面提到的逻辑开发，就需要使用“服务开发”了，服务开发的触发点主要是两类：设备触发、界面交互触发。</p>
-<p><img src="https://blog.souche.com/content/images/2019/09/1568643025480-f10c038d-8a9b-44a1-b270-51625b56a137.png" alt="image.png"><br>设备触发的服务，中间的路径选择是用来做条件判断分流的，最右侧是触发通知逻辑节点<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643229960-62754bc2-4ddf-4724-ba99-ed81459f9bc2.png" alt="image.png"><br>一个温度控制服务，通过界面控件触发，最终生成设备控制逻辑<br /></p>
-<p><a name="UnwgK"></a></p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文不是 arduino 教学，也不是 esp8266 教学，更不是硬件教学，所以没有展开细节，需要读者具备一定的基础，请各位谅解，如果对 arduino 开发感兴趣，可以加我微信交流（微信号：mier963，注明 arduino）。</p>
-<p>最后展示一下成果：<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643588452-48f528a4-29e2-41f9-99bb-0a004600bd8a.jpeg" alt="IMG_7254.JPG"><br>一个成品，包含四个传感器模块，包括一个硬件按钮<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643652167-2f7d14b9-77d4-4a36-8172-ad7e9b9bc2ae.png" alt="image.png"><br>空调远程控制界面<br /><br><br />另外，还可以给这个控制器加入一些很有意思的功能，例如定点关闭所有设备，根据环境亮度开关空调等。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" data-id="cl3v46duu000ilsv792cj71wk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
@@ -561,7 +481,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -574,6 +494,14 @@
       <ul>
         
           <li>
+            <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
           </li>
         
@@ -583,14 +511,6 @@
         
           <li>
             <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/">5-15无刷电机</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/14/esp32/">esp32</a>
           </li>
         
       </ul>
