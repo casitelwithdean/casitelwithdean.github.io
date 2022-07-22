@@ -78,7 +78,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管</a>
+      <a class="article-title" href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
     </h1>
   
 
@@ -86,7 +86,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>DS<br>11号引脚  CLK这个上升沿的时候会将DS的高低电平记录下来  然后移位<br>12号clk 相当于一个开启引脚  将前八位的数据全部刷新到数码管上</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">HC_595</span><span class="params">(<span class="type">int</span> num,<span class="type">int</span> which)</span></span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">gpio_set_level(<span class="number">7</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;<span class="number">8</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    gpio_set_level(<span class="number">7</span>,<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span>(which==<span class="number">1</span>&amp;&amp;i==<span class="number">6</span>)</span><br><span class="line">    &#123;gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);&#125;</span><br><span class="line">        <span class="keyword">if</span>(which==<span class="number">2</span>&amp;&amp;i==<span class="number">5</span>)</span><br><span class="line">    &#123;gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);&#125;</span><br><span class="line">        <span class="keyword">if</span>(which==<span class="number">3</span>&amp;&amp;i==<span class="number">2</span>)</span><br><span class="line">    &#123;gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);&#125;</span><br><span class="line">        <span class="keyword">if</span>(which==<span class="number">4</span>&amp;&amp;i==<span class="number">1</span>)</span><br><span class="line">    &#123;gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);&#125;</span><br><span class="line"></span><br><span class="line">       DelayUs(<span class="number">20</span>);</span><br><span class="line">gpio_set_level(<span class="number">8</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       DelayUs(<span class="number">20</span>);</span><br><span class="line"></span><br><span class="line">gpio_set_level(<span class="number">8</span>,<span class="number">0</span>);</span><br><span class="line">    <span class="comment">//16位  第一位片选是Q8  7    c4是第四个数码管</span></span><br><span class="line">&#125;</span><br><span class="line">gpio_set_level(<span class="number">19</span>,<span class="number">0</span>);</span><br><span class="line">gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;<span class="number">8</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">5</span>&amp;&amp;which==<span class="number">2</span>&amp;&amp;wendu_shezhi==<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(i==<span class="number">5</span>&amp;&amp;which==<span class="number">3</span>&amp;&amp;wendu_shezhi!=<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">gpio_set_level(<span class="number">7</span>,<span class="number">0</span>);  </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        gpio_set_level(<span class="number">7</span>,dat[num][i]);</span><br><span class="line">    &#125;</span><br><span class="line">       DelayUs(<span class="number">20</span>);</span><br><span class="line">gpio_set_level(<span class="number">8</span>,<span class="number">1</span>);</span><br><span class="line">       DelayUs(<span class="number">20</span>);</span><br><span class="line">gpio_set_level(<span class="number">8</span>,<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line">gpio_set_level(<span class="number">19</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">// printf(&quot;以为完成\n&quot;);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
@@ -195,7 +196,7 @@
       
         <hr>
 <h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>arduino很方便但是不支持c3</p>
-<p>idf 有两个hid device  人机交互设备的意思<br>ble里面的可以连接手机  并且控制音量和播放暂停 以及控制输入法 但是不能够连接我的电脑<br>ble里面的支持c3<br>外面的就不支持c3</p>
+<p>idf 有两个hid device  人机交互设备的意思<br>ble里面的可以连接手机  并且控制音量和播放暂停 以及控制输入法 但是不能够连接我的电脑<br>ble里面的支持c3<br>外面的就不支持c3  因为 c3好像不支持经典蓝牙</p>
 <p>python的sendkeys不能够弹响我的钢琴</p>
 
       
@@ -512,7 +513,7 @@
       <ul>
         
           <li>
-            <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管</a>
+            <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
           </li>
         
           <li>
