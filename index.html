@@ -64,6 +64,86 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-数码管" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/" class="article-date">
+  <time datetime="2022-07-22T16:03:23.000Z" itemprop="datePublished">2022-07-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/" data-id="cl5wnyg950001h0v77r69bc2d" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-esp32-spi" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/07/22/esp32-spi/" class="article-date">
+  <time datetime="2022-07-22T15:29:52.000Z" itemprop="datePublished">2022-07-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/22/esp32-spi/">esp32 spi st7735</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#初始化<br>初始化要发送很多的命令和数据<br>这也就是spi的形势 先发送命令 再发生数据  或者可以理解成先访问寄存器 再写入数据</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">DRAM_ATTR <span class="type">static</span> <span class="type">const</span> <span class="type">lcd_init_cmd_t</span> st_init_cmds[]=&#123;</span><br><span class="line">         &#123;<span class="number">0x01</span>, &#123;<span class="number">0</span>&#125;, <span class="number">0x80</span>&#125;,</span><br><span class="line">    <span class="comment">/* Memory Data Access Control, MX=MV=1, MY=ML=MH=0, RGB=0 */</span></span><br><span class="line">    &#123;<span class="number">0xB1</span>,&#123;<span class="number">0X01</span>,<span class="number">0X2C</span>,<span class="number">0X2D</span>&#125;, <span class="number">3</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0xB2</span>, &#123;<span class="number">0x01</span>, <span class="number">0x2c</span>,<span class="number">0x2d</span>&#125;, <span class="number">3</span>&#125;,</span><br><span class="line">    <span class="comment">/* Gate Control, Vgh=13.65V, Vgl=-10.43V */</span></span><br><span class="line">    &#123;<span class="number">0xB3</span>, &#123;<span class="number">0x01</span>, <span class="number">0x2c</span>, <span class="number">0x2d</span>,<span class="number">0x01</span>, <span class="number">0x2c</span>,<span class="number">0x2d</span>&#125;, <span class="number">6</span>&#125;,</span><br><span class="line">    <span class="comment">/* VCOM Setting, VCOM=1.175V */</span></span><br><span class="line">    &#123;<span class="number">0xB4</span>, &#123;<span class="number">0x07</span>&#125;, <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="comment">/* LCM Control, XOR: BGR, MX, MH */</span></span><br><span class="line">    &#123;<span class="number">0xC0</span>, &#123;<span class="number">0xA2</span>,<span class="number">0x02</span>,<span class="number">0x84</span>&#125;, <span class="number">3</span>&#125;,</span><br><span class="line">    <span class="comment">/* VDV and VRH Command Enable, enable=1 */</span></span><br><span class="line">    &#123;<span class="number">0xC1</span>, &#123;<span class="number">0xc5</span>&#125;, <span class="number">1</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0xC2</span>, &#123;<span class="number">0x0A</span>, <span class="number">0x00</span>&#125;, <span class="number">2</span>&#125;,</span><br><span class="line">    <span class="comment">/* VRH Set, Vap=4.4+... */</span></span><br><span class="line">    &#123;<span class="number">0xC3</span>, &#123;<span class="number">0x8A</span>,<span class="number">0X2A</span>&#125;, <span class="number">2</span>&#125;,</span><br><span class="line">    <span class="comment">/* VDV Set, VDV=0 */</span></span><br><span class="line">    &#123;<span class="number">0xC4</span>, &#123;<span class="number">0x8A</span>,<span class="number">0XEE</span>&#125;, <span class="number">2</span>&#125;,</span><br><span class="line">    <span class="comment">/* Frame Rate Control, 60Hz, inversion=0 */</span></span><br><span class="line">    &#123;<span class="number">0xC5</span>, &#123;<span class="number">0x0e</span>&#125;, <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="comment">/* Power Control 1, AVDD=6.8V, AVCL=-4.8V, VDDS=2.3V */</span></span><br><span class="line">    &#123;<span class="number">0x36</span>, &#123;<span class="number">0xc8</span>&#125;, <span class="number">1</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0x3a</span>, &#123;<span class="number">0x05</span>&#125;, <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="comment">/* Positive Voltage Gamma Control */</span></span><br><span class="line">    &#123;<span class="number">0xE0</span>, &#123;   <span class="number">0x02</span>, <span class="number">0x1c</span>, <span class="number">0x07</span>, <span class="number">0x12</span>,       </span><br><span class="line">      <span class="number">0x37</span>, <span class="number">0x32</span>, <span class="number">0x29</span>, <span class="number">0x2d</span>,     </span><br><span class="line">      <span class="number">0x29</span>, <span class="number">0x25</span>, <span class="number">0x2B</span>, <span class="number">0x39</span>,</span><br><span class="line">      <span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x03</span>, <span class="number">0x10</span>&#125;, <span class="number">16</span>&#125;,</span><br><span class="line">    <span class="comment">/* Negative Voltage Gamma Control */</span></span><br><span class="line">    &#123;<span class="number">0xE1</span>,&#123;  <span class="number">0x03</span>, <span class="number">0x1d</span>, <span class="number">0x07</span>, <span class="number">0x06</span>,       </span><br><span class="line">      <span class="number">0x2E</span>, <span class="number">0x2C</span>, <span class="number">0x29</span>, <span class="number">0x2D</span>,       </span><br><span class="line">      <span class="number">0x2E</span>, <span class="number">0x2E</span>, <span class="number">0x37</span>, <span class="number">0x3F</span>,</span><br><span class="line">      <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x02</span>, <span class="number">0x10</span>&#125;, <span class="number">16</span>&#125;,</span><br><span class="line">    <span class="comment">/* Sleep Out */</span></span><br><span class="line">    &#123;<span class="number">0x2a</span>, &#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x7f</span>&#125;, <span class="number">4</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0x2b</span>, &#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x9f</span>&#125;, <span class="number">4</span>&#125;,</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/* Display On */</span></span><br><span class="line">     &#123;<span class="number">0x13</span>, &#123;<span class="number">0</span>&#125;, <span class="number">0x1</span>&#125;,</span><br><span class="line">     &#123;<span class="number">0x11</span>, &#123;<span class="number">0</span>&#125;, <span class="number">0x80</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0x29</span>, &#123;<span class="number">0</span>&#125;, <span class="number">0x80</span>&#125;,</span><br><span class="line">  &#123;<span class="number">0x2a</span>, &#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x60</span>&#125;, <span class="number">4</span>&#125;,</span><br><span class="line">   &#123;<span class="number">0x2b</span>, &#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0x60</span>&#125;, <span class="number">4</span>&#125;,</span><br><span class="line">     &#123;<span class="number">0x2c</span>, &#123;<span class="number">0</span>&#125;, <span class="number">0x80</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>, &#123;<span class="number">0</span>&#125;, <span class="number">0xff</span>&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<p>这个时候已经初始化完成了<br>但是这个屏幕还是花屏的   所以要给他上色<br>1.确定x的start和end位置    //2a寄存器  行  column  比如 1-10<br>2.确定y的start和end位置    //列 2b寄存器    比如 1-20<br>3.开始写数据 也就是确定颜色  //2c寄存器    应该就需要//一个像素发送16bit哦 因为颜色深度位16位</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">fill_sccrren</span><span class="params">(<span class="type">spi_device_handle_t</span> spi)</span><span class="comment">//uint16_t color</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="type">uint16_t</span> a=<span class="number">0</span>;</span><br><span class="line"> <span class="type">char</span> color[<span class="number">2</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"> <span class="type">uint16_t</span> color1[<span class="number">2</span>]=&#123;<span class="number">0xffff</span>&#125;;</span><br><span class="line"> <span class="type">uint16_t</span> nian_pixel[<span class="number">1024</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> y=<span class="number">0</span>; y&lt;<span class="number">32</span>; y+=<span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">for</span> (<span class="type">int</span> x=<span class="number">0</span>;x&lt;<span class="number">32</span>; x+=<span class="number">1</span>) &#123;</span><br><span class="line">nian_pixel[x+<span class="number">32</span>*y]=nian[x/<span class="number">8</span>+<span class="number">4</span>*y]&gt;&gt;(x%<span class="number">8</span>);</span><br><span class="line">nian_pixel[x+<span class="number">32</span>*y]=nian_pixel[x+<span class="number">32</span>*y]&amp;<span class="number">0x01</span>;</span><br><span class="line"><span class="keyword">if</span>(nian_pixel[x+<span class="number">32</span>*y]!=<span class="number">0</span>)nian_pixel[x+<span class="number">32</span>*y]=<span class="number">0xffff</span>;<span class="comment">//这个函数由字模软件生成</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">send_lines(spi, <span class="number">0</span>,<span class="number">0</span>,nian_pixel);</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> y=<span class="number">0</span>; y&lt;<span class="number">32</span>; y+=PARALLEL_LINES) &#123;</span><br><span class="line">         <span class="keyword">for</span> (<span class="type">int</span> x=<span class="number">0</span>;x&lt;<span class="number">32</span>; x+=PARALLEL_LINES) &#123;</span><br><span class="line"><span class="comment">// ESP_LOGI(TAG,&quot;%d&quot;,nian_pixel[x+32*y]);</span></span><br><span class="line"> </span><br><span class="line">         &#125;</span><br><span class="line">        <span class="comment">//  vTaskDelay(1);</span></span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>#还有一个要注意的好像y有32的偏移    </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/22/esp32-spi/" data-id="cl5wnyg910000h0v78m1383da" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-BS8112触摸芯片" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" class="article-date">
@@ -315,9 +395,21 @@
       
         <p>1.其中 GPIO 34­39 仅用作输入管脚，</p>
 <p>2.串口下载<br>首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0<br>然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）<br>RST和BOOT是可以正常使用的。<br>如果第一次就不可以正常烧录，RST一下，注意要RST前就要拉低IO0。所以怀疑烧录的本质就是先拉底IO0,然后重启。<br>一般会出现下载一次之后无法再下载的问题，此时拔下重插电源即可 ，怀疑是EN没给低电平 没复位</p>
+<p>#MAC 获取无：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span> *mac[<span class="number">8</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">char</span> ok[<span class="number">12</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">esp_efuse_mac_get_default(&amp;mac) ;</span><br><span class="line"><span class="built_in">sprintf</span>(ok,<span class="string">&quot;%02x%02x&quot;</span>,(<span class="type">int</span>)mac[<span class="number">0</span>],(<span class="type">int</span>)mac[<span class="number">1</span>]);</span><br><span class="line">mac_addr[<span class="number">0</span>]=ok[<span class="number">6</span>];</span><br><span class="line">mac_addr[<span class="number">1</span>]=ok[<span class="number">7</span>];</span><br><span class="line">mac_addr[<span class="number">2</span>]=ok[<span class="number">4</span>];</span><br><span class="line">mac_addr[<span class="number">3</span>]=ok[<span class="number">5</span>];</span><br><span class="line">mac_addr[<span class="number">4</span>]=ok[<span class="number">2</span>];</span><br><span class="line">mac_addr[<span class="number">5</span>]=ok[<span class="number">3</span>];</span><br><span class="line">mac_addr[<span class="number">6</span>]=ok[<span class="number">0</span>];</span><br><span class="line">mac_addr[<span class="number">7</span>]=ok[<span class="number">1</span>];</span><br><span class="line">mac_addr[<span class="number">8</span>]=ok[<span class="number">10</span>];</span><br><span class="line">mac_addr[<span class="number">9</span>]=ok[<span class="number">11</span>];</span><br><span class="line">mac_addr[<span class="number">10</span>]=ok[<span class="number">8</span>];</span><br><span class="line">mac_addr[<span class="number">11</span>]=ok[<span class="number">9</span>];</span><br><span class="line"><span class="built_in">sprintf</span>(payload,<span class="string">&quot;dd:%.*s&quot;</span>,<span class="number">12</span>,mac_addr);</span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%s&quot;</span>,payload);</span><br></pre></td></tr></table></figure>
+
 <p>时间获取</p>
 <p>(66条消息) 【ESP32-IDF】 05-3 WIFI-esp32获取网络时间_Ciaran-byte的博客-CSDN博客_esp32获取网络时间<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41741344/article/details/118613486">https://blog.csdn.net/qq_41741344/article/details/118613486</a></p>
+<p>连接本地就直接输入ip4地址即可<br>若要和 域名之类的服务器建立tcp连接</p>
+<p>要先dns解析！！！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">       <span class="comment">// 1、定义一个hints结构体，用来设置函数的getaddrinfo()的使用方式</span></span><br><span class="line">   <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span> =</span> &#123;</span><br><span class="line">       .ai_family = AF_INET,           <span class="comment">/* 指定返回地址的协议簇，AF_INET(IPv4)、AF_INET6(IPv6)、AF_UNSPEC(IPv4 and IPv6)*/</span></span><br><span class="line">       .ai_socktype = SOCK_STREAM,     <span class="comment">/* 设定返回地址的socket类型，流式套接字 */</span>     </span><br><span class="line">   &#125;;</span><br><span class="line"><span class="comment">// 2、使用getaddrinfo()开始解析,定义一个struct addrinfo结构体指针，用来获取解析结果</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> *<span class="title">result</span>;</span></span><br><span class="line">   <span class="type">int</span> err;</span><br><span class="line">   err = getaddrinfo(<span class="string">&quot;espslr.maxhom.com&quot;</span>, <span class="string">&quot;8591&quot;</span>, &amp;hints, &amp;result);</span><br><span class="line">   <span class="keyword">if</span>(err != <span class="number">0</span>)        <span class="comment">/* 返回值不为0，函数执行失败*/</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;getaddrinfo err: %d \n&quot;</span>,err);</span><br><span class="line">       	<span class="comment">// 3、将获取到的信息打印出来</span></span><br><span class="line">   <span class="type">char</span> buf[<span class="number">100</span>];                      <span class="comment">/* 用来存储IP地址字符串 */</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span>  *<span class="title">ipv4</span> =</span> <span class="literal">NULL</span>;   <span class="comment">/* IPv4地址结构体指针 */</span></span><br><span class="line">   <span class="keyword">if</span>(result-&gt;ai_family == AF_INET) </span><br><span class="line">   &#123;</span><br><span class="line">       ipv4 = (<span class="keyword">struct</span> sockaddr_in *)result-&gt;ai_addr;</span><br><span class="line">       inet_ntop(result-&gt;ai_family, &amp;ipv4-&gt;sin_addr, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;[IPv4-]%s [port]%d \n&quot;</span>,buf,ntohs(ipv4-&gt;sin_port));</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;got IPv4 err !!!\n&quot;</span>);</span><br><span class="line">   <span class="comment">// 4、释放addrinfo 内存</span></span><br><span class="line">   freeaddrinfo(result);    </span><br></pre></td></tr></table></figure>
 
+<p>#tcp客户端  与服务器断开之后重连的方法:<br>就是要关闭sock不然一直请求就会不行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (err == <span class="number">-1</span>) &#123;</span><br><span class="line">     shutdown(sock, <span class="number">0</span>);</span><br><span class="line">      close(sock);</span><br><span class="line">      ESP_LOGE(TAG, <span class="string">&quot;Socket unable to connect: errno %d&quot;</span>, errno);</span><br><span class="line">      sock =  socket(addr_family, SOCK_STREAM, ip_protocol);</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">      err = connect(sock, (<span class="keyword">struct</span> sockaddr *)&amp;dest_addr, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in6));</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外这个是阻塞式的<br>int len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);<br>读不到一直读</p>
+<p>#gpio中断读取上升和下降沿之间的时间</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> IRAM_ATTR <span class="title function_">gpio_isr_handler</span><span class="params">(<span class="type">void</span>* arg)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">   gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_POSEDGE);</span><br><span class="line">   time_now_before[<span class="number">0</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span>&#123;</span><br><span class="line">       gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_NEGEDGE);</span><br><span class="line">   time_now_before[<span class="number">1</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="type">uint32_t</span> gpio_num = (<span class="type">uint32_t</span>) arg;</span><br><span class="line">    xQueueSendFromISR(gpio_evt_queue, &amp;gpio_num, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
@@ -361,80 +453,6 @@
     </div>
     <footer class="article-footer">
       <a data-url="http://example.com/2022/05/13/mcp23017/" data-id="cl3v46duj000clsv7atv26mny" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-aliyun" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/13/aliyun/" class="article-date">
-  <time datetime="2022-05-13T02:54:06.000Z" itemprop="datePublished">2022-05-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/aliyun/">aliyun</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>一个很好的博主<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f0d46324a2c6">https://www.jianshu.com/p/f0d46324a2c6</a><br>1.阿里云的网页制作很方便 类似于json那种结构体 现在功能定义一个功能，然后发布，标识符就是相当于指引，然后后面的””就是内容</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/aliyun/" data-id="cl3v46du20005lsv7g0634uzf" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-esp32-cam" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/13/esp32-cam/" class="article-date">
-  <time datetime="2022-05-13T02:40:33.000Z" itemprop="datePublished">2022-05-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/esp32-cam/">esp32-cam</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.引脚4是默认led<br>有些引脚不能够使用IIC     SDA 13  SCL 15是可以的   12好像不太行</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/esp32-cam/" data-id="cl3v46du80008lsv721r5c4xi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -494,6 +512,14 @@
       <ul>
         
           <li>
+            <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/22/esp32-spi/">esp32 spi st7735</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/">(no title)</a>
           </li>
         
@@ -503,14 +529,6 @@
         
           <li>
             <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/">矩阵键盘</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
           </li>
         
       </ul>

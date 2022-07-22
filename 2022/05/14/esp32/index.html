@@ -15,7 +15,7 @@
 <meta property="og:description" content="1.其中 GPIO 34­39 仅用作输入管脚， 2.串口下载首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）RST和BOOT是可以正常">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-05-14T15:52:45.000Z">
-<meta property="article:modified_time" content="2022-05-28T15:48:45.251Z">
+<meta property="article:modified_time" content="2022-07-22T16:15:04.284Z">
 <meta property="article:author" content="Castiel">
 <meta name="twitter:card" content="summary">
   
@@ -90,9 +90,21 @@
       
         <p>1.其中 GPIO 34­39 仅用作输入管脚，</p>
 <p>2.串口下载<br>首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0<br>然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）<br>RST和BOOT是可以正常使用的。<br>如果第一次就不可以正常烧录，RST一下，注意要RST前就要拉低IO0。所以怀疑烧录的本质就是先拉底IO0,然后重启。<br>一般会出现下载一次之后无法再下载的问题，此时拔下重插电源即可 ，怀疑是EN没给低电平 没复位</p>
+<p>#MAC 获取无：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span> *mac[<span class="number">8</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">char</span> ok[<span class="number">12</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">esp_efuse_mac_get_default(&amp;mac) ;</span><br><span class="line"><span class="built_in">sprintf</span>(ok,<span class="string">&quot;%02x%02x&quot;</span>,(<span class="type">int</span>)mac[<span class="number">0</span>],(<span class="type">int</span>)mac[<span class="number">1</span>]);</span><br><span class="line">mac_addr[<span class="number">0</span>]=ok[<span class="number">6</span>];</span><br><span class="line">mac_addr[<span class="number">1</span>]=ok[<span class="number">7</span>];</span><br><span class="line">mac_addr[<span class="number">2</span>]=ok[<span class="number">4</span>];</span><br><span class="line">mac_addr[<span class="number">3</span>]=ok[<span class="number">5</span>];</span><br><span class="line">mac_addr[<span class="number">4</span>]=ok[<span class="number">2</span>];</span><br><span class="line">mac_addr[<span class="number">5</span>]=ok[<span class="number">3</span>];</span><br><span class="line">mac_addr[<span class="number">6</span>]=ok[<span class="number">0</span>];</span><br><span class="line">mac_addr[<span class="number">7</span>]=ok[<span class="number">1</span>];</span><br><span class="line">mac_addr[<span class="number">8</span>]=ok[<span class="number">10</span>];</span><br><span class="line">mac_addr[<span class="number">9</span>]=ok[<span class="number">11</span>];</span><br><span class="line">mac_addr[<span class="number">10</span>]=ok[<span class="number">8</span>];</span><br><span class="line">mac_addr[<span class="number">11</span>]=ok[<span class="number">9</span>];</span><br><span class="line"><span class="built_in">sprintf</span>(payload,<span class="string">&quot;dd:%.*s&quot;</span>,<span class="number">12</span>,mac_addr);</span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%s&quot;</span>,payload);</span><br></pre></td></tr></table></figure>
+
 <p>时间获取</p>
 <p>(66条消息) 【ESP32-IDF】 05-3 WIFI-esp32获取网络时间_Ciaran-byte的博客-CSDN博客_esp32获取网络时间<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41741344/article/details/118613486">https://blog.csdn.net/qq_41741344/article/details/118613486</a></p>
+<p>连接本地就直接输入ip4地址即可<br>若要和 域名之类的服务器建立tcp连接</p>
+<p>要先dns解析！！！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">       <span class="comment">// 1、定义一个hints结构体，用来设置函数的getaddrinfo()的使用方式</span></span><br><span class="line">   <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span> =</span> &#123;</span><br><span class="line">       .ai_family = AF_INET,           <span class="comment">/* 指定返回地址的协议簇，AF_INET(IPv4)、AF_INET6(IPv6)、AF_UNSPEC(IPv4 and IPv6)*/</span></span><br><span class="line">       .ai_socktype = SOCK_STREAM,     <span class="comment">/* 设定返回地址的socket类型，流式套接字 */</span>     </span><br><span class="line">   &#125;;</span><br><span class="line"><span class="comment">// 2、使用getaddrinfo()开始解析,定义一个struct addrinfo结构体指针，用来获取解析结果</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> *<span class="title">result</span>;</span></span><br><span class="line">   <span class="type">int</span> err;</span><br><span class="line">   err = getaddrinfo(<span class="string">&quot;espslr.maxhom.com&quot;</span>, <span class="string">&quot;8591&quot;</span>, &amp;hints, &amp;result);</span><br><span class="line">   <span class="keyword">if</span>(err != <span class="number">0</span>)        <span class="comment">/* 返回值不为0，函数执行失败*/</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;getaddrinfo err: %d \n&quot;</span>,err);</span><br><span class="line">       	<span class="comment">// 3、将获取到的信息打印出来</span></span><br><span class="line">   <span class="type">char</span> buf[<span class="number">100</span>];                      <span class="comment">/* 用来存储IP地址字符串 */</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span>  *<span class="title">ipv4</span> =</span> <span class="literal">NULL</span>;   <span class="comment">/* IPv4地址结构体指针 */</span></span><br><span class="line">   <span class="keyword">if</span>(result-&gt;ai_family == AF_INET) </span><br><span class="line">   &#123;</span><br><span class="line">       ipv4 = (<span class="keyword">struct</span> sockaddr_in *)result-&gt;ai_addr;</span><br><span class="line">       inet_ntop(result-&gt;ai_family, &amp;ipv4-&gt;sin_addr, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;[IPv4-]%s [port]%d \n&quot;</span>,buf,ntohs(ipv4-&gt;sin_port));</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;got IPv4 err !!!\n&quot;</span>);</span><br><span class="line">   <span class="comment">// 4、释放addrinfo 内存</span></span><br><span class="line">   freeaddrinfo(result);    </span><br></pre></td></tr></table></figure>
 
+<p>#tcp客户端  与服务器断开之后重连的方法:<br>就是要关闭sock不然一直请求就会不行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (err == <span class="number">-1</span>) &#123;</span><br><span class="line">     shutdown(sock, <span class="number">0</span>);</span><br><span class="line">      close(sock);</span><br><span class="line">      ESP_LOGE(TAG, <span class="string">&quot;Socket unable to connect: errno %d&quot;</span>, errno);</span><br><span class="line">      sock =  socket(addr_family, SOCK_STREAM, ip_protocol);</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">      err = connect(sock, (<span class="keyword">struct</span> sockaddr *)&amp;dest_addr, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in6));</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外这个是阻塞式的<br>int len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);<br>读不到一直读</p>
+<p>#gpio中断读取上升和下降沿之间的时间</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> IRAM_ATTR <span class="title function_">gpio_isr_handler</span><span class="params">(<span class="type">void</span>* arg)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">   gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_POSEDGE);</span><br><span class="line">   time_now_before[<span class="number">0</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span>&#123;</span><br><span class="line">       gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_NEGEDGE);</span><br><span class="line">   time_now_before[<span class="number">1</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="type">uint32_t</span> gpio_num = (<span class="type">uint32_t</span>) arg;</span><br><span class="line">    xQueueSendFromISR(gpio_evt_queue, &amp;gpio_num, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
@@ -168,6 +180,14 @@
       <ul>
         
           <li>
+            <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/22/esp32-spi/">esp32 spi st7735</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/">(no title)</a>
           </li>
         
@@ -177,14 +197,6 @@
         
           <li>
             <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/">矩阵键盘</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
           </li>
         
       </ul>
