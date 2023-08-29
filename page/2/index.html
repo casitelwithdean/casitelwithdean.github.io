@@ -64,6 +64,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-矩阵键盘" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" class="article-date">
+  <time datetime="2022-05-18T15:44:45.000Z" itemprop="datePublished">2022-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/">矩阵键盘</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (gpio_get_level(arg)==<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    gpio_set_level(output,<span class="number">0</span>);</span><br><span class="line">    vTaskDelay(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">if</span> (gpio_get_level(arg)==<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ESP_LOGI(TAG,<span class="string">&quot;就是%d了&quot;</span>,output<span class="number">-12</span>+<span class="number">4</span>*(arg<span class="number">-16</span>));</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    gpio_set_level(output,<span class="number">1</span>);<span class="comment">//必须放外边 要不然延时的那2ms有风险</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">app_main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">gpio_config_t</span> gp;</span><br><span class="line">    gp.intr_type = GPIO_INTR_DISABLE;</span><br><span class="line">    gp.mode =GPIO_MODE_INPUT;</span><br><span class="line">    gp.pin_bit_mask = GPIO_SEL_16|GPIO_SEL_17|GPIO_SEL_18|GPIO_SEL_19|GPIO_SEL_5;</span><br><span class="line">    gpio_config(&amp;gp);<span class="comment">//r1-r4</span></span><br><span class="line">    </span><br><span class="line">    gp.intr_type = GPIO_INTR_DISABLE;</span><br><span class="line">    gp.mode = GPIO_MODE_OUTPUT ;</span><br><span class="line">    gp.pin_bit_mask = GPIO_SEL_12|GPIO_SEL_15|GPIO_SEL_13|GPIO_SEL_14;</span><br><span class="line">    gpio_config(&amp;gp);<span class="comment">//c1-c4</span></span><br><span class="line"></span><br><span class="line">gpio_set_level(<span class="number">12</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">13</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">14</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">15</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">   </span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%d    %d      %d      %d&quot;</span>,gpio_get_level(<span class="number">16</span>),gpio_get_level(<span class="number">17</span>),gpio_get_level(<span class="number">18</span>),gpio_get_level(<span class="number">5</span>));</span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">17</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">18</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">vTaskDelay(<span class="number">300</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" data-id="cllwi5cmu000pa4v72trg01xm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" rel="tag">矩阵键盘</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-立创EDA" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/" class="article-date">
+  <time datetime="2022-05-18T15:41:40.000Z" itemprop="datePublished">2022-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.更新PCB图的时候会把元件的名称改为默认的  所以以后使用TEXT来当丝印，直接把那些元件名称删了即可<br>2.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/18/%E7%AB%8B%E5%88%9BEDA/" data-id="cllwi5cn4000wa4v7237n15xh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-5-15无刷电机" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" class="article-date">
@@ -92,7 +167,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" data-id="cl3v46dtn0003lsv7b4iffpm8" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" data-id="cllwi5clf0003a4v7fh1x0yza" class="article-share-link">Share</a>
       
       
     </footer>
@@ -129,7 +204,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/15/ADF/" data-id="cllwhzcwq0000rov7f9zo89cb" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/15/ADF/" data-id="cllwi5clp0005a4v7al6s5hlm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +265,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/14/esp32/" data-id="cl3v46dub000alsv75f8p3xod" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/14/esp32/" data-id="cllwi5cmg000fa4v7fk94gx69" class="article-share-link">Share</a>
       
       
     </footer>
@@ -229,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/mcp23017/" data-id="cl3v46duj000clsv7atv26mny" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/13/mcp23017/" data-id="cllwi5cmm000ia4v73z563zol" class="article-share-link">Share</a>
       
       
     </footer>
@@ -269,7 +344,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/aliyun/" data-id="cl3v46du20005lsv7g0634uzf" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/13/aliyun/" data-id="cllwi5clz0009a4v7aet9cn51" class="article-share-link">Share</a>
       
       
     </footer>
@@ -307,7 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/%E5%9C%A8%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" data-id="cllwhzcxg0003rov7aeph6xdd" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/13/%E5%9C%A8%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" data-id="cllwi5cmp000ka4v7etui7r39" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,7 +419,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%20-%20%E5%89%AF%E6%9C%AC/" data-id="cllwhzcxl0004rov7fv7oaxck" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%20-%20%E5%89%AF%E6%9C%AC/" data-id="cllwi5cmy000sa4v7a6x7dwfa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -381,114 +456,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" data-id="cllwhzcxp0005rov7d2qzbfpl" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" data-id="cllwi5cn0000ta4v709s74o6n" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-esp32-cam" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/13/esp32-cam/" class="article-date">
-  <time datetime="2022-05-13T02:40:33.000Z" itemprop="datePublished">2022-05-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/esp32-cam/">esp32-cam</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.引脚4是默认led<br>有些引脚不能够使用IIC     SDA 13  SCL 15是可以的   12好像不太行</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/esp32-cam/" data-id="cl3v46du80008lsv721r5c4xi" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-arduino-esp32" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/13/arduino-esp32/" class="article-date">
-  <time datetime="2022-05-13T02:38:43.000Z" itemprop="datePublished">2022-05-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/arduino-esp32/">esp32</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>#环境配置和安装<br>从github里面下载zip  然后再hardware里面新建一个espressif文件夹，再建一个esp32 将zi解压到里面<br>然后package json里面有七个包的下载链接   一个一个下载好 然后放到tools里面<br>这个时候其他的已经能用了，但是c3还是不能用<br>这时候 可以把idf里面的risiv-elf-gcc直接复制过来，然后就可以了<br>如果c3烧录之后一直重启，注意设置为flash为2MB，然后下面的选择mininal</p>
-<p>1.arduino-ledc  三步走 如果忘记了那一步可能就会reboot</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ledcSetup(PWMLightChannel, PWMFreq, PWMResolution);</span><br><span class="line">  ledcAttachPin(LIGHT_PIN, PWMLightChannel);</span><br><span class="line">ledcWrite(PWMLightChannel, valueInt); </span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="date-2022-05-14-23-52-45"><a href="#date-2022-05-14-23-52-45" class="headerlink" title="date: 2022-05-14 23:52:45"></a>date: 2022-05-14 23:52:45</h2><p>2.IIC<br> 1.引入Wire.h<br> 2.Wire.begin(SDA,SCL)<br> 如下为MCP23017写操作<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">Wire.begin(<span class="number">21</span>, <span class="number">22</span>);</span><br><span class="line">Wire.beginTransmission(<span class="number">0x20</span>);</span><br><span class="line">Wire.write(<span class="number">0x00</span>);</span><br><span class="line">Wire.write(<span class="number">0x00</span>);</span><br><span class="line">Wire.endTransmission() ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Wire.beginTransmission(<span class="number">0x20</span>);</span><br><span class="line">Wire.write(<span class="number">0x12</span>);</span><br><span class="line">Wire.write(<span class="number">0xF0</span>);</span><br><span class="line">Wire.endTransmission() ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure><br>不过呢。。。还是库比较香<br>注意点<br>1.去掉不需要的头文件<br>2.Adafruit_MCP23X17 mcp;</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//#include &lt;Adafruit_MCP23X08.h&gt;</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Adafruit_MCP23X17.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Wire.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUTTON_PIN 1  <span class="comment">// MCP23XXX pin button is attached to</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// only used for SPI</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CS_PIN 6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// uncomment appropriate line</span></span><br><span class="line"><span class="comment">//Adafruit_MCP23X08 mcp;</span></span><br><span class="line">Adafruit_MCP23X17 mcp;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">  Serial.begin(<span class="number">112500</span>);</span><br><span class="line">  Wire.begin(<span class="number">21</span>, <span class="number">22</span>);</span><br><span class="line">  <span class="comment">//while (!Serial);</span></span><br><span class="line">  Serial.println(<span class="string">&quot;MCP23xxx Button Test!&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// uncomment appropriate mcp.begin</span></span><br><span class="line">  <span class="keyword">if</span> (!mcp.begin_I2C()) &#123;</span><br><span class="line">  <span class="comment">//if (!mcp.begin_SPI(CS_PIN)) &#123;</span></span><br><span class="line">    Serial.println(<span class="string">&quot;Error.&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// configure pin for input with pull up</span></span><br><span class="line">  mcp.pinMode(BUTTON_PIN, INPUT_PULLUP);</span><br><span class="line"></span><br><span class="line">  mcp.pinMode(<span class="number">5</span>, OUTPUT);</span><br><span class="line"></span><br><span class="line">  Serial.println(<span class="string">&quot;Looping...&quot;</span>);</span><br><span class="line">  mcp.digitalWrite(<span class="number">5</span>, HIGH);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// LOW = pressed, HIGH = not pressed</span></span><br><span class="line">  <span class="keyword">if</span> (!mcp.digitalRead(BUTTON_PIN)) &#123;</span><br><span class="line">    Serial.println(<span class="string">&quot;Button Pressed!&quot;</span>);</span><br><span class="line">    delay(<span class="number">250</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-<p>#arduino TCP</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WiFi.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *ssid = <span class="string">&quot;HONOR30&quot;</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *password = <span class="string">&quot;12345678&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> IPAddress <span class="title function_">serverIP</span><span class="params">(<span class="number">192</span>,<span class="number">168</span>,<span class="number">43</span>,<span class="number">1</span>)</span>; <span class="comment">//目标地址</span></span><br><span class="line"><span class="type">uint16_t</span> serverPort = <span class="number">5001</span>;         <span class="comment">//目标服务器端口号</span></span><br><span class="line"></span><br><span class="line">WiFiClient client;   <span class="comment">//声明一个客户端对象，用于与服务器进行连接</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    Serial.begin(<span class="number">115200</span>);</span><br><span class="line">    Serial.println();</span><br><span class="line"></span><br><span class="line">    WiFi.mode(WIFI_STA);   <span class="comment">//站点模式</span></span><br><span class="line">    WiFi.setSleep(<span class="literal">false</span>);  <span class="comment">//关闭STA模式下wifi休眠，提高响应速度</span></span><br><span class="line">    WiFi.begin(ssid, password);</span><br><span class="line">    <span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">    &#123;</span><br><span class="line">        delay(<span class="number">2500</span>);</span><br><span class="line">        Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Serial.println(<span class="string">&quot;已连接&quot;</span>);</span><br><span class="line">    Serial.print(<span class="string">&quot;本机ip地址:&quot;</span>);</span><br><span class="line">    Serial.println(WiFi.localIP());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Serial.println(<span class="string">&quot;尝试访问服务器&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (client.connect(serverIP, serverPort))  <span class="comment">//尝试访问目标地址</span></span><br><span class="line">    &#123;</span><br><span class="line">        Serial.println(<span class="string">&quot;访问成功&quot;</span>);</span><br><span class="line"></span><br><span class="line">        client.print(<span class="string">&quot;Hello world!&quot;</span>);                    <span class="comment">//向服务器发送“hello world”</span></span><br><span class="line">        <span class="keyword">while</span> (client.connected()) <span class="comment">//如果处于连接状态</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="keyword">if</span>(client.available())</span><br><span class="line">          &#123;</span><br><span class="line">              Serial.println(<span class="string">&quot;查询信息:&quot;</span>);</span><br><span class="line">              <span class="keyword">if</span> (client.available()) <span class="comment">//如果有数据可读取</span></span><br><span class="line">              &#123;</span><br><span class="line">                  String line = client.readStringUntil(<span class="string">&#x27;\n&#x27;</span>); <span class="comment">//读取数据到换行符</span></span><br><span class="line">                  Serial.print(<span class="string">&quot;收到消息：&quot;</span>);</span><br><span class="line">                  Serial.println(line);</span><br><span class="line">                  client.write(line.c_str()); <span class="comment">//将收到的数据回发      </span></span><br><span class="line">                  <span class="comment">//c_str()函数返回一个指向正规C字符串的指针, 内容与本string串相同  </span></span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Serial.println(<span class="string">&quot;关闭当前连接&quot;</span>);</span><br><span class="line">        client.stop(); <span class="comment">//关闭客户端</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Serial.println(<span class="string">&quot;访问失败&quot;</span>);</span><br><span class="line">        client.stop(); <span class="comment">//关闭客户端</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>#arduino esp32 获取时间 sntp<br>附上地址<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42880082/article/details/120962704">https://blog.csdn.net/weixin_42880082/article/details/120962704</a></p>
-<p>#一键配网  smartconfig</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">&#123;</span><br><span class="line">  delay(<span class="number">1000</span>);</span><br><span class="line">  Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    Serial.println(<span class="string">&quot;WIFI Wait for Smartconfig&quot;</span>);</span><br><span class="line">    WiFi.mode(WIFI_STA);</span><br><span class="line">    WiFi.beginSmartConfig();</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (WiFi.smartConfigDone())</span><br><span class="line">      &#123;</span><br><span class="line">        WiFi.setAutoConnect(<span class="literal">true</span>);  <span class="comment">// 设置自动连接</span></span><br><span class="line">        <span class="comment">//返回再次连接</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//连接成功,打印WIFI信息</span></span><br><span class="line">Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">Serial.println(<span class="string">&quot;WIFI SmartConfig Success&quot;</span>);</span><br><span class="line">Serial.<span class="built_in">printf</span>(<span class="string">&quot;SSID:%s&quot;</span>, WiFi.SSID().c_str());</span><br><span class="line">Serial.<span class="built_in">printf</span>(<span class="string">&quot;, PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());</span><br><span class="line">Serial.print(<span class="string">&quot;LocalIP:&quot;</span>);</span><br><span class="line">Serial.print(WiFi.localIP());</span><br><span class="line">Serial.print(<span class="string">&quot; ,GateIP:&quot;</span>);</span><br><span class="line">Serial.println(WiFi.gatewayIP());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>smartconfig好像不能存储连接信息  所以要保存到flash里面  掉点保存  使用EEPROM<br>当然smartconfig也要先连接wifi  如果一段时间没链接成功 再smartconfig</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">  <span class="type">int</span> address = <span class="number">0</span>;</span><br><span class="line">  Serial.println(EEPROM.readString(address));</span><br><span class="line">  address+=<span class="number">50</span>;</span><br><span class="line">  Serial.println(EEPROM.readString(address));</span><br><span class="line">  address=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"> WiFi.begin(&amp;EEPROM.readString(<span class="number">0</span>)[<span class="number">0</span>],&amp;EEPROM.readString(<span class="number">50</span>)[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">//  WiFi.begin();</span></span><br><span class="line">  <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">  &#123;</span><br><span class="line">    delay(<span class="number">1000</span>);</span><br><span class="line">    Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    count++;</span><br><span class="line">    <span class="comment">//连接超次数</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt; <span class="number">20</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      Serial.println(<span class="string">&quot;WIFI Wait for Smartconfig&quot;</span>);</span><br><span class="line">      WiFi.mode(WIFI_STA);</span><br><span class="line">      WiFi.beginSmartConfig();</span><br><span class="line">      <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">      &#123;</span><br><span class="line">        delay(<span class="number">100</span>);</span><br><span class="line">        <span class="comment">//智能配网成功</span></span><br><span class="line">        <span class="keyword">if</span> (WiFi.smartConfigDone())</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">          WiFi.setAutoConnect(<span class="literal">true</span>);  <span class="comment">// 设置自动连接</span></span><br><span class="line">          count = <span class="number">0</span>;</span><br><span class="line">          <span class="comment">//返回再次连接</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//连接成功,打印WIFI信息</span></span><br><span class="line">  Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">  Serial.println(<span class="string">&quot;WIFI SmartConfig Success&quot;</span>);</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;SSID:%s&quot;</span>, WiFi.SSID().c_str());</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;, PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());</span><br><span class="line">  </span><br><span class="line">    EEPROM.writeString(address, WiFi.SSID().c_str());</span><br><span class="line">  address += <span class="number">50</span>;</span><br><span class="line">  EEPROM.writeString(address, WiFi.psk().c_str());</span><br><span class="line">  EEPROM.commit();<span class="comment">//要commit  不然不能从eeprom传入flash</span></span><br></pre></td></tr></table></figure>
-
-
-<p>digitalToggle  的实现方式<br>#define digitalToggle(x) digitalWrite(x, !digitalRead(x))</p>
-<p>获取mac的方法  qu’di<br>  sprintf(mac,”%c%c%c%c%c%c%c%c%c%c%c%c”,WiFi.macAddress()[0],WiFi.macAddress()[1],WiFi.macAddress()[3],WiFi.macAddress()[4],WiFi.macAddress()[6],WiFi.macAddress()[7],WiFi.macAddress()[9],WiFi.macAddress()[10],WiFi.macAddress()[12],WiFi.macAddress()[13],WiFi.macAddress()[15],WiFi.macAddress()[16]);</p>
-<p>TCP 有两种 一种是连接IP 端口 类似192.168.1.1<br>const IPAddress serverIP(192,168,43,1); //目标地址<br>另一种是连接HTTP 服务器<br>const char *UPDATE_TCP = “wifiupgrade.maxhom.com”;  </p>
-<p>String 转char *<br>&amp;str[0]</p>
-<p>http ota<br>就这一句话<br>t_httpUpdate_return ret = httpUpdate.update(client,update_url);</p>
-<p>#arduino的sprintf不支持浮点数<br>应该用dtostrf(float,整数位数，小数位数，要存进的字符串)</p>
-<p>获取esp32的wifi——mac地址</p>
-<p>  sprintf(mac, “%c%c%c%c%c%c%c%c%c%c%c%c”, WiFi.macAddress()[0], WiFi.macAddress()[1], WiFi.macAddress()[3], WiFi.macAddress()[4], WiFi.macAddress()[6], WiFi.macAddress()[7], WiFi.macAddress()[9], WiFi.macAddress()[10], WiFi.macAddress()[12], WiFi.macAddress()[13], WiFi.macAddress()[15], WiFi.macAddress()[16]);</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/arduino-esp32/" data-id="cl3v46du60007lsv7fqdga9qd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/arduino-ledc/" rel="tag">arduino-ledc</a></li></ul>
-
     </footer>
   </div>
   
@@ -554,15 +524,15 @@
           </li>
         
           <li>
+            <a href="/2022/08/19/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/">LVGL</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/">外部中断,按键中断</a>
+          </li>
+        
+          <li>
             <a href="/2022/08/19/I2S/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/19/5.8-LVGL/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
           </li>
         
       </ul>

@@ -91,7 +91,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/08/31/ES8311/" data-id="cllwhzcx70001rov76jgq11ku" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/08/31/ES8311/" data-id="cllwi5clw0008a4v77vffbi30" class="article-share-link">Share</a>
       
       
     </footer>
@@ -122,7 +122,98 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/" data-id="cllwhzcxs0006rov7gbr25kal" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/" data-id="cllwi5cn2000ua4v74iaz0i4q" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-常见易错" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/19/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/" class="article-date">
+  <time datetime="2022-08-19T04:34:44.252Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/19/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/">LVGL</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>日期：5.8<br>##标题1<br>###标题2</p>
+<blockquote>
+<p>这是一段引用<br>1.与或操作涉及到多项式的时候要记得加上括号<br>比如 1&lt;&lt;10|2&lt;&lt;6<br>所以要加上括号</p>
+</blockquote>
+<p>2.空指针<br>空指针本不会报错，报错是因为调用了空指针。<br>如果只是定义了一个char *a;<br>只能赋值后才能够正常调用</p>
+<p>3.cjson<br>只能直接赋值，不可以用sprintf(aa,”%s”,data-&gt;valuestring);<br>应该是下面的这个样子<br> char *timestamp=cJSON_GetObjectItem(root1,”t”)-&gt;valuestring;</p>
+<p>下面是一种sprintf成json格式发办法<br>                sprintf(update,”{\n&quot;head&quot;:&quot;state&quot;,\n&quot;state&quot;:&quot;9&quot;,\n&quot;mode&quot;:&quot;key&quot;,\n&quot;num&quot;:&quot;%s&quot;\n}”,password);</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/19/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/" data-id="cllwi5cmr000ma4v7g13sh3bw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-外部中断" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/19/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" class="article-date">
+  <time datetime="2022-08-19T04:34:44.224Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/19/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/">外部中断,按键中断</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>date: 2022-05-09 10:54:01</p>
+<p>1.外部中断内不可以加延迟，假设延时，他还没结束，又来了中断，这样就反复循环嵌套了。<br>所以应该不能够消抖。尽量用在主函数里轮询吧。</p>
+<p>2.中断优先级越小，越优先<br>所谓多任务，也就是单核快速的处理，当处理完当前任务，如stm32把八个寄存器（关键的是PC,他直接决定了中断退出以后开始执行的位置,R0-R3,R12则保存了一些中间变量,保证了恢复现场以后程序正确执行）全都压入栈，然后切到下个任务，把这个任务的八个寄存器出栈，做完了当前任务再压栈</p>
+<p>3.ADC 逐次逼近式 又称SAR　ｒｅｇｉｓｔｅｒ<br>类似二分法，DAC一直通过电压比较器，最后比较出来<br>如果是使用最小板的ADC，如果不正常工作，那么要检查ＶＲＥｆ　＋　　－　是否接高电平和接地了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags:中断 ADC</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<p>有的按键中断   必须要增加个上拉或者下拉  为什么呢？<br>因为有的引脚复用了，就是说不仅作为开发板按键 还作为引脚引出。所以一定要加一个上拉或者下拉</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/19/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" data-id="cllwi5cmq000la4v79mew73p7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -149,7 +240,44 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/08/19/I2S/" data-id="cllwhzcx90002rov73ov53gzi" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/08/19/I2S/" data-id="cllwi5cm2000aa4v71p1e8lzi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-BS8112触摸芯片" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/19/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" class="article-date">
+  <time datetime="2022-08-19T04:34:44.129Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>1.key12或者16有两个模式 一个是什么中断 一个就是当作按键<br>但是要操作寄存器 因为模式是中断的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line"></span><br><span class="line"><span class="comment">// uint8_t bs[17]=&#123;0X00,0x00,0x83,0xF3,0x98,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90&#125;;</span></span><br><span class="line"><span class="type">uint8_t</span> bs[<span class="number">17</span>]=&#123;<span class="number">0X01</span>,<span class="number">0x00</span>,<span class="number">0x83</span>,<span class="number">0xF3</span>,<span class="number">0xD8</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>&#125;;</span><br><span class="line"><span class="type">uint8_t</span> sum=<span class="number">0</span>;</span><br><span class="line"> cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0XB0</span>, ACK_CHECK_EN);<span class="comment">//确定地址 B0</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">17</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    sum+=bs[i];</span><br><span class="line">    i2c_master_write_byte(cmd, bs[i], ACK_CHECK_EN);<span class="comment">//  开始沿着B0依次写入数据 </span></span><br><span class="line">  <span class="comment">/* code */</span></span><br><span class="line">&#125; </span><br><span class="line">    i2c_master_write_byte(cmd, sum, ACK_CHECK_DIS);<span class="comment">//   校验和</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_0, cmd, <span class="number">10</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br><span class="line"> ESP_LOGI(TAG,<span class="string">&quot;第一个寄存器%d&quot;</span>,SHUJU);</span><br></pre></td></tr></table></figure>
+
+
+<p>下面是读取按键状态 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X08</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span>| READ_BIT, ACK_CHECK_EN);</span><br><span class="line"><span class="comment">//    i2c_master_read_byte(cmd, &amp;SHUJU,ACK_CHECK_DIS);</span></span><br><span class="line">    <span class="comment">// i2c_master_read(cmd, &amp;SHUJU, 8, ACK_CHECK_DIS);//  如果直接read会把后面的寄存器赋给变量后面的指针</span></span><br><span class="line">i2c_master_read_byte(cmd,&amp;SHUJU, ACK_CHECK_EN);<span class="comment">//手册写的no ack 但实际上还是要加的  不然会一直busy</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">   <span class="type">esp_err_t</span> ret =  i2c_master_cmd_begin(I2C_NUM_0, cmd,<span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
+
+<p>下面是arduino  寻找从机地址的方法 非常的6</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Wire.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  Wire.begin(<span class="number">19</span>,<span class="number">18</span>);</span><br><span class="line">  Serial.begin(<span class="number">115200</span>);</span><br><span class="line">  Serial.println(<span class="string">&quot;nI2C Scanner&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  byte error, address;</span><br><span class="line">  <span class="type">int</span> nDevices;</span><br><span class="line">  Serial.println(<span class="string">&quot;Scanning...&quot;</span>);</span><br><span class="line">  nDevices = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(address = <span class="number">1</span>; address &lt; <span class="number">127</span>; address++ ) </span><br><span class="line">  &#123;</span><br><span class="line">    Wire.beginTransmission(address);</span><br><span class="line">    error = Wire.endTransmission();</span><br><span class="line">    <span class="keyword">if</span> (error == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      Serial.print(<span class="string">&quot;I2C device found at address 0x&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (address&lt;<span class="number">16</span>) </span><br><span class="line">        Serial.print(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">      Serial.print(address,HEX);</span><br><span class="line">      Serial.println(<span class="string">&quot;  !&quot;</span>);</span><br><span class="line">      nDevices++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (error==<span class="number">4</span>) </span><br><span class="line">    &#123;</span><br><span class="line">      Serial.print(<span class="string">&quot;Unknow error at address 0x&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (address&lt;<span class="number">16</span>) </span><br><span class="line">        Serial.print(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">      Serial.println(address,HEX);</span><br><span class="line">    &#125;    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (nDevices == <span class="number">0</span>)</span><br><span class="line">    Serial.println(<span class="string">&quot;No I2C devices foundn&quot;</span>);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    Serial.println(<span class="string">&quot;donen&quot;</span>);</span><br><span class="line">  delay(<span class="number">5000</span>);           <span class="comment">// wait 5 seconds for next scan</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是arduino  读取寄存器的方式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   Wire.beginTransmission(<span class="number">0x50</span>);</span><br><span class="line">  Wire.write(<span class="number">0x08</span>);</span><br><span class="line">  Wire.endTransmission();</span><br><span class="line">  delay(<span class="number">5</span>);</span><br><span class="line"> </span><br><span class="line">Wire.requestFrom(<span class="number">0x50</span>,<span class="number">1</span>); <span class="comment">// 请求 DS1307 一个字节</span></span><br><span class="line">   <span class="keyword">if</span>(Wire.available() == <span class="number">1</span>) &#123; <span class="comment">// 可否获取1个数据</span></span><br><span class="line">       SHUJU = Wire.read();  <span class="comment">// </span></span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/19/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" data-id="cllwi5clk0004a4v7fjn01crn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -290,7 +418,7 @@ lv_timer_create(anim_timer_cb, 20, page);
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/08/19/5.8-LVGL/" data-id="cl3v46du40006lsv7fbjg8ruc" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/08/19/5.8-LVGL/" data-id="cllwi5clt0007a4v79j8i7vnh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -327,7 +455,7 @@ lv_timer_create(anim_timer_cb, 20, page);
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/" data-id="cl5wnyg950001h0v77r69bc2d" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/" data-id="cllwi5cmv000qa4v74ad85zgy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -372,44 +500,7 @@ lv_timer_create(anim_timer_cb, 20, page);
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/07/22/esp32-spi/" data-id="cl5wnyg910000h0v78m1383da" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-BS8112触摸芯片" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" class="article-date">
-  <time datetime="2022-07-04T01:09:45.843Z" itemprop="datePublished">2022-07-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>1.key12或者16有两个模式 一个是什么中断 一个就是当作按键<br>但是要操作寄存器 因为模式是中断的</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line"></span><br><span class="line"><span class="comment">// uint8_t bs[17]=&#123;0X00,0x00,0x83,0xF3,0x98,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90,0x90&#125;;</span></span><br><span class="line"><span class="type">uint8_t</span> bs[<span class="number">17</span>]=&#123;<span class="number">0X01</span>,<span class="number">0x00</span>,<span class="number">0x83</span>,<span class="number">0xF3</span>,<span class="number">0xD8</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>,<span class="number">0x10</span>&#125;;</span><br><span class="line"><span class="type">uint8_t</span> sum=<span class="number">0</span>;</span><br><span class="line"> cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0XB0</span>, ACK_CHECK_EN);<span class="comment">//确定地址 B0</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">17</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">    sum+=bs[i];</span><br><span class="line">    i2c_master_write_byte(cmd, bs[i], ACK_CHECK_EN);<span class="comment">//  开始沿着B0依次写入数据 </span></span><br><span class="line">  <span class="comment">/* code */</span></span><br><span class="line">&#125; </span><br><span class="line">    i2c_master_write_byte(cmd, sum, ACK_CHECK_DIS);<span class="comment">//   校验和</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_0, cmd, <span class="number">10</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br><span class="line"> ESP_LOGI(TAG,<span class="string">&quot;第一个寄存器%d&quot;</span>,SHUJU);</span><br></pre></td></tr></table></figure>
-
-
-<p>下面是读取按键状态 </p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X08</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0xA0</span>| READ_BIT, ACK_CHECK_EN);</span><br><span class="line"><span class="comment">//    i2c_master_read_byte(cmd, &amp;SHUJU,ACK_CHECK_DIS);</span></span><br><span class="line">    <span class="comment">// i2c_master_read(cmd, &amp;SHUJU, 8, ACK_CHECK_DIS);//  如果直接read会把后面的寄存器赋给变量后面的指针</span></span><br><span class="line">i2c_master_read_byte(cmd,&amp;SHUJU, ACK_CHECK_EN);<span class="comment">//手册写的no ack 但实际上还是要加的  不然会一直busy</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">   <span class="type">esp_err_t</span> ret =  i2c_master_cmd_begin(I2C_NUM_0, cmd,<span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
-
-<p>下面是arduino  寻找从机地址的方法 非常的6</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Wire.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  Wire.begin(<span class="number">19</span>,<span class="number">18</span>);</span><br><span class="line">  Serial.begin(<span class="number">115200</span>);</span><br><span class="line">  Serial.println(<span class="string">&quot;nI2C Scanner&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  byte error, address;</span><br><span class="line">  <span class="type">int</span> nDevices;</span><br><span class="line">  Serial.println(<span class="string">&quot;Scanning...&quot;</span>);</span><br><span class="line">  nDevices = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(address = <span class="number">1</span>; address &lt; <span class="number">127</span>; address++ ) </span><br><span class="line">  &#123;</span><br><span class="line">    Wire.beginTransmission(address);</span><br><span class="line">    error = Wire.endTransmission();</span><br><span class="line">    <span class="keyword">if</span> (error == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      Serial.print(<span class="string">&quot;I2C device found at address 0x&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (address&lt;<span class="number">16</span>) </span><br><span class="line">        Serial.print(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">      Serial.print(address,HEX);</span><br><span class="line">      Serial.println(<span class="string">&quot;  !&quot;</span>);</span><br><span class="line">      nDevices++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (error==<span class="number">4</span>) </span><br><span class="line">    &#123;</span><br><span class="line">      Serial.print(<span class="string">&quot;Unknow error at address 0x&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (address&lt;<span class="number">16</span>) </span><br><span class="line">        Serial.print(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">      Serial.println(address,HEX);</span><br><span class="line">    &#125;    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (nDevices == <span class="number">0</span>)</span><br><span class="line">    Serial.println(<span class="string">&quot;No I2C devices foundn&quot;</span>);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    Serial.println(<span class="string">&quot;donen&quot;</span>);</span><br><span class="line">  delay(<span class="number">5000</span>);           <span class="comment">// wait 5 seconds for next scan</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>下面是arduino  读取寄存器的方式</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   Wire.beginTransmission(<span class="number">0x50</span>);</span><br><span class="line">  Wire.write(<span class="number">0x08</span>);</span><br><span class="line">  Wire.endTransmission();</span><br><span class="line">  delay(<span class="number">5</span>);</span><br><span class="line"> </span><br><span class="line">Wire.requestFrom(<span class="number">0x50</span>,<span class="number">1</span>); <span class="comment">// 请求 DS1307 一个字节</span></span><br><span class="line">   <span class="keyword">if</span>(Wire.available() == <span class="number">1</span>) &#123; <span class="comment">// 可否获取1个数据</span></span><br><span class="line">       SHUJU = Wire.read();  <span class="comment">// </span></span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" data-id="cl56nc29w00009cv72mr91rmi" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/07/22/esp32-spi/" data-id="cllwi5cm9000ca4v7c6x699zc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -456,82 +547,7 @@ lv_timer_create(anim_timer_cb, 20, page);
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/" data-id="cl3v46dur000hlsv72t8uces6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-矩阵键盘" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" class="article-date">
-  <time datetime="2022-05-18T15:44:45.000Z" itemprop="datePublished">2022-05-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/">矩阵键盘</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (gpio_get_level(arg)==<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    gpio_set_level(output,<span class="number">0</span>);</span><br><span class="line">    vTaskDelay(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">if</span> (gpio_get_level(arg)==<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ESP_LOGI(TAG,<span class="string">&quot;就是%d了&quot;</span>,output<span class="number">-12</span>+<span class="number">4</span>*(arg<span class="number">-16</span>));</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    gpio_set_level(output,<span class="number">1</span>);<span class="comment">//必须放外边 要不然延时的那2ms有风险</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">app_main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">gpio_config_t</span> gp;</span><br><span class="line">    gp.intr_type = GPIO_INTR_DISABLE;</span><br><span class="line">    gp.mode =GPIO_MODE_INPUT;</span><br><span class="line">    gp.pin_bit_mask = GPIO_SEL_16|GPIO_SEL_17|GPIO_SEL_18|GPIO_SEL_19|GPIO_SEL_5;</span><br><span class="line">    gpio_config(&amp;gp);<span class="comment">//r1-r4</span></span><br><span class="line">    </span><br><span class="line">    gp.intr_type = GPIO_INTR_DISABLE;</span><br><span class="line">    gp.mode = GPIO_MODE_OUTPUT ;</span><br><span class="line">    gp.pin_bit_mask = GPIO_SEL_12|GPIO_SEL_15|GPIO_SEL_13|GPIO_SEL_14;</span><br><span class="line">    gpio_config(&amp;gp);<span class="comment">//c1-c4</span></span><br><span class="line"></span><br><span class="line">gpio_set_level(<span class="number">12</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">13</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">14</span>,<span class="number">1</span>);</span><br><span class="line">gpio_set_level(<span class="number">15</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">   </span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%d    %d      %d      %d&quot;</span>,gpio_get_level(<span class="number">16</span>),gpio_get_level(<span class="number">17</span>),gpio_get_level(<span class="number">18</span>),gpio_get_level(<span class="number">5</span>));</span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">16</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">17</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">17</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">18</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">18</span>);</span><br><span class="line"></span><br><span class="line">key_detect(<span class="number">12</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">13</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">14</span>,<span class="number">5</span>);</span><br><span class="line">key_detect(<span class="number">15</span>,<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">vTaskDelay(<span class="number">300</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/18/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" data-id="cl3v46duw000jlsv7dsyghvi9" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E9%94%AE%E7%9B%98/" rel="tag">矩阵键盘</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-立创EDA" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/" class="article-date">
-  <time datetime="2022-05-18T15:41:40.000Z" itemprop="datePublished">2022-05-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/18/%E7%AB%8B%E5%88%9BEDA/">立创EDA</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.更新PCB图的时候会把元件的名称改为默认的  所以以后使用TEXT来当丝印，直接把那些元件名称删了即可<br>2.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/18/%E7%AB%8B%E5%88%9BEDA/" data-id="cl3v46duy000llsv73ip51uom" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/" data-id="cllwi5cms000oa4v74ucl0qca" class="article-share-link">Share</a>
       
       
     </footer>
@@ -599,15 +615,15 @@ lv_timer_create(anim_timer_cb, 20, page);
           </li>
         
           <li>
+            <a href="/2022/08/19/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/">LVGL</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/">外部中断,按键中断</a>
+          </li>
+        
+          <li>
             <a href="/2022/08/19/I2S/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/19/5.8-LVGL/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
           </li>
         
       </ul>
