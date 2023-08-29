@@ -15,7 +15,7 @@
 <meta property="og:description" content="#环境配置和安装从github里面下载zip  然后再hardware里面新建一个espressif文件夹，再建一个esp32 将zi解压到里面然后package json里面有七个包的下载链接   一个一个下载好 然后放到tools里面这个时候其他的已经能用了，但是c3还是不能用这时候 可以把idf里面的risiv-elf-gcc直接复制过来，然后就可以了如果c3烧录之后一直重启，注意设置为fl">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-05-13T02:38:43.000Z">
-<meta property="article:modified_time" content="2022-07-12T03:09:51.764Z">
+<meta property="article:modified_time" content="2022-08-31T01:25:28.460Z">
 <meta property="article:author" content="Castiel">
 <meta property="article:tag" content="arduino-ledc">
 <meta name="twitter:card" content="summary">
@@ -105,16 +105,20 @@
 
 
 <p>#arduino esp32 获取时间 sntp<br>附上地址<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42880082/article/details/120962704">https://blog.csdn.net/weixin_42880082/article/details/120962704</a></p>
-<p>#一键配网  smartconfig<br>  while (WiFi.status() != WL_CONNECTED)<br>  {<br>    delay(1000);<br>    Serial.print(“.”);<br>    //连接超次数<br>    if (count &gt; 10)<br>    {<br>      Serial.println(“WIFI Wait for Smartconfig”);<br>      WiFi.mode(WIFI_STA);<br>      WiFi.beginSmartConfig();<br>      while (1)<br>      {<br>        //智能配网成功<br>        if (WiFi.smartConfigDone())<br>        {<br>          WiFi.setAutoConnect(true);  // 设置自动连接<br>          count = 0;<br>          //返回再次连接<br>          break;<br>        }<br>      }<br>    }<br>  }</p>
-<p>  //连接成功,打印WIFI信息<br>  Serial.println(“”);<br>  Serial.println(“WIFI SmartConfig Success”);<br>  Serial.printf(“SSID:%s”, WiFi.SSID().c_str());<br>  Serial.printf(“, PSW:%s\r\n”, WiFi.psk().c_str());<br>  Serial.print(“LocalIP:”);<br>  Serial.print(WiFi.localIP());<br>  Serial.print(“ ,GateIP:”);<br>  Serial.println(WiFi.gatewayIP());</p>
-<p>c3的smartconfig好像不能存储连接信息  所以要保存到flash里面  掉点保存  使用EEPROM<br>当然smartconfig也要先连接wifi  如果一段时间没链接成功 再smartconfig</p>
+<p>#一键配网  smartconfig</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">&#123;</span><br><span class="line">  delay(<span class="number">1000</span>);</span><br><span class="line">  Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    Serial.println(<span class="string">&quot;WIFI Wait for Smartconfig&quot;</span>);</span><br><span class="line">    WiFi.mode(WIFI_STA);</span><br><span class="line">    WiFi.beginSmartConfig();</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (WiFi.smartConfigDone())</span><br><span class="line">      &#123;</span><br><span class="line">        WiFi.setAutoConnect(<span class="literal">true</span>);  <span class="comment">// 设置自动连接</span></span><br><span class="line">        <span class="comment">//返回再次连接</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//连接成功,打印WIFI信息</span></span><br><span class="line">Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">Serial.println(<span class="string">&quot;WIFI SmartConfig Success&quot;</span>);</span><br><span class="line">Serial.<span class="built_in">printf</span>(<span class="string">&quot;SSID:%s&quot;</span>, WiFi.SSID().c_str());</span><br><span class="line">Serial.<span class="built_in">printf</span>(<span class="string">&quot;, PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());</span><br><span class="line">Serial.print(<span class="string">&quot;LocalIP:&quot;</span>);</span><br><span class="line">Serial.print(WiFi.localIP());</span><br><span class="line">Serial.print(<span class="string">&quot; ,GateIP:&quot;</span>);</span><br><span class="line">Serial.println(WiFi.gatewayIP());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>smartconfig好像不能存储连接信息  所以要保存到flash里面  掉点保存  使用EEPROM<br>当然smartconfig也要先连接wifi  如果一段时间没链接成功 再smartconfig</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">  <span class="type">int</span> address = <span class="number">0</span>;</span><br><span class="line">  Serial.println(EEPROM.readString(address));</span><br><span class="line">  address+=<span class="number">50</span>;</span><br><span class="line">  Serial.println(EEPROM.readString(address));</span><br><span class="line">  address=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"> WiFi.begin(&amp;EEPROM.readString(<span class="number">0</span>)[<span class="number">0</span>],&amp;EEPROM.readString(<span class="number">50</span>)[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">//  WiFi.begin();</span></span><br><span class="line">  <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">  &#123;</span><br><span class="line">    delay(<span class="number">1000</span>);</span><br><span class="line">    Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    count++;</span><br><span class="line">    <span class="comment">//连接超次数</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt; <span class="number">20</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      Serial.println(<span class="string">&quot;WIFI Wait for Smartconfig&quot;</span>);</span><br><span class="line">      WiFi.mode(WIFI_STA);</span><br><span class="line">      WiFi.beginSmartConfig();</span><br><span class="line">      <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">      &#123;</span><br><span class="line">        delay(<span class="number">100</span>);</span><br><span class="line">        <span class="comment">//智能配网成功</span></span><br><span class="line">        <span class="keyword">if</span> (WiFi.smartConfigDone())</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">          WiFi.setAutoConnect(<span class="literal">true</span>);  <span class="comment">// 设置自动连接</span></span><br><span class="line">          count = <span class="number">0</span>;</span><br><span class="line">          <span class="comment">//返回再次连接</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//连接成功,打印WIFI信息</span></span><br><span class="line">  Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">  Serial.println(<span class="string">&quot;WIFI SmartConfig Success&quot;</span>);</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;SSID:%s&quot;</span>, WiFi.SSID().c_str());</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;, PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());</span><br><span class="line">  </span><br><span class="line">    EEPROM.writeString(address, WiFi.SSID().c_str());</span><br><span class="line">  address += <span class="number">50</span>;</span><br><span class="line">  EEPROM.writeString(address, WiFi.psk().c_str());</span><br><span class="line">  EEPROM.commit();<span class="comment">//要commit  不然不能从eeprom传入flash</span></span><br></pre></td></tr></table></figure>
 
 
-<p>digitalToggle  的实现方式<br>#define digitalToggle(x) digitalWrite(x, !digitalRead(x))<br>获取mac的方法  qu’di<br>  sprintf(mac,”%c%c%c%c%c%c%c%c%c%c%c%c”,WiFi.macAddress()[0],WiFi.macAddress()[1],WiFi.macAddress()[3],WiFi.macAddress()[4],WiFi.macAddress()[6],WiFi.macAddress()[7],WiFi.macAddress()[9],WiFi.macAddress()[10],WiFi.macAddress()[12],WiFi.macAddress()[13],WiFi.macAddress()[15],WiFi.macAddress()[16]);</p>
+<p>digitalToggle  的实现方式<br>#define digitalToggle(x) digitalWrite(x, !digitalRead(x))</p>
+<p>获取mac的方法  qu’di<br>  sprintf(mac,”%c%c%c%c%c%c%c%c%c%c%c%c”,WiFi.macAddress()[0],WiFi.macAddress()[1],WiFi.macAddress()[3],WiFi.macAddress()[4],WiFi.macAddress()[6],WiFi.macAddress()[7],WiFi.macAddress()[9],WiFi.macAddress()[10],WiFi.macAddress()[12],WiFi.macAddress()[13],WiFi.macAddress()[15],WiFi.macAddress()[16]);</p>
 <p>TCP 有两种 一种是连接IP 端口 类似192.168.1.1<br>const IPAddress serverIP(192,168,43,1); //目标地址<br>另一种是连接HTTP 服务器<br>const char *UPDATE_TCP = “wifiupgrade.maxhom.com”;  </p>
 <p>String 转char *<br>&amp;str[0]</p>
 <p>http ota<br>就这一句话<br>t_httpUpdate_return ret = httpUpdate.update(client,update_url);</p>
+<p>#arduino的sprintf不支持浮点数<br>应该用dtostrf(float,整数位数，小数位数，要存进的字符串)</p>
+<p>获取esp32的wifi——mac地址</p>
+<p>  sprintf(mac, “%c%c%c%c%c%c%c%c%c%c%c%c”, WiFi.macAddress()[0], WiFi.macAddress()[1], WiFi.macAddress()[3], WiFi.macAddress()[4], WiFi.macAddress()[6], WiFi.macAddress()[7], WiFi.macAddress()[9], WiFi.macAddress()[10], WiFi.macAddress()[12], WiFi.macAddress()[13], WiFi.macAddress()[15], WiFi.macAddress()[16]);</p>
 
       
     </div>
@@ -140,9 +144,9 @@
     </a>
   
   
-    <a href="/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2022/05/11/5-11/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">5-11</div>
     </a>
   
 </nav>
@@ -180,7 +184,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -193,23 +197,23 @@
       <ul>
         
           <li>
+            <a href="/2022/08/31/ES8311/">ES8311</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/I2S/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/5.8-LVGL/">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/22/esp32-spi/">esp32 spi st7735</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
           </li>
         
       </ul>
@@ -224,7 +228,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2022 Castiel<br>
+      &copy; 2023 Castiel<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

@@ -64,6 +64,181 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-5-15无刷电机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" class="article-date">
+  <time datetime="2022-05-15T14:10:18.000Z" itemprop="datePublished">2022-05-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/">5-15无刷电机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.无刷电机有上下桥臂，上下桥臂不能够同时导通，用驱动板驱动无刷电机，使用PWM驱动还是？</p>
+<p>2.按键的判断并不容易，如果放在while循环里面说没检测到一次低电平就切换状态，就算消抖了，也会相当于发生了很多次，最后只有二分之一的概率落在彼此</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" data-id="cl3v46dtn0003lsv7b4iffpm8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ADF" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/15/ADF/" class="article-date">
+  <time datetime="2022-05-15T14:10:18.000Z" itemprop="datePublished">2022-05-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/15/ADF/">5-15无刷电机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.ADF的路径 确实必须要设置<br>可以在环境变量里设置</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/15/ADF/" data-id="cllwhzcwq0000rov7f9zo89cb" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-esp32" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/14/esp32/" class="article-date">
+  <time datetime="2022-05-14T15:52:45.000Z" itemprop="datePublished">2022-05-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/14/esp32/">esp32</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.其中 GPIO 34-­39 仅用作输入管脚，</p>
+<p>2.串口下载<br>首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0<br>然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）<br>RST和BOOT是可以正常使用的。<br>如果第一次就不可以正常烧录，RST一下，注意要RST前就要拉低IO0。所以怀疑烧录的本质就是先拉底IO0,然后重启。<br>一般会出现下载一次之后无法再下载的问题，此时拔下重插电源即可 ，怀疑是EN没给低电平 没复位</p>
+<p>#MAC 获取无：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span> *mac[<span class="number">8</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">char</span> ok[<span class="number">12</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">esp_efuse_mac_get_default(&amp;mac) ;</span><br><span class="line"><span class="built_in">sprintf</span>(ok,<span class="string">&quot;%02x%02x&quot;</span>,(<span class="type">int</span>)mac[<span class="number">0</span>],(<span class="type">int</span>)mac[<span class="number">1</span>]);</span><br><span class="line">mac_addr[<span class="number">0</span>]=ok[<span class="number">6</span>];</span><br><span class="line">mac_addr[<span class="number">1</span>]=ok[<span class="number">7</span>];</span><br><span class="line">mac_addr[<span class="number">2</span>]=ok[<span class="number">4</span>];</span><br><span class="line">mac_addr[<span class="number">3</span>]=ok[<span class="number">5</span>];</span><br><span class="line">mac_addr[<span class="number">4</span>]=ok[<span class="number">2</span>];</span><br><span class="line">mac_addr[<span class="number">5</span>]=ok[<span class="number">3</span>];</span><br><span class="line">mac_addr[<span class="number">6</span>]=ok[<span class="number">0</span>];</span><br><span class="line">mac_addr[<span class="number">7</span>]=ok[<span class="number">1</span>];</span><br><span class="line">mac_addr[<span class="number">8</span>]=ok[<span class="number">10</span>];</span><br><span class="line">mac_addr[<span class="number">9</span>]=ok[<span class="number">11</span>];</span><br><span class="line">mac_addr[<span class="number">10</span>]=ok[<span class="number">8</span>];</span><br><span class="line">mac_addr[<span class="number">11</span>]=ok[<span class="number">9</span>];</span><br><span class="line"><span class="built_in">sprintf</span>(payload,<span class="string">&quot;dd:%.*s&quot;</span>,<span class="number">12</span>,mac_addr);</span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%s&quot;</span>,payload);</span><br></pre></td></tr></table></figure>
+
+<p>时间获取</p>
+<p>(66条消息) 【ESP32-IDF】 05-3 WIFI-esp32获取网络时间_Ciaran-byte的博客-CSDN博客_esp32获取网络时间<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41741344/article/details/118613486">https://blog.csdn.net/qq_41741344/article/details/118613486</a></p>
+<p>连接本地就直接输入ip4地址即可<br>若要和 域名之类的服务器建立tcp连接</p>
+<p>要先dns解析！！！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">       <span class="comment">// 1、定义一个hints结构体，用来设置函数的getaddrinfo()的使用方式</span></span><br><span class="line">   <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span> =</span> &#123;</span><br><span class="line">       .ai_family = AF_INET,           <span class="comment">/* 指定返回地址的协议簇，AF_INET(IPv4)、AF_INET6(IPv6)、AF_UNSPEC(IPv4 and IPv6)*/</span></span><br><span class="line">       .ai_socktype = SOCK_STREAM,     <span class="comment">/* 设定返回地址的socket类型，流式套接字 */</span>     </span><br><span class="line">   &#125;;</span><br><span class="line"><span class="comment">// 2、使用getaddrinfo()开始解析,定义一个struct addrinfo结构体指针，用来获取解析结果</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> *<span class="title">result</span>;</span></span><br><span class="line">   <span class="type">int</span> err;</span><br><span class="line">   err = getaddrinfo(<span class="string">&quot;espslr.maxhom.com&quot;</span>, <span class="string">&quot;8591&quot;</span>, &amp;hints, &amp;result);</span><br><span class="line">   <span class="keyword">if</span>(err != <span class="number">0</span>)        <span class="comment">/* 返回值不为0，函数执行失败*/</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;getaddrinfo err: %d \n&quot;</span>,err);</span><br><span class="line">       	<span class="comment">// 3、将获取到的信息打印出来</span></span><br><span class="line">   <span class="type">char</span> buf[<span class="number">100</span>];                      <span class="comment">/* 用来存储IP地址字符串 */</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span>  *<span class="title">ipv4</span> =</span> <span class="literal">NULL</span>;   <span class="comment">/* IPv4地址结构体指针 */</span></span><br><span class="line">   <span class="keyword">if</span>(result-&gt;ai_family == AF_INET) </span><br><span class="line">   &#123;</span><br><span class="line">       ipv4 = (<span class="keyword">struct</span> sockaddr_in *)result-&gt;ai_addr;</span><br><span class="line">       inet_ntop(result-&gt;ai_family, &amp;ipv4-&gt;sin_addr, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;[IPv4-]%s [port]%d \n&quot;</span>,buf,ntohs(ipv4-&gt;sin_port));</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;got IPv4 err !!!\n&quot;</span>);</span><br><span class="line">   <span class="comment">// 4、释放addrinfo 内存</span></span><br><span class="line">   freeaddrinfo(result);    </span><br></pre></td></tr></table></figure>
+
+<p>#tcp客户端  与服务器断开之后重连的方法:<br>就是要关闭sock不然一直请求就会不行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (err == <span class="number">-1</span>) &#123;</span><br><span class="line">     shutdown(sock, <span class="number">0</span>);</span><br><span class="line">      close(sock);</span><br><span class="line">      ESP_LOGE(TAG, <span class="string">&quot;Socket unable to connect: errno %d&quot;</span>, errno);</span><br><span class="line">      sock =  socket(addr_family, SOCK_STREAM, ip_protocol);</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">      err = connect(sock, (<span class="keyword">struct</span> sockaddr *)&amp;dest_addr, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in6));</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外这个是阻塞式的<br>int len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);<br>读不到一直读</p>
+<p>#gpio中断读取上升和下降沿之间的时间</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> IRAM_ATTR <span class="title function_">gpio_isr_handler</span><span class="params">(<span class="type">void</span>* arg)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">   gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_POSEDGE);</span><br><span class="line">   time_now_before[<span class="number">0</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span>&#123;</span><br><span class="line">       gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_NEGEDGE);</span><br><span class="line">   time_now_before[<span class="number">1</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="type">uint32_t</span> gpio_num = (<span class="type">uint32_t</span>) arg;</span><br><span class="line">    xQueueSendFromISR(gpio_evt_queue, &amp;gpio_num, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>blufi修改蓝牙名称</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br></pre></td><td class="code"><pre><span class="line">D:\Users\<span class="number">34010</span>\.espressif\frameworks\esp-idf-v4<span class="number">.4</span>\components\bt\common\btc\profile\esp\blufi\bluedroid_host</span><br><span class="line">第三百七十多行</span><br><span class="line"><span class="type">void</span> <span class="title function_">esp_blufi_adv_start</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    esp_ble_gap_set_device_name(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">    esp_ble_gap_config_adv_data(&amp;blufi_adv_data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#smtp email</span></span><br><span class="line">利用esp32发送邮箱  使用的是smtp服务器 </span><br><span class="line"><span class="number">1.</span>邮箱开通smtp  QQ邮箱就在设置账户里面开启服务  给腾讯发个短信即可 qq邮箱端口时<span class="number">587</span></span><br><span class="line"><span class="number">2.</span>因为要访问服务器  所以需要证书  证书通过openssl获取  就通过例程里<span class="number">56</span>行,替换网址 然后复制openssl最后一个的cer替换.pem就可以了</span><br><span class="line"><span class="number">3.</span>密码需要是授权码  QQ密码是登不上的</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#cp2102</span><br><span class="line"> CP2102 USB to UART Bridge Controller 驱动安装（windows or Ubuntu）_合工大机器人实验室的博客-CSDN博客_cp2102驱动安装后没反应</span><br><span class="line"> https:<span class="comment">//blog.csdn.net/qq_34935373/article/details/107228053?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522166268567216781432981195%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=166268567216781432981195&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-6-107228053-null-null.142^v47^control,201^v3^control_2&amp;utm_term=cp2102%20win10%20%E6%B2%A1%E5%8F%8D%E5%BA%94&amp;spm=1018.2226.3001.4187</span></span><br><span class="line"></span><br><span class="line"> #</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> 关于 esp32使用超大数组  </span><br><span class="line"> 使用spi  ram也就是psram   </span><br><span class="line"> psram要在 menuconfig -&gt;specific里面开启   然后method选择....SPI RAM </span><br><span class="line"> 注意  psram也有两种型号  一种是Q   一种是O      比如s3  就是O　　　</span><br><span class="line"> 然后在程序里直接　　ｈｅap_malloc </span><br><span class="line"> 注意这是一个指针，如果要给指针赋值，那么直接当成数组对其中的数据幅值即可</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> cjson  使用完一定要清理  不然真的会内存泄漏，而且不是说这个task的内存不够了  ，而是说整个内存 ，和任务无关 </span><br><span class="line"> 也就说  你cjson_delete根节点 它会自动的清除他的子节点  如果说你的子节点已经清楚了 ，再清楚根节点可能就会报错</span><br><span class="line"> 也就是说  你有几个cjson——parser  你就delete几个   其他的不用管  </span><br><span class="line"> 这次出现的问题就是说  cjson导致内存泄漏从而使得wifi的内存不够，然后就崩溃。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> utf<span class="number">-8</span>--&gt;gbk</span><br><span class="line"> ```c</span><br><span class="line"> <span class="type">int</span> gbk_lo = <span class="number">-1</span>;</span><br><span class="line"><span class="type">char</span> gbk[<span class="number">1000</span>];</span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">UTF8ToUnicode</span><span class="params">(<span class="type">uint8_t</span> *utf8, <span class="type">uint32_t</span> *unicode)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">uint8_t</span> lut_size = <span class="number">3</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">uint8_t</span> length_lut[] = &#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">    <span class="type">const</span> <span class="type">uint8_t</span> range_lut[] = &#123;<span class="number">0xE0</span>, <span class="number">0xF0</span>, <span class="number">0xF8</span>&#125;;</span><br><span class="line">    <span class="type">const</span> <span class="type">uint8_t</span> mask_lut[] = &#123;<span class="number">0x1F</span>, <span class="number">0x0F</span>, <span class="number">0x07</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> length = <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint8_t</span> b = *(utf8 + <span class="number">0</span>);</span><br><span class="line">    <span class="type">uint32_t</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (utf8 == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        *unicode = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// utf8编码兼容ASCII编码,使用0xxxxxx 表示00~7F</span></span><br><span class="line">    <span class="keyword">if</span> (b &lt; <span class="number">0x80</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        *unicode = b;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// utf8不兼容ISO8859-1 ASCII拓展字符集</span></span><br><span class="line">    <span class="comment">// 同时最大支持编码6个字节即1111110X</span></span><br><span class="line">    <span class="keyword">if</span> (b &lt; <span class="number">0xC0</span> || b &gt; <span class="number">0xFD</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        *unicode = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; lut_size; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (b &lt; range_lut[i])</span><br><span class="line">        &#123;</span><br><span class="line">            *unicode = b &amp; mask_lut[i];</span><br><span class="line">            length = length_lut[i];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 超过四字节的utf8编码不进行解析</span></span><br><span class="line">    <span class="keyword">if</span> (length == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        *unicode = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 取后续字节数据</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        b = *(utf8 + i);</span><br><span class="line">        <span class="comment">// 多字节utf8编码后续字节范围10xxxxxx‬~‭10111111‬</span></span><br><span class="line">        <span class="keyword">if</span> (b &lt; <span class="number">0x80</span> || b &gt; <span class="number">0xBF</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        *unicode &lt;&lt;= <span class="number">6</span>;</span><br><span class="line">        <span class="comment">// ‭00111111‬</span></span><br><span class="line">        *unicode |= (b &amp; <span class="number">0x3F</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 长度校验</span></span><br><span class="line">    <span class="keyword">return</span> (i &lt; length) ? <span class="number">0</span> : length;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 4字节unicode(usc4)字符集转utf16编码</span></span><br><span class="line"><span class="comment"> * @param unicode unicode字符值</span></span><br><span class="line"><span class="comment"> * @param *utf16 utf16编码结果</span></span><br><span class="line"><span class="comment"> * @return utf16长度，(2字节)单位</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">UnicodeToUTF16</span><span class="params">(<span class="type">uint32_t</span> unicode, <span class="type">uint16_t</span> *utf16)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Unicode范围 U+000~U+FFFF</span></span><br><span class="line">    <span class="comment">// utf16编码方式：2 Byte存储，编码后等于Unicode值</span></span><br><span class="line">    <span class="keyword">if</span> (unicode &lt;= <span class="number">0xFFFF</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (utf16 != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            *utf16 = (unicode &amp; <span class="number">0xFFFF</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (unicode &lt;= <span class="number">0xEFFFF</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (utf16 != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 高10位</span></span><br><span class="line">            *(utf16 + <span class="number">0</span>) = <span class="number">0xD800</span> + (unicode &gt;&gt; <span class="number">10</span>) - <span class="number">0x40</span>;</span><br><span class="line">            <span class="comment">// 低10位</span></span><br><span class="line">            *(utf16 + <span class="number">1</span>) = <span class="number">0xDC00</span> + (unicode &amp; <span class="number">0x03FF</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 使用utf16.lut查找表查询unicode对应的gb2312编码</span></span><br><span class="line"><span class="comment"> * @brief unicode小端方式输入，gb2312大端方式输出</span></span><br><span class="line"><span class="comment"> * @param unicode 双字节unicode码, 小端模式</span></span><br><span class="line"><span class="comment"> * @return gb2312 gb2312字符集，大端模式</span></span><br><span class="line"><span class="comment"> * */</span></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">bsearch_gb2312</span><span class="params">(<span class="type">uint16_t</span> unicode)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint16_t</span> gb2312;</span><br><span class="line">    <span class="type">uint16_t</span> last = <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint16_t</span> readin = <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint32_t</span> pack, group;</span><br><span class="line">    <span class="type">int32_t</span> start, middle, end;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 四字节一组，低两字节为unicode，高两字节为gb2312</span></span><br><span class="line">    <span class="comment">// group = (file.length / sizeof(uint32_t));</span></span><br><span class="line">    middle = (image_jpg_end - image_jpg_start) / <span class="number">4</span> / <span class="number">2</span> * <span class="number">4</span>;</span><br><span class="line">    end = image_jpg_end - image_jpg_start;</span><br><span class="line">    start = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        readin = image_jpg_start[middle] + (image_jpg_start[middle + <span class="number">1</span>] &lt;&lt; <span class="number">8</span>);</span><br><span class="line">        <span class="comment">// printf(&quot;utf16[0]:%d\n&quot;, readin);</span></span><br><span class="line">        <span class="keyword">if</span> (unicode &lt; readin)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 向左查询</span></span><br><span class="line">            end = middle;</span><br><span class="line">            middle -= ((end - start) / <span class="number">4</span> / <span class="number">2</span> * <span class="number">4</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (unicode &gt; readin)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 向右查询</span></span><br><span class="line">            start = middle;</span><br><span class="line">            middle += ((end - start) / <span class="number">4</span> / <span class="number">2</span> * <span class="number">4</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (middle == last)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        last = middle;</span><br><span class="line">    &#125; <span class="keyword">while</span> (unicode != readin);</span><br><span class="line">    gb2312 = image_jpg_start[middle + <span class="number">2</span>] + (image_jpg_start[middle + <span class="number">3</span>] &lt;&lt; <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> gb2312;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">utf2gbk</span><span class="params">(<span class="type">char</span> *what)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(what); i = i + <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (what[i] &lt; <span class="number">127</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            gbk_lo++;</span><br><span class="line">            gbk[gbk_lo] = what[i];</span><br><span class="line">            i = i - <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">char</span> temp[<span class="number">3</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">            temp[<span class="number">0</span>] = what[i + <span class="number">0</span>];</span><br><span class="line">            temp[<span class="number">1</span>] = what[i + <span class="number">1</span>];</span><br><span class="line">            temp[<span class="number">2</span>] = what[i + <span class="number">2</span>];</span><br><span class="line">            <span class="type">uint32_t</span> buffer;</span><br><span class="line">            <span class="type">uint16_t</span> utf16[<span class="number">2</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">            <span class="type">uint8_t</span> len = UTF8ToUnicode((<span class="type">uint8_t</span> *)temp, &amp;buffer);</span><br><span class="line">            len = UnicodeToUTF16(buffer, utf16);</span><br><span class="line">            <span class="type">uint16_t</span> g = bsearch_gb2312(utf16[<span class="number">0</span>]);</span><br><span class="line">            gbk_lo++;</span><br><span class="line">            gbk[gbk_lo] = g &amp; <span class="number">0xff</span>;</span><br><span class="line">            gbk_lo++;</span><br><span class="line">            gbk[gbk_lo] = g &gt;&gt; <span class="number">8</span>;</span><br><span class="line">            <span class="comment">// gbk[i * 2 / 3] = g &amp; 0xff;</span></span><br><span class="line">            <span class="comment">// gbk[i * 2 / 3 + 1] = g &gt;&gt; 8;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                        uart_write_bytes(ECHO_UART_PORT_NUM, gbk, gbk_lo+<span class="number">1</span>);</span><br><span class="line">                        gbk_lo=<span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>OTA<br>1.采用本地服务器  python  不是python -m http.sever 8070   而是python -m http.server 8070<br>就是把当前文件架的文件作为服务器里的内容<br>最好的办法就是电脑开启服务器之后  手机登陆一下 如果能登陆成功 那么单片机应该也可以<br>手手机开热点   电脑连上 然再wifi属性里面查看IP地址   然后手机输入电脑IP+8070进行访问</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/14/esp32/" data-id="cl3v46dub000alsv75f8p3xod" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mcp23017" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/mcp23017/" class="article-date">
+  <time datetime="2022-05-13T04:38:10.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/mcp23017/">mcp23017</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.bank=0是指的IIC协议<br>2.IODIR就是用来决定输出还是输入   默认是输入<br>3。若想设置上拉输出的话  GPPU寄存器<br>4.若想写高低电平 就用GPIO    若想读GPIO也用读GPIO<br>下面是写</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">     	i2c_master_start(cmd);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Set all as outputs on A</span></span><br><span class="line">     	i2c_master_stop(cmd);</span><br><span class="line">     i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">     	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">         cmd = i2c_cmd_link_create();</span><br><span class="line">     	i2c_master_start(cmd);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x12</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0xF0</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">     	i2c_master_stop(cmd);</span><br><span class="line">     i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">     	i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
+<p>下面是读</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">       <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//FF就是全输入</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">            cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x0C</span>, ACK_CHECK_EN);<span class="comment">//Access GPPU</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//全部上拉</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//下面读取输入的值</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> data=<span class="number">11</span>;</span><br><span class="line">    cmd = i2c_cmd_link_create();</span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_WRITE, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X12</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_READ, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_read(cmd, &amp;data, <span class="number">100</span>, I2C_MASTER_LAST_NACK);<span class="comment">//</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/mcp23017/" data-id="cl3v46duj000clsv7atv26mny" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-aliyun" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/05/13/aliyun/" class="article-date">
@@ -87,11 +262,126 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>一个很好的博主<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f0d46324a2c6">https://www.jianshu.com/p/f0d46324a2c6</a><br>1.阿里云的网页制作很方便 类似于json那种结构体 现在功能定义一个功能，然后发布，标识符就是相当于指引，然后后面的””就是内容</p>
+<p>#阿里云做地图经纬度显示<br>新版不支持空间数据可视化  要用旧版本才行<br><a target="_blank" rel="noopener" href="https://studio.iot.aliyun.com/web/a123DelXR2TEZSlg/app/a120cjHtRL2DbqXB/edit#page">https://studio.iot.aliyun.com/web/a123DelXR2TEZSlg/app/a120cjHtRL2DbqXB/edit#page</a></p>
+<p><a target="_blank" rel="noopener" href="https://studio.iot.aliyun.com/projects">https://studio.iot.aliyun.com/projects</a><br>web应用里面  组件有个地图  可以显示设备的经纬度</p>
+<p>阿里云的struct结构体就是json数组</p>
 
       
     </div>
     <footer class="article-footer">
       <a data-url="http://example.com/2022/05/13/aliyun/" data-id="cl3v46du20005lsv7g0634uzf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-在线语音识别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/%E5%9C%A8%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" class="article-date">
+  <time datetime="2022-05-13T02:54:06.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/%E5%9C%A8%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/">在线语音</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>实时语音转换<br>讯飞的确实难顶，首先是每次连接之后必须正常关闭，不然讯飞服务器会一直挂着，很久才会自动断开<br>一开始如果websocket连接不上讯飞的url,可以在menuconfig里面开启skip crt<br>加密的方式说难也难，说不难也不难<br>需要注意的就是，最后Hmacsha1加密之后进行BASE64的时候应该直接用Hmacsha1加密的字符串加密，而不是像网站一样显示的十六进制。</p>
+<p>而返回的数据虽然是json但是好像很难解析，因为有的是&quot;有的是”</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/%E5%9C%A8%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" data-id="cllwhzcxg0003rov7aeph6xdd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-离线语音识别 - 副本" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%20-%20%E5%89%AF%E6%9C%AC/" class="article-date">
+  <time datetime="2022-05-13T02:54:06.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%20-%20%E5%89%AF%E6%9C%AC/">离线语音识别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用esp-who的框架，可以轻松的实现语音识别，使用的是c++框架，那个_base.hpp必须要包含<br>至于命令词，直接在menuconfig里面设置就好了</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%20-%20%E5%89%AF%E6%9C%AC/" data-id="cllwhzcxl0004rov7fv7oaxck" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-离线语音识别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" class="article-date">
+  <time datetime="2022-05-13T02:54:06.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/">离线语音识别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用esp-who的框架，可以轻松的实现语音识别，使用的是c++框架，那个_base.hpp必须要包含<br>至于命令词，直接在menuconfig里面设置就好了</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/%E7%A6%BB%E7%BA%BF%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" data-id="cllwhzcxp0005rov7d2qzbfpl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -176,16 +466,20 @@
 
 
 <p>#arduino esp32 获取时间 sntp<br>附上地址<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42880082/article/details/120962704">https://blog.csdn.net/weixin_42880082/article/details/120962704</a></p>
-<p>#一键配网  smartconfig<br>  while (WiFi.status() != WL_CONNECTED)<br>  {<br>    delay(1000);<br>    Serial.print(“.”);<br>    //连接超次数<br>    if (count &gt; 10)<br>    {<br>      Serial.println(“WIFI Wait for Smartconfig”);<br>      WiFi.mode(WIFI_STA);<br>      WiFi.beginSmartConfig();<br>      while (1)<br>      {<br>        //智能配网成功<br>        if (WiFi.smartConfigDone())<br>        {<br>          WiFi.setAutoConnect(true);  // 设置自动连接<br>          count = 0;<br>          //返回再次连接<br>          break;<br>        }<br>      }<br>    }<br>  }</p>
-<p>  //连接成功,打印WIFI信息<br>  Serial.println(“”);<br>  Serial.println(“WIFI SmartConfig Success”);<br>  Serial.printf(“SSID:%s”, WiFi.SSID().c_str());<br>  Serial.printf(“, PSW:%s\r\n”, WiFi.psk().c_str());<br>  Serial.print(“LocalIP:”);<br>  Serial.print(WiFi.localIP());<br>  Serial.print(“ ,GateIP:”);<br>  Serial.println(WiFi.gatewayIP());</p>
-<p>c3的smartconfig好像不能存储连接信息  所以要保存到flash里面  掉点保存  使用EEPROM<br>当然smartconfig也要先连接wifi  如果一段时间没链接成功 再smartconfig</p>
+<p>#一键配网  smartconfig</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">&#123;</span><br><span class="line">  delay(<span class="number">1000</span>);</span><br><span class="line">  Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    Serial.println(<span class="string">&quot;WIFI Wait for Smartconfig&quot;</span>);</span><br><span class="line">    WiFi.mode(WIFI_STA);</span><br><span class="line">    WiFi.beginSmartConfig();</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (WiFi.smartConfigDone())</span><br><span class="line">      &#123;</span><br><span class="line">        WiFi.setAutoConnect(<span class="literal">true</span>);  <span class="comment">// 设置自动连接</span></span><br><span class="line">        <span class="comment">//返回再次连接</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//连接成功,打印WIFI信息</span></span><br><span class="line">Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">Serial.println(<span class="string">&quot;WIFI SmartConfig Success&quot;</span>);</span><br><span class="line">Serial.<span class="built_in">printf</span>(<span class="string">&quot;SSID:%s&quot;</span>, WiFi.SSID().c_str());</span><br><span class="line">Serial.<span class="built_in">printf</span>(<span class="string">&quot;, PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());</span><br><span class="line">Serial.print(<span class="string">&quot;LocalIP:&quot;</span>);</span><br><span class="line">Serial.print(WiFi.localIP());</span><br><span class="line">Serial.print(<span class="string">&quot; ,GateIP:&quot;</span>);</span><br><span class="line">Serial.println(WiFi.gatewayIP());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>smartconfig好像不能存储连接信息  所以要保存到flash里面  掉点保存  使用EEPROM<br>当然smartconfig也要先连接wifi  如果一段时间没链接成功 再smartconfig</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">  <span class="type">int</span> address = <span class="number">0</span>;</span><br><span class="line">  Serial.println(EEPROM.readString(address));</span><br><span class="line">  address+=<span class="number">50</span>;</span><br><span class="line">  Serial.println(EEPROM.readString(address));</span><br><span class="line">  address=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"> WiFi.begin(&amp;EEPROM.readString(<span class="number">0</span>)[<span class="number">0</span>],&amp;EEPROM.readString(<span class="number">50</span>)[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">//  WiFi.begin();</span></span><br><span class="line">  <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (WiFi.status() != WL_CONNECTED)</span><br><span class="line">  &#123;</span><br><span class="line">    delay(<span class="number">1000</span>);</span><br><span class="line">    Serial.print(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    count++;</span><br><span class="line">    <span class="comment">//连接超次数</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt; <span class="number">20</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      Serial.println(<span class="string">&quot;WIFI Wait for Smartconfig&quot;</span>);</span><br><span class="line">      WiFi.mode(WIFI_STA);</span><br><span class="line">      WiFi.beginSmartConfig();</span><br><span class="line">      <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">      &#123;</span><br><span class="line">        delay(<span class="number">100</span>);</span><br><span class="line">        <span class="comment">//智能配网成功</span></span><br><span class="line">        <span class="keyword">if</span> (WiFi.smartConfigDone())</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">          WiFi.setAutoConnect(<span class="literal">true</span>);  <span class="comment">// 设置自动连接</span></span><br><span class="line">          count = <span class="number">0</span>;</span><br><span class="line">          <span class="comment">//返回再次连接</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//连接成功,打印WIFI信息</span></span><br><span class="line">  Serial.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">  Serial.println(<span class="string">&quot;WIFI SmartConfig Success&quot;</span>);</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;SSID:%s&quot;</span>, WiFi.SSID().c_str());</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;, PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());</span><br><span class="line">  </span><br><span class="line">    EEPROM.writeString(address, WiFi.SSID().c_str());</span><br><span class="line">  address += <span class="number">50</span>;</span><br><span class="line">  EEPROM.writeString(address, WiFi.psk().c_str());</span><br><span class="line">  EEPROM.commit();<span class="comment">//要commit  不然不能从eeprom传入flash</span></span><br></pre></td></tr></table></figure>
 
 
-<p>digitalToggle  的实现方式<br>#define digitalToggle(x) digitalWrite(x, !digitalRead(x))<br>获取mac的方法  qu’di<br>  sprintf(mac,”%c%c%c%c%c%c%c%c%c%c%c%c”,WiFi.macAddress()[0],WiFi.macAddress()[1],WiFi.macAddress()[3],WiFi.macAddress()[4],WiFi.macAddress()[6],WiFi.macAddress()[7],WiFi.macAddress()[9],WiFi.macAddress()[10],WiFi.macAddress()[12],WiFi.macAddress()[13],WiFi.macAddress()[15],WiFi.macAddress()[16]);</p>
+<p>digitalToggle  的实现方式<br>#define digitalToggle(x) digitalWrite(x, !digitalRead(x))</p>
+<p>获取mac的方法  qu’di<br>  sprintf(mac,”%c%c%c%c%c%c%c%c%c%c%c%c”,WiFi.macAddress()[0],WiFi.macAddress()[1],WiFi.macAddress()[3],WiFi.macAddress()[4],WiFi.macAddress()[6],WiFi.macAddress()[7],WiFi.macAddress()[9],WiFi.macAddress()[10],WiFi.macAddress()[12],WiFi.macAddress()[13],WiFi.macAddress()[15],WiFi.macAddress()[16]);</p>
 <p>TCP 有两种 一种是连接IP 端口 类似192.168.1.1<br>const IPAddress serverIP(192,168,43,1); //目标地址<br>另一种是连接HTTP 服务器<br>const char *UPDATE_TCP = “wifiupgrade.maxhom.com”;  </p>
 <p>String 转char *<br>&amp;str[0]</p>
 <p>http ota<br>就这一句话<br>t_httpUpdate_return ret = httpUpdate.update(client,update_url);</p>
+<p>#arduino的sprintf不支持浮点数<br>应该用dtostrf(float,整数位数，小数位数，要存进的字符串)</p>
+<p>获取esp32的wifi——mac地址</p>
+<p>  sprintf(mac, “%c%c%c%c%c%c%c%c%c%c%c%c”, WiFi.macAddress()[0], WiFi.macAddress()[1], WiFi.macAddress()[3], WiFi.macAddress()[4], WiFi.macAddress()[6], WiFi.macAddress()[7], WiFi.macAddress()[9], WiFi.macAddress()[10], WiFi.macAddress()[12], WiFi.macAddress()[13], WiFi.macAddress()[15], WiFi.macAddress()[16]);</p>
 
       
     </div>
@@ -202,481 +496,11 @@
 
 
   
-    <article id="post-如何使用 arduino-aliyun-iot-sdk 2 行代码接入物联网平台" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" class="article-date">
-  <time datetime="2022-05-12T02:48:25.278Z" itemprop="datePublished">2022-05-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>文中提到的 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，也可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</p>
-</blockquote>
-<blockquote>
-<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
-</blockquote>
-<blockquote>
-<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
-</blockquote>
-<h2 id="阿里云物联网平台简介"><a href="#阿里云物联网平台简介" class="headerlink" title="阿里云物联网平台简介"></a>阿里云物联网平台简介</h2><p>阿里云物联网平台提供接入物联网场景的一整套基础设施，强大的在线配置能力，基本可以实现无代码开发接入各类应用，实现大规模的物联网应用场景。</p>
-<p>核心能力模块包括：</p>
-<ul>
-<li>产品&amp;设备创建和管理</li>
-<li>服务可视化开发</li>
-<li>控制界面可视化开发</li>
-<li>数据分析和监控运维等辅助设施</li>
-</ul>
-<p>基于以上功能模块，可以快速在阿里云定义设备模型和事件等信息，然后快速创建和接入设备，再利用可视化的开发平台，可以零代码实现非常强大的功能。</p>
-<p>不过，今天我们要介绍一个比较特殊的接入场景，使用嵌入式系统快速接入阿里云物联网平台，这里以 esp8266 为例。</p>
-<blockquote>
-<p>esp8266 是一款集成网络模块的嵌入式芯片，自带 32 位处理器，各种外设接口，wifi 模块等，可以使用 arduino 平台进行编程，兼容大量 arduino 库。</p>
-</blockquote>
-<p>本文就是以 arduino 编程方式，使用的 esp8266 开发板为 NodeMCU 1.0 ，淘宝成本仅为 8~10 元。</p>
-<p><a name="c931653c"></a></p>
-<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>本次我们想利用 ESP8266 芯片实现一个简单的可远程控制的空调控制器，具备以下功能：</p>
-<ul>
-<li>批量部署，可通过云平台集中管理和远程控制空调开关、温度、模式等</li>
-<li>芯片可感知环境温度、亮度，并上报物联网平台</li>
-<li>芯片可远程触发事件，上报物联网平台</li>
-<li>成本尽量低，不超过 30 元</li>
-</ul>
-<p>首先，我们进行硬件选型，经过功能评估，选用以下硬件：</p>
-<ul>
-<li>nodemcu 核心板（基于 esp8266） 10.89元/个</li>
-<li>DS18B20模块 温度传感 3.18元/个</li>
-<li>GY-30  光照传感 4.38元/个</li>
-<li>红外发射板 3.5元/个</li>
-<li>杜邦线母对母 1.45元/串</li>
-<li>电源插头  1.4元/个</li>
-<li>数据线 1.8元/个</li>
-<li>按钮开关 0.75元/个</li>
-</ul>
-<p><a name="dfe89ca1"></a></p>
-<h2 id="开始接入"><a href="#开始接入" class="headerlink" title="开始接入"></a>开始接入</h2><p>具体的连线，我们这里不展开，我们主要探讨如何使用 arduino 快速接入物联网平台。</p>
-<p>第一步，在物联网创建产品，建立物模型，并创建设备，获取设备配置信息。</p>
-<p><img src="http://waipian1.com/statics/images/qrcode.png" alt="image.png"><br>创建产品，并定义物模型</p>
-<p><img src="https://blog.souche.com/content/images/2019/09/1568620350930-270bbfa3-22b8-4711-b6b8-ff6f38a8d49a.png" alt="image.png"><br>创建设备，与产品绑定，获取设备鉴权信息<br /><br><br />第二步，用 arduino 连接 nodemcu 开发板，开始硬件端的开发。<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642438839-a595c156-3afb-4ef8-8213-d67433be474a.jpeg" alt="IMG_2546.JPG"><br>具体接线可以自己研究，这里只是个展示，哈哈<br /></p>
-<p><a name="qMAHi"></a></p>
-<h2 id="硬件端开发"><a href="#硬件端开发" class="headerlink" title="硬件端开发"></a>硬件端开发</h2><p>这里不讨论如何使用 arduino 进行 esp8266 芯片开发，直接进入代码环节，相关基础知识可以百度一下。</p>
-<p>首先，亮相一个我自己封装的 aliyun iot 上层 SDK（ <a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">arduino-aliyun-iot-sdk</a> ），底层连接基于 PubSubClient 库，并且对模型操作做了一些上层封装，可以方便的发送数据和订阅远程指令。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 引入 wifi 模块，并实例化，不同的芯片这里的依赖可能不同</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ESP8266WiFi.h&gt;</span></span></span><br><span class="line"><span class="type">static</span> WiFiClient espClient;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入阿里云 IoT SDK</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;AliyunIoTSDK.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置产品和设备的信息，从阿里云设备信息里查看</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PRODUCT_KEY <span class="string">&quot;xxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEVICE_NAME <span class="string">&quot;Device_D&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEVICE_SECRET <span class="string">&quot;xxxxxxxxxxxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REGION_ID <span class="string">&quot;cn-shanghai&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置 wifi 信息</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIFI_SSID <span class="string">&quot;xxxxx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WIFI_PASSWD <span class="string">&quot;xxxxx&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setup</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Serial.<span class="built_in">begin</span>(<span class="number">115200</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化 wifi</span></span><br><span class="line">    <span class="built_in">wifiInit</span>(WIFI_SSID, WIFI_PASSWD);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span></span><br><span class="line">    <span class="comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">bindData</span>(<span class="string">&quot;PowerSwitch&quot;</span>, powerCallback);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">    AliyunIoTSDK::<span class="built_in">send</span>(<span class="string">&quot;LightLuminance&quot;</span>, <span class="number">100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">loop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    AliyunIoTSDK::<span class="built_in">loop</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化 wifi 连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">wifiInit</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *ssid, <span class="type">const</span> <span class="type">char</span> *passphrase)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    WiFi.<span class="built_in">mode</span>(WIFI_STA);</span><br><span class="line">    WiFi.<span class="built_in">begin</span>(ssid, passphrase);</span><br><span class="line">    <span class="keyword">while</span> (WiFi.<span class="built_in">status</span>() != WL_CONNECTED)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">delay</span>(<span class="number">1000</span>);</span><br><span class="line">        Serial.<span class="built_in">println</span>(<span class="string">&quot;WiFi not Connect&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Serial.<span class="built_in">println</span>(<span class="string">&quot;Connected to AP&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 电源属性修改的回调函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">powerCallback</span><span class="params">(JsonVariant p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> PowerSwitch = p[<span class="string">&quot;PowerSwitch&quot;</span>];</span><br><span class="line">    <span class="keyword">if</span> (PowerSwitch == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 启动设备</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>核心代码只有三句：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化 iot，需传入 wifi 的 client，和设备产品信息</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">begin</span>(espClient, PRODUCT_KEY, DEVICE_NAME, DEVICE_SECRET, REGION_ID);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定一个设备属性回调，当远程修改此属性，会触发 powerCallback</span></span><br><span class="line"><span class="comment">// PowerSwitch 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">bindData</span>(<span class="string">&quot;PowerSwitch&quot;</span>, powerCallback);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送一个数据到云平台，LightLuminance 是在设备产品中定义的物联网模型的 id</span></span><br><span class="line">AliyunIoTSDK::<span class="built_in">send</span>(<span class="string">&quot;LightLuminance&quot;</span>, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
-
-<p>注意这里的数据绑定和数据发送，是非常有用和方便的，不需要自己去写做匹配的代码，也不需要自己组装数据，并且会自动合并数据，节约上报的频率。</p>
-<p>将设备配置信息配置进代码，烧录到板子，运行即可，是不是炒鸡方便呢。</p>
-<p>注意事项：</p>
-<ul>
-<li>阿里云对客户端的链接参数有一些限制，需要修改  PubSubClient 的连接参数，否则无法使用<ul>
-<li>PubSubClient 中的 MQTT_MAX_PACKET_SIZE 修改为 1024</li>
-<li>PubSubClient 中的 MQTT_KEEPALIVE 修改为 60</li>
-</ul>
-</li>
-<li>默认 5000ms 检测一次连接状态，可以通过 AliyunIoTSDK.cpp 中的 CHECK_INTERVAL 修改此值</li>
-<li>掉线后会一直尝试重新连接，可能会触发阿里云的一些限流规则（已经做了规避），并且会导致挤掉其他同设备 ID 的设备<br><a name="ZzbqJ"></a><h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3>目前 AliyunIoTSDK 这个 arduino 库，可以在 arduino 库商店里搜索到（搜索 AliyunIoTSDK），但是版本可能不一定是最新的，可以手动把 github 上的项目 clone 下来，放到 arduino 的 library 库下，保证功能是最新的。</li>
-</ul>
-<p>github 地址：<a target="_blank" rel="noopener" href="https://github.com/xinyu198736/arduino-aliyun-iot-sdk">https://github.com/xinyu198736/arduino-aliyun-iot-sdk</a></p>
-<p>有问题，欢迎提 issues 或 PR 共建，我对 c++ 不是特别熟悉，写出来的代码可能不一定是最合理的。</p>
-<p><a name="gycpL"></a></p>
-<h2 id="可视化开发界面和服务"><a href="#可视化开发界面和服务" class="headerlink" title="可视化开发界面和服务"></a>可视化开发界面和服务</h2><p>完成了设备的连接之后，已经迈出了第一步，如果你想要自己开发一个界面，可视化的控制空调，或者想利用一些远程设备的数据触发一些自定义的规则和逻辑（例如如果某个数据超标，报警到钉钉群等），用阿里云的物联网平台的话，这些都不需要自己去开发，直接使用物联网平台的“开发服务”拖拖拽拽即可完成。</p>
-<p><a name="7z0mV"></a></p>
-<h3 id="界面开发"><a href="#界面开发" class="headerlink" title="界面开发"></a>界面开发</h3><p>界面开发的核心是 拖动布局、数据源绑定、交互绑定、自定义变量等。<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630094545-d440e173-23f0-4d63-81e7-00d6b6ce8811.png" alt="image.png"><br>布局界面，右侧可以设置各种控件属性<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630244900-18ee8b99-1e80-409a-8482-981fd596d095.png" alt="image.png"><br>数据源绑定，可以方便的和产品模型数据绑定<br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568630294665-d5cf7a85-ad06-491c-a7bf-65f6439450f8.png" alt="image.png"><br>交互绑定，可以与服务进行绑定，触发某个服务，并传入设备属性<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568642695402-cc25fedc-8c3f-4e32-90a9-89c0eec2f712.png" alt="image.png"><br>控件可以给自定义变量赋值，其他组件可以与变量绑定</p>
-<p>使用上述的功能，加上各种设备绑定功能，基本可以完成一个很复杂的界面的开发，但是如果你需要通过交互触发远程指令，或者监听远程的数据做一些判断逻辑，光有界面是不够的。</p>
-<p><a name="D26H8"></a></p>
-<h3 id="服务开发"><a href="#服务开发" class="headerlink" title="服务开发"></a>服务开发</h3><p>上面提到的逻辑开发，就需要使用“服务开发”了，服务开发的触发点主要是两类：设备触发、界面交互触发。</p>
-<p><img src="https://blog.souche.com/content/images/2019/09/1568643025480-f10c038d-8a9b-44a1-b270-51625b56a137.png" alt="image.png"><br>设备触发的服务，中间的路径选择是用来做条件判断分流的，最右侧是触发通知逻辑节点<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643229960-62754bc2-4ddf-4724-ba99-ed81459f9bc2.png" alt="image.png"><br>一个温度控制服务，通过界面控件触发，最终生成设备控制逻辑<br /></p>
-<p><a name="UnwgK"></a></p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文不是 arduino 教学，也不是 esp8266 教学，更不是硬件教学，所以没有展开细节，需要读者具备一定的基础，请各位谅解，如果对 arduino 开发感兴趣，可以加我微信交流（微信号：mier963，注明 arduino）。</p>
-<p>最后展示一下成果：<br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643588452-48f528a4-29e2-41f9-99bb-0a004600bd8a.jpeg" alt="IMG_7254.JPG"><br>一个成品，包含四个传感器模块，包括一个硬件按钮<br /><br><br /><br><img src="https://blog.souche.com/content/images/2019/09/1568643652167-2f7d14b9-77d4-4a36-8172-ad7e9b9bc2ae.png" alt="image.png"><br>空调远程控制界面<br /><br><br />另外，还可以给这个控制器加入一些很有意思的功能，例如定点关闭所有设备，根据环境亮度开关空调等。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20arduino-aliyun-iot-sdk%202%20%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8E%A5%E5%85%A5%E7%89%A9%E8%81%94%E7%BD%91%E5%B9%B3%E5%8F%B0/" data-id="cl3v46duu000ilsv792cj71wk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-5-11" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/11/5-11/" class="article-date">
-  <time datetime="2022-05-11T15:30:43.000Z" itemprop="datePublished">2022-05-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/11/5-11/">5-11</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>今天打球被撞了，然后也基本上前一个半小时一个球没进，投了这么多，不进，还把眼睛擦伤了，心情不免会不太好，这确实是不可避免的有一点沮丧，但我总觉得应该在某些地方想开一点</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/11/5-11/" data-id="cl3v46dtf0001lsv79asc4cub" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-stm32" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/10/stm32/" class="article-date">
-  <time datetime="2022-05-10T09:22:52.000Z" itemprop="datePublished">2022-05-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/10/stm32/">stm32</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.更改定时器的占空比</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TIM_SetCompare1(TIM3,i);</span><br></pre></td></tr></table></figure>
-
-<p>2.更新定时器的分频（第一级分频)和自动重装载（ARR)<br>ARR可以理解为这次计数计到顶之后重新设置阈值的意思<br> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TIM8-&gt;PSC = usPrescaler;</span><br><span class="line">   TIM8-&gt;ARR = usPeriod; </span><br><span class="line">   TIM8-&gt;EGR = TIM_EGR_UG;         <span class="comment">//修改之后要更新寄存器</span></span><br></pre></td></tr></table></figure></p>
-<hr>
-<p>date: 2022-05-10 17:22:52<br>tags: tim</p>
-<hr>
-<p>一个流畅的流水灯 ，摁一下开关，从哪儿停下来，从哪儿再开始<br>按键中断</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> stop=<span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> i=<span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> now=<span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> temp=<span class="number">0</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">HAL_GPIO_EXTI_Callback</span><span class="params">(<span class="type">uint16_t</span> GPIO_Pin)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span>(GPIO_Pin==GPIO_PIN_8)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(stop==<span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">	<span class="comment">// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);	</span></span><br><span class="line">	stop=<span class="number">1</span>;</span><br><span class="line">now=<span class="number">8</span>;</span><br><span class="line">			temp=i;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		 <span class="comment">//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);</span></span><br><span class="line">	stop=<span class="number">0</span>;</span><br><span class="line">		now=temp+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>主程序</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(stop==<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">for</span>(i=now;i&lt;<span class="number">8</span>;i++)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(stop==<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">	HAL_GPIO_TogglePin(GPIOC, <span class="number">1</span>&lt;&lt;i);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	HAL_Delay(<span class="number">100</span>);</span><br><span class="line">	 now=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>}</p>
-<p>延时1us的方法<br>用定时器  不需要中断   主频72M  就设置为分频71<br>然后</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">user_delaynus_tim</span><span class="params">(<span class="type">uint32_t</span> nus)</span></span><br><span class="line">&#123;</span><br><span class="line"> </span><br><span class="line"> <span class="type">uint16_t</span>  differ = <span class="number">0xffff</span>-nus<span class="number">-5</span>;</span><br><span class="line"></span><br><span class="line">  __HAL_TIM_SetCounter(&amp;htim1,differ);</span><br><span class="line"></span><br><span class="line">  HAL_TIM_Base_Start(&amp;htim1);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">while</span>( differ&lt;<span class="number">0xffff</span><span class="number">-5</span>)</span><br><span class="line"> &#123;</span><br><span class="line">  differ = __HAL_TIM_GetCounter(&amp;htim1);</span><br><span class="line"> &#125;;</span><br><span class="line"></span><br><span class="line">  HAL_TIM_Base_Stop(&amp;htim1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意把定时器改成自己的定时器句柄</p>
-<p>#串口接受数据<br>1.如果使用中断，很容易碰上只进一次中断的问题<br>原因就是在进入中断后单片机自己会取消中断<br>所以在中断里要加上</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">HAL_UART_RxCpltCallback</span><span class="params">(UART_HandleTypeDef *huart)</span></span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">HAL_UART_Receive_IT(&amp;huart1, (<span class="type">uint8_t</span> *)aRxBuffer, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">...</span><br><span class="line">	HAL_UART_Receive_IT(&amp;huart1, (<span class="type">uint8_t</span> *)aRxBuffer, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>2.如果调用阻塞式的</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">	</span><br><span class="line">		HAL_UART_Receive(&amp;huart1, (<span class="type">uint8_t</span> *)aRxBuffer, <span class="number">2</span>,<span class="number">200</span>);</span><br><span class="line">					UI_printf(<span class="string">&quot;%s&quot;</span>,aRxBuffer);</span><br><span class="line">		<span class="built_in">memset</span>(aRxBuffer,<span class="number">0</span>,<span class="number">50</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意最后清理一下这个数组，不然会一直发</p>
-<p>GPIO既配置输入又配置输出</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">   GPIO_InitTypeDef GPIO_Initure;</span><br><span class="line"></span><br><span class="line">   __HAL_RCC_GPIOC_CLK_ENABLE();           	<span class="comment">//¿ªÆôGPIOCÊ±ÖÓ</span></span><br><span class="line"></span><br><span class="line">   GPIO_Initure.Pin=GPIO_PIN_0;</span><br><span class="line">   GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  	</span><br><span class="line">   GPIO_Initure.Pull=GPIO_PULLUP;          	</span><br><span class="line">   GPIO_Initure.Speed=GPIO_SPEED_HIGH;    	 	</span><br><span class="line">   HAL_GPIO_Init(GPIOC,&amp;GPIO_Initure);</span><br><span class="line"></span><br><span class="line">GPIO_Initure.Pin=GPIO_PIN_8;<span class="comment">//PC8</span></span><br><span class="line">   GPIO_Initure.Mode=GPIO_MODE_INPUT;  	</span><br><span class="line">   GPIO_Initure.Pull=GPIO_PULLUP;          </span><br><span class="line">   GPIO_Initure.Speed=GPIO_SPEED_HIGH;    	 </span><br><span class="line">HAL_GPIO_Init(GPIOC,&amp;GPIO_Initure);</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/10/stm32/" data-id="cl3v46dum000elsv7aiag179d" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tim-us/" rel="tag">tim,us</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-5-10MQTT" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/10/5-10MQTT/" class="article-date">
-  <time datetime="2022-05-10T07:42:13.000Z" itemprop="datePublished">2022-05-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/10/5-10MQTT/">5.10MQTT ESP8266</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.百度智能云虽然写着8884端口，但是客户端连接的时候还是1883<br>MQTT并不会想不冲突，也不会谁把谁顶下线，原因就是因为<br>           使用了相同的Client ID<br>2.串口读数据</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (Serial.available()&gt;<span class="number">0</span>)</span><br><span class="line">  &#123;</span><br><span class="line">String datafd= Serial.readString();</span><br><span class="line">Serial.println(datafd);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>3.arduino关于esp32使用指定串口</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HardwareSerial <span class="title function_">mySerial1</span><span class="params">(<span class="number">1</span>)</span>;</span><br><span class="line">mySerial1.begin(<span class="number">115200</span>,SERIAL_8N1,<span class="number">5</span>,<span class="number">18</span>);</span><br><span class="line">mySerial1.print(symbol);</span><br><span class="line">mySerial1.println(data);</span><br></pre></td></tr></table></figure>
-<p>4.AI2制作MQTTAPP<br>在论坛搜索MQTT的拓展，然后导入即可</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/10/5-10MQTT/" data-id="cl3v46dt10000lsv74i6f9nma" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQTT-%E4%B8%B2%E5%8F%A3/" rel="tag">MQTT,串口</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-外部中断" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/09/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" class="article-date">
-  <time datetime="2022-05-09T02:54:01.721Z" itemprop="datePublished">2022-05-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/09/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/">外部中断,按键中断</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>date: 2022-05-09 10:54:01</p>
-<p>1.外部中断内不可以加延迟，假设延时，他还没结束，又来了中断，这样就反复循环嵌套了。<br>所以应该不能够消抖。尽量用在主函数里轮询吧。</p>
-<p>2.中断优先级越小，越优先<br>所谓多任务，也就是单核快速的处理，当处理完当前任务，如stm32把八个寄存器（关键的是PC,他直接决定了中断退出以后开始执行的位置,R0-R3,R12则保存了一些中间变量,保证了恢复现场以后程序正确执行）全都压入栈，然后切到下个任务，把这个任务的八个寄存器出栈，做完了当前任务再压栈</p>
-<p>3.ADC 逐次逼近式 又称SAR　ｒｅｇｉｓｔｅｒ<br>类似二分法，DAC一直通过电压比较器，最后比较出来<br>如果是使用最小板的ADC，如果不正常工作，那么要检查ＶＲＥｆ　＋　　－　是否接高电平和接地了</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tags:中断 ADC</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-<p>有的按键中断   必须要增加个上拉或者下拉  为什么呢？<br>因为有的引脚复用了，就是说不仅作为开发板按键 还作为引脚引出。所以一定要加一个上拉或者下拉</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/09/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" data-id="cl3v46duo000flsv7h1r088jb" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-5.8-LVGL" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/08/5.8-LVGL/" class="article-date">
-  <time datetime="2022-05-08T12:28:20.008Z" itemprop="datePublished">2022-05-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="LVGL"><a href="#LVGL" class="headerlink" title="LVGL"></a>LVGL</h2><p>日期：5.8<br>  今天学习了LVGL，整体思路是初始化SPI ，然后初始化I2C(用来判断TP  touchpanel)</p>
-<p>1.结构体不能初始化,typdef struct是分号  enmu是逗号</p>
-<p>2.结构体赋值的时候有的好像要加（）<br>3.调用结构体的时候不能直呼其名，比如</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">boards_info_t</span> *g_board = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
-
-<p>注意label 才能set text ，obj不可以设置text  ，否则会严重的跑飞</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">lv_obj_t</span> *self2 = lv_obj_create(lv_scr_act());<span class="comment">//wrong</span></span><br><span class="line"><span class="type">lv_obj_t</span> *self2 = lv_label_create(lv_scr_act());</span><br><span class="line">lv_label_set_text(self2, <span class="string">&quot;buf&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>#调色板  拾色器<br>       首先 s3不支持ledc的高速模式 不支持HS_MODE 所以要换成LSmode 另外也要把定时器换成定时器1 timer1<br>调色板 有两种模式 一种 hsv  这种好提取  结构体里面用.提取  而不是-&gt;提取<br>另一种 lv_color_t  里面的ch结构体里面有  red  blue  green_h green_l<br>所以  color.ch.red<br>程序如下</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    <span class="type">lv_obj_t</span> * cpicker;</span><br><span class="line">      <span class="type">lv_color_t</span> clor;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">slider_event_cb1</span><span class="params">(<span class="type">lv_event_t</span> * e)</span></span><br><span class="line">&#123;</span><br><span class="line">       <span class="type">lv_event_code_t</span> code = lv_event_get_code(e);</span><br><span class="line"><span class="keyword">if</span> (code == LV_EVENT_RELEASED)</span><br><span class="line">		&#123;</span><br><span class="line">	 clor = 	lv_colorwheel_get_rgb(cpicker);</span><br><span class="line"> <span class="comment">//  int a = lv_arc_get_value(arc);</span></span><br><span class="line">       ESP_LOGI(TAG, <span class="string">&quot;红%d&quot;</span>,clor.ch.red);</span><br><span class="line">       ESP_LOGI(TAG, <span class="string">&quot;绿%d&quot;</span>,(clor.ch.green_h*<span class="number">8</span>+clor.ch.green_l));</span><br><span class="line">       ESP_LOGI(TAG, <span class="string">&quot;蓝%d&quot;</span>,clor.ch.blue);</span><br><span class="line">        ledc_set_duty(LEDC_HS_MODE, LEDC_HS_CH0_CHANNEL,clor.ch.red*<span class="number">32</span>);</span><br><span class="line"> ledc_update_duty(LEDC_HS_MODE, LEDC_HS_CH0_CHANNEL);</span><br><span class="line">             ledc_set_duty(LEDC_HS_MODE, LEDC_HS_CH1_CHANNEL, clor.ch.green_h*<span class="number">128</span>+clor.ch.green_l*<span class="number">16</span>);</span><br><span class="line"> ledc_update_duty(LEDC_HS_MODE, LEDC_HS_CH1_CHANNEL);</span><br><span class="line">         ledc_set_duty(LEDC_LS_MODE, LEDC_LS_CH2_CHANNEL, clor.ch.blue*<span class="number">32</span>);</span><br><span class="line"> ledc_update_duty(LEDC_LS_MODE, LEDC_LS_CH2_CHANNEL);  </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">cpicker = lv_colorwheel_create(lv_scr_act(),<span class="literal">true</span>);</span><br><span class="line">lv_obj_set_size(cpicker, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line"> lv_obj_add_event_cb(cpicker, slider_event_cb1, LV_EVENT_ALL, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
-
-
-
-<p>#乐鑫的boot动画</p>
-<p>static void anim_timer_cb(lv_timer_t *timer)<br>{<br>    static int32_t count = -90;<br>    lv_obj_t *page = (lv_obj_t *) timer-&gt;user_data;<br>    static lv_obj_t *img_logo = NULL;<br>    static lv_obj_t *img_text = NULL;</p>
-<pre><code>if (-90 == count) &#123;
-    LV_IMG_DECLARE(esp_logo);
-    img_logo = lv_img_create(page);
-    lv_img_set_src(img_logo, &amp;esp_logo);
-    lv_obj_center(img_logo);
-&#125;
-
-if (count &lt; 90) &#123;
-    lv_coord_t arc_start = count &gt; 0 ? (1 - cosf(count / 180.0f * PI)) * 270 : 0;
-    lv_coord_t arc_len = (sinf(count / 180.0f * PI) + 1) * 135;
-
-    for (size_t i = 0; i &lt; sizeof(arc) / sizeof(arc[0]); i++) &#123;
-        lv_arc_set_bg_angles(arc[i], arc_start, arc_len);
-        lv_arc_set_rotation(arc[i], (count + 120 * (i + 1)) % 360);
-    &#125;
-&#125;
-
-if (count == 90) &#123;
-    for (size_t i = 0; i &lt; sizeof(arc) / sizeof(arc[0]); i++) &#123;
-        lv_obj_del(arc[i]);
-    &#125;
-
-    LV_IMG_DECLARE(esp_text);
-    img_text = lv_img_create(page);
-    lv_img_set_src(img_text, &amp;esp_text);
-    lv_obj_set_style_img_opa(img_text, 0, 0);
-&#125;
-
-if ((count &gt;= 100) &amp;&amp; (count &lt;= 180)) &#123;
-    lv_coord_t offset = (sinf((count - 140) * 2.25f / 90.0f) + 1) * 15.0f;
-    lv_obj_align(img_logo, LV_ALIGN_CENTER, 0, -offset);
-    lv_obj_align(img_text, LV_ALIGN_CENTER, 0, 2 * offset);
-    lv_obj_set_style_img_opa(img_text, offset / 30.0f * 255, 0);
-&#125;
-
-if ((count += 2) &gt;= 300) &#123;
-    lv_timer_del(timer);
-    lv_obj_del(page);
-
- 
-&#125;
-</code></pre>
-<p>}</p>
-<p>void boot_animate_start()<br>{<br>    // g_boot_anim_end_cb = fn;</p>
-<pre><code>lv_obj_t *page = lv_obj_create(lv_scr_act());
-lv_obj_set_size(page, lv_obj_get_width(lv_obj_get_parent(page)), lv_obj_get_height(lv_obj_get_parent(page)));
-lv_obj_clear_flag(page, LV_OBJ_FLAG_SCROLLABLE);
-lv_obj_set_style_radius(page, 0, LV_PART_MAIN);
-
-const lv_color_t arc_color[] = &#123;
-    LV_COLOR_MAKE(237, 228, 239),
-    LV_COLOR_MAKE(211, 211, 211),
-    LV_COLOR_MAKE(239, 218, 218),
-&#125;;
-for (size_t i = 0; i &lt; sizeof(arc) / sizeof(arc[0]); i++) &#123;
-    arc[i] = lv_arc_create(page);
-    lv_obj_set_size(arc[i], 220 - 30 * i, 220 - 30 * i);
-    lv_arc_set_bg_angles(arc[i], 120 * i, 0 + 120 * i);
-    lv_arc_set_value(arc[i], 0);
-    lv_obj_remove_style(arc[i], NULL, LV_PART_KNOB);
-    lv_obj_set_style_arc_width(arc[i], 9, 0);
-    lv_obj_set_style_arc_color(arc[i], arc_color[i], 0);
-    lv_obj_center(arc[i]);
-&#125;
-
-/* Create a timer to update time */
-lv_timer_create(anim_timer_cb, 20, page);
-</code></pre>
-<p>}</p>
-<p>  boot_animate_start(); </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#时间设置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line">static void clock_run_cb(lv_timer_t *timer)</span><br><span class="line">&#123;</span><br><span class="line">    lv_obj_t *lab_time = (lv_obj_t *) timer-&gt;user_data;</span><br><span class="line">    time_t now;</span><br><span class="line">    struct tm timeinfo;</span><br><span class="line">    time(&amp;now);</span><br><span class="line">    localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">    lv_label_set_text_fmt(lab_time, &quot;%02u:%02u:%02u&quot;, timeinfo.tm_hour, timeinfo.tm_min,timeinfo.tm_sec);</span><br><span class="line">    ESP_LOGI(TAG,&quot;6&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   lv_obj_t *lab_time = lv_label_create(lv_scr_act());</span><br><span class="line">    lv_label_set_text_static(lab_time, &quot;23:59&quot;);</span><br><span class="line">    lv_obj_align(lab_time, LV_ALIGN_LEFT_MID, 0, 0);</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">    lv_timer_t *timer = lv_timer_create(clock_run_cb, 1000, (void *) lab_time);//每一秒钟进入一次循环  时间并不是lvgl给的 而是esp32系统的时间         每次开机默认00：00</span><br><span class="line">    clock_run_cb(timer);</span><br><span class="line"></span><br><span class="line">  上面的两句或者 or    直接这一句lv_timer_create(clock_run_cb, 1000, (void *) lab_time);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<p>可以运用sntp更新实施时间   </p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">      <span class="type">time_t</span> now;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tm</span> <span class="title">timeinfo</span>;</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">time_sync_notification_cb</span><span class="params">(<span class="keyword">struct</span> timeval *tv)</span></span><br><span class="line">&#123;</span><br><span class="line">  ESP_LOGI(TAG, <span class="string">&quot;Notification of a time synchronization event&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">initialize_sntp</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line"> ESP_LOGI(TAG, <span class="string">&quot;Initializing SNTP&quot;</span>);</span><br><span class="line">  sntp_setoperatingmode(SNTP_OPMODE_POLL);</span><br><span class="line">  sntp_setservername(<span class="number">0</span>, <span class="string">&quot;pool.ntp.org&quot;</span>);</span><br><span class="line">  sntp_set_time_sync_notification_cb(time_sync_notification_cb);</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_SNTP_TIME_SYNC_METHOD_SMOOTH</span></span><br><span class="line">  sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  sntp_init();</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">obtain_time</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">  ESP_ERROR_CHECK( nvs_flash_init() );</span><br><span class="line">  ESP_ERROR_CHECK(esp_netif_init());</span><br><span class="line">  ESP_ERROR_CHECK( esp_event_loop_create_default() );</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.</span></span><br><span class="line"><span class="comment">  * Read &quot;Establishing Wi-Fi or Ethernet Connection&quot; section in</span></span><br><span class="line"><span class="comment">  * examples/protocols/README.md for more information about this function.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  ESP_ERROR_CHECK(example_connect());</span><br><span class="line">  initialize_sntp();</span><br><span class="line">  <span class="comment">// wait for time to be set</span></span><br><span class="line">  <span class="type">time_t</span> now = <span class="number">0</span>;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tm</span> <span class="title">timeinfo</span> =</span> &#123; <span class="number">0</span> &#125;;</span><br><span class="line">  <span class="type">int</span> retry = <span class="number">0</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">int</span> retry_count = <span class="number">10</span>;</span><br><span class="line">  <span class="keyword">while</span> (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET &amp;&amp; ++retry &lt; retry_count) &#123;</span><br><span class="line">    ESP_LOGI(TAG, <span class="string">&quot;Waiting for system time to be set... (%d/%d)&quot;</span>, retry, retry_count);</span><br><span class="line">    vTaskDelay(<span class="number">2000</span> / portTICK_PERIOD_MS);</span><br><span class="line">  &#125;</span><br><span class="line">  time(&amp;now);</span><br><span class="line">  localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">  ESP_ERROR_CHECK( example_disconnect() );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sntp_start</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  time(&amp;now);</span><br><span class="line">  localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">  <span class="comment">// Is time set? If not, tm_year will be (1970 - 1900).</span></span><br><span class="line">  <span class="keyword">if</span> (timeinfo.tm_year &lt; (<span class="number">2016</span> - <span class="number">1900</span>)) &#123;</span><br><span class="line">    ESP_LOGI(TAG, <span class="string">&quot;Time is not set yet. Connecting to WiFi and getting time over NTP.&quot;</span>);</span><br><span class="line">    obtain_time();</span><br><span class="line">    <span class="comment">// update &#x27;now&#x27; variable with current time</span></span><br><span class="line">    time(&amp;now);</span><br><span class="line">  &#125;</span><br><span class="line"> <span class="type">char</span> strftime_buf[<span class="number">64</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Set timezone to China Standard Time</span></span><br><span class="line">  setenv(<span class="string">&quot;TZ&quot;</span>, <span class="string">&quot;CST-8&quot;</span>, <span class="number">1</span>);</span><br><span class="line">  tzset();</span><br><span class="line">  localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">  strftime(strftime_buf, <span class="keyword">sizeof</span>(strftime_buf), <span class="string">&quot;%c&quot;</span>, &amp;timeinfo);</span><br><span class="line">  ESP_LOGI(TAG, <span class="string">&quot;The current date/time in Shanghai is: %s&quot;</span>, strftime_buf);</span><br><span class="line">  vTaskDelete(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line">xTaskCreate(sntp_start, <span class="string">&quot;ana&quot;</span>, <span class="number">4</span>*<span class="number">1024</span>, <span class="literal">NULL</span>,<span class="number">5</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<p>比如有一个按钮，我按了这个按钮，就会进入另一个界面<br>第一步 删除目前的页面    方法就是通过点击事件 传一个参  然后在event里面获取这个参，然后删除<br>第二面 ui要打开的界面</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">btnpressed</span><span class="params">(<span class="type">lv_event_t</span> *e)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="type">lv_obj_t</span> *obj = lv_event_get_user_data(e);</span><br><span class="line"> lv_obj_del(obj);</span><br><span class="line"> <span class="comment">//下面就要要打开的界面</span></span><br><span class="line"> cpicker = lv_colorwheel_create(lv_scr_act(),<span class="literal">true</span>);</span><br><span class="line">lv_obj_set_size(cpicker, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">lv_obj_t</span> *img_btn = lv_btn_create(lv_scr_act());</span><br><span class="line">lv_obj_add_event_cb(img_btn, btnpressed, LV_EVENT_CLICKED, lab_time);<span class="comment">//lab_time就是当前的页面也就是要删除的界面</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<p>#键盘输入密码</p>
-<p>键盘模式<br>  lv_keyboard_set_mode(keyboard1, LV_KEYBOARD_MODE_TEXT_LOWER);<br>LV_KEYBOARD_MODE_TEXT_LOWER - Display lower case letters</p>
-<p>LV_KEYBOARD_MODE_TEXT_UPPER - Display upper case letters</p>
-<p>LV_KEYBOARD_MODE_TEXT_SPECIAL - Display special characters</p>
-<p>LV_KEYBOARD_MODE_NUMBER - Display numbers, +/- sign, and decimal dot.</p>
-<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/XiaoXiaoPengBo/article/details/113999080">https://blog.csdn.net/XiaoXiaoPengBo/article/details/113999080</a></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">ta_event_cb</span><span class="params">(<span class="type">lv_event_t</span> * e)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">lv_event_code_t</span> code = lv_event_get_code(e);</span><br><span class="line">    <span class="type">lv_obj_t</span> * ta = lv_event_get_target(e);</span><br><span class="line">    <span class="type">lv_obj_t</span> * kb = lv_event_get_user_data(e);</span><br><span class="line"></span><br><span class="line">      </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(code == LV_EVENT_FOCUSED) &#123;</span><br><span class="line">        <span class="keyword">if</span>(lv_indev_get_type(lv_indev_get_act()) != LV_INDEV_TYPE_KEYPAD) &#123;</span><br><span class="line">            lv_keyboard_set_textarea(kb, ta);</span><br><span class="line">            lv_obj_set_style_max_height(kb, LV_HOR_RES * <span class="number">2</span> / <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="comment">// lv_obj_update_layout(tv);   /*Be sure the sizes are recalculated*/</span></span><br><span class="line">            <span class="comment">// lv_obj_set_height(tv, LV_VER_RES - lv_obj_get_height(kb));</span></span><br><span class="line">            lv_obj_clear_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line">            lv_obj_scroll_to_view_recursive(ta, LV_ANIM_OFF);</span><br><span class="line">        &#125;</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(code == LV_EVENT_DEFOCUSED) &#123;</span><br><span class="line">        lv_keyboard_set_textarea(kb, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="comment">// lv_obj_set_height(tv, LV_VER_RES);</span></span><br><span class="line">        lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line">        lv_indev_reset(<span class="literal">NULL</span>, ta);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(code == LV_EVENT_READY || code == LV_EVENT_CANCEL) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// lv_obj_set_height(tv, LV_VER_RES);</span></span><br><span class="line">        lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line">        lv_obj_clear_state(ta, LV_STATE_FOCUSED);</span><br><span class="line">        lv_indev_reset(<span class="literal">NULL</span>, ta);   <span class="comment">/*To forget the last clicked object to make it focusable again*/</span></span><br><span class="line">    <span class="comment">//   printf(&quot;Value: %s\n&quot;, lv_textarea_get_text(ta));</span></span><br><span class="line">      <span class="type">char</span> *csgo=lv_textarea_get_text(user_name);</span><br><span class="line">       </span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;password: %s\n&quot;</span>,csgo);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">     <span class="type">lv_obj_t</span> *page = lv_obj_create(lv_scr_act());</span><br><span class="line"> </span><br><span class="line">    <span class="type">lv_obj_t</span> * kb = lv_keyboard_create(lv_scr_act());</span><br><span class="line">    lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line"></span><br><span class="line">    <span class="type">lv_obj_t</span> * user_name_label = lv_label_create(page);</span><br><span class="line">    lv_label_set_text(user_name_label, <span class="string">&quot;User name&quot;</span>);</span><br><span class="line">    <span class="comment">// lv_obj_add_style(user_name_label, &amp;style_text_muted, 0);</span></span><br><span class="line"></span><br><span class="line">     user_name = lv_textarea_create(page);</span><br><span class="line">    lv_textarea_set_one_line(user_name, <span class="literal">true</span>);</span><br><span class="line">    <span class="comment">// lv_textarea_set_placeholder_text(user_name, &quot;Your name&quot;);</span></span><br><span class="line">    lv_obj_add_event_cb(user_name, ta_event_cb, LV_EVENT_ALL, kb);</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/08/5.8-LVGL/" data-id="cl3v46du40006lsv7fbjg8ruc" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-常见易错" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/05/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/" class="article-date">
-  <time datetime="2022-05-05T02:31:38.278Z" itemprop="datePublished">2022-05-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/05/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/">LVGL</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>日期：5.8<br>##标题1<br>###标题2</p>
-<blockquote>
-<p>这是一段引用<br>1.与或操作涉及到多项式的时候要记得加上括号<br>比如 1&lt;&lt;10|2&lt;&lt;6<br>所以要加上括号</p>
-</blockquote>
-<p>2.空指针<br>空指针本不会报错，报错是因为调用了空指针。<br>如果只是定义了一个char *a;<br>只能赋值后才能够正常调用</p>
-<p>3.cjson<br>只能直接赋值，不可以用sprintf(aa,”%s”,data-&gt;valuestring);<br>应该是下面的这个样子<br> char *timestamp=cJSON_GetObjectItem(root1,”t”)-&gt;valuestring;</p>
-<p>下面是一种sprintf成json格式发办法<br>                sprintf(update,”{\n&quot;head&quot;:&quot;state&quot;,\n&quot;state&quot;:&quot;9&quot;,\n&quot;mode&quot;:&quot;key&quot;,\n&quot;num&quot;:&quot;%s&quot;\n}”,password);</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/05/%E5%B8%B8%E8%A7%81%E6%98%93%E9%94%99/" data-id="cl56nc2al00019cv7clsrhexm" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -709,7 +533,7 @@ lv_timer_create(anim_timer_cb, 20, page);
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -722,23 +546,23 @@ lv_timer_create(anim_timer_cb, 20, page);
       <ul>
         
           <li>
+            <a href="/2022/08/31/ES8311/">ES8311</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/I2S/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/5.8-LVGL/">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/22/esp32-spi/">esp32 spi st7735</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
           </li>
         
       </ul>
@@ -753,7 +577,7 @@ lv_timer_create(anim_timer_cb, 20, page);
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2022 Castiel<br>
+      &copy; 2023 Castiel<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

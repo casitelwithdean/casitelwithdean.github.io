@@ -5,19 +5,18 @@
   
 
   
-  <title>5.10MQTT ESP8266 | 日志</title>
+  <title>ES8311 | 日志</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.百度智能云虽然写着8884端口，但是客户端连接的时候还是1883MQTT并不会想不冲突，也不会谁把谁顶下线，原因就是因为           使用了相同的Client ID2.串口读数据 12345while (Serial.available()&gt;0)  &amp;#123;String datafd&#x3D; Serial.readString();Serial.println(datafd);">
+  <meta name="description" content="1.I2C一定有要上拉，虽然esp32内部上拉了，但是上拉47K，不是很保险， 不然容易出现各种各样奇奇怪怪的问题2.单片机的DSOUT接8311的DSDIN  也就是说单片机的DSOUT接到喇叭上也会有声音 不过很嘈杂 ，然后如果街上es8311就会清晰很多">
 <meta property="og:type" content="article">
-<meta property="og:title" content="5.10MQTT ESP8266">
-<meta property="og:url" content="http://example.com/2022/05/10/5-10MQTT/index.html">
+<meta property="og:title" content="ES8311">
+<meta property="og:url" content="http://example.com/2022/08/31/ES8311/index.html">
 <meta property="og:site_name" content="日志">
-<meta property="og:description" content="1.百度智能云虽然写着8884端口，但是客户端连接的时候还是1883MQTT并不会想不冲突，也不会谁把谁顶下线，原因就是因为           使用了相同的Client ID2.串口读数据 12345while (Serial.available()&gt;0)  &amp;#123;String datafd&#x3D; Serial.readString();Serial.println(datafd);">
+<meta property="og:description" content="1.I2C一定有要上拉，虽然esp32内部上拉了，但是上拉47K，不是很保险， 不然容易出现各种各样奇奇怪怪的问题2.单片机的DSOUT接8311的DSDIN  也就是说单片机的DSOUT接到喇叭上也会有声音 不过很嘈杂 ，然后如果街上es8311就会清晰很多">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-05-10T07:42:13.000Z">
-<meta property="article:modified_time" content="2022-05-12T01:54:27.180Z">
+<meta property="article:published_time" content="2022-08-31T09:06:09.000Z">
+<meta property="article:modified_time" content="2022-08-31T09:12:20.574Z">
 <meta property="article:author" content="Castiel">
-<meta property="article:tag" content="MQTT,串口">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="日志" type="application/atom+xml">
@@ -67,10 +66,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-5-10MQTT" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-ES8311" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2022/05/10/5-10MQTT/" class="article-date">
-  <time datetime="2022-05-10T07:42:13.000Z" itemprop="datePublished">2022-05-10</time>
+    <a href="/2022/08/31/ES8311/" class="article-date">
+  <time datetime="2022-08-31T09:06:09.000Z" itemprop="datePublished">2022-08-31</time>
 </a>
     
   </div>
@@ -81,7 +80,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      5.10MQTT ESP8266
+      ES8311
     </h1>
   
 
@@ -89,39 +88,24 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1.百度智能云虽然写着8884端口，但是客户端连接的时候还是1883<br>MQTT并不会想不冲突，也不会谁把谁顶下线，原因就是因为<br>           使用了相同的Client ID<br>2.串口读数据</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (Serial.available()&gt;<span class="number">0</span>)</span><br><span class="line">  &#123;</span><br><span class="line">String datafd= Serial.readString();</span><br><span class="line">Serial.println(datafd);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>3.arduino关于esp32使用指定串口</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HardwareSerial <span class="title function_">mySerial1</span><span class="params">(<span class="number">1</span>)</span>;</span><br><span class="line">mySerial1.begin(<span class="number">115200</span>,SERIAL_8N1,<span class="number">5</span>,<span class="number">18</span>);</span><br><span class="line">mySerial1.print(symbol);</span><br><span class="line">mySerial1.println(data);</span><br></pre></td></tr></table></figure>
-<p>4.AI2制作MQTTAPP<br>在论坛搜索MQTT的拓展，然后导入即可</p>
+        <p>1.I2C一定有要上拉，虽然esp32内部上拉了，但是上拉47K，不是很保险， 不然容易出现各种各样奇奇怪怪的问题<br>2.单片机的DSOUT接8311的DSDIN  也就是说单片机的DSOUT接到喇叭上也会有声音 不过很嘈杂 ，然后如果街上es8311就会清晰很多</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/10/5-10MQTT/" data-id="cl3v46dt10000lsv74i6f9nma" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/08/31/ES8311/" data-id="cllwhzcx70001rov76jgq11ku" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQTT-%E4%B8%B2%E5%8F%A3/" rel="tag">MQTT,串口</a></li></ul>
-
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2022/05/10/stm32/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          stm32
-        
-      </div>
-    </a>
   
-  
-    <a href="/2022/05/09/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">外部中断,按键中断</div>
+      <div class="article-nav-title"></div>
     </a>
   
 </nav>

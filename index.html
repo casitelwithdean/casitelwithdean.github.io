@@ -64,6 +64,242 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ES8311" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/31/ES8311/" class="article-date">
+  <time datetime="2022-08-31T09:06:09.000Z" itemprop="datePublished">2022-08-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/31/ES8311/">ES8311</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1.I2C一定有要上拉，虽然esp32内部上拉了，但是上拉47K，不是很保险， 不然容易出现各种各样奇奇怪怪的问题<br>2.单片机的DSOUT接8311的DSDIN  也就是说单片机的DSOUT接到喇叭上也会有声音 不过很嘈杂 ，然后如果街上es8311就会清晰很多</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/31/ES8311/" data-id="cllwhzcx70001rov76jgq11ku" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-蓝牙键盘和有线" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/" class="article-date">
+  <time datetime="2022-08-19T04:34:44.307Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>arduino很方便但是不支持c3</p>
+<p>idf 有两个hid device  人机交互设备的意思<br>ble里面的可以连接手机  并且控制音量和播放暂停 以及控制输入法 但是不能够连接我的电脑<br>ble里面的支持c3<br>外面的就不支持c3  因为 c3好像不支持经典蓝牙</p>
+<p>python的sendkeys不能够弹响我的钢琴</p>
+<p>有线键盘<br>arduino esp32-tinyusb里的hid-&gt;keyboard2<br>idf虽然可以被识别出来，但是有关键盘的api太复杂</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/" data-id="cllwhzcxs0006rov7gbr25kal" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-I2S" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/19/I2S/" class="article-date">
+  <time datetime="2022-08-19T04:34:44.176Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>—title : I2S<br>               date : 2022 -<br>    08 - 17 20 : 46 : 46 tags : —</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;driver/i2s.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;WAV_C.h&quot;</span></span></span><br><span class="line">                                <span class="type">const</span> <span class="type">i2s_port_t</span> I2S_PORT = I2S_NUM_0;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LEDC_CHANNEL_0 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LEDC_TIMER_12_BIT 10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LEDC_BASE_FREQ 16000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LED_PIN 18</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    Serial.begin(<span class="number">115200</span>);</span><br><span class="line">    <span class="type">esp_err_t</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The I2S config as per the example</span></span><br><span class="line">    <span class="type">const</span> <span class="type">i2s_config_t</span> i2s_config = &#123;</span><br><span class="line">        .mode = <span class="type">i2s_mode_t</span>(I2S_MODE_MASTER | I2S_MODE_RX), <span class="comment">// Receive, not transfer</span></span><br><span class="line">        .sample_rate = <span class="number">16000</span>,                              <span class="comment">// 16KHz</span></span><br><span class="line">        .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,      <span class="comment">// could only get it to work with 32bits</span></span><br><span class="line">        .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,       <span class="comment">// use right channel</span></span><br><span class="line">        .communication_format = <span class="type">i2s_comm_format_t</span>(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),</span><br><span class="line">        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, <span class="comment">// Interrupt level 1</span></span><br><span class="line">        .dma_buf_count = <span class="number">4</span>,                       <span class="comment">// number of buffers</span></span><br><span class="line">        .dma_buf_len = <span class="number">8</span>                          <span class="comment">// 8 samples per buffer (minimum)//至少8最多1024</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The pin config as per the setup</span></span><br><span class="line">    <span class="type">const</span> <span class="type">i2s_pin_config_t</span> pin_config = &#123;</span><br><span class="line">        .bck_io_num = <span class="number">26</span>,                  <span class="comment">// Serial Clock (SCK)</span></span><br><span class="line">        .ws_io_num = <span class="number">25</span>,                   <span class="comment">// Word Select (WS)</span></span><br><span class="line">        .data_out_num = I2S_PIN_NO_CHANGE, <span class="comment">// not used (only for speakers)</span></span><br><span class="line">        .data_in_num = <span class="number">33</span>                  <span class="comment">// Serial Data (SD)</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    err = i2s_driver_install(I2S_PORT, &amp;i2s_config, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (err != ESP_OK)</span><br><span class="line">    &#123;</span><br><span class="line">        Serial.<span class="built_in">printf</span>(<span class="string">&quot;Failed installing driver: %d\n&quot;</span>, err);</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">            ;</span><br><span class="line">    &#125;</span><br><span class="line">    err = i2s_set_pin(I2S_PORT, &amp;pin_config);</span><br><span class="line">    <span class="keyword">if</span> (err != ESP_OK)</span><br><span class="line">    &#123;</span><br><span class="line">        Serial.<span class="built_in">printf</span>(<span class="string">&quot;Failed setting pin: %d\n&quot;</span>, err);</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">            ;</span><br><span class="line">    &#125;</span><br><span class="line">    sigmaDeltaSetup(<span class="number">18</span>, <span class="number">0</span>, <span class="number">312500</span>);</span><br><span class="line">    sigmaDeltaWrite(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    sigmaDeltaSetup(<span class="number">19</span>, <span class="number">1</span>, <span class="number">312500</span>);</span><br><span class="line">    sigmaDeltaWrite(<span class="number">1</span>, <span class="number">128</span>);</span><br><span class="line"></span><br><span class="line">    delay(<span class="number">1000</span>);</span><br><span class="line">    Serial.println(millis());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; SOUND_LENGTH; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        sigmaDeltaWrite(<span class="number">0</span>, DATA[i]);</span><br><span class="line">        <span class="comment">//  Serial.println(DATA[i]);//由此可以看出串口打印是非常耗时的，每次打印都需要356us的时间  20662-1025//3895-1025</span></span><br><span class="line">        delayMicroseconds(<span class="number">22</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Serial.println(millis());</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int16_t</span> record[<span class="number">16000</span>];</span><br><span class="line"><span class="type">int32_t</span> sBuffer[<span class="number">8</span>];</span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">      Serial.println(<span class="string">&quot;开始录音&quot;</span>);</span><br><span class="line">     Serial.println(micros());</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> a=<span class="number">0</span>;a&lt;<span class="number">16000</span>;a++)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="type">size_t</span> bytes_read = <span class="number">0</span>;</span><br><span class="line">    i2s_read(I2S_PORT, sBuffer, <span class="keyword">sizeof</span>(sBuffer), &amp;bytes_read, portMAX_DELAY); <span class="comment">//采样率是16000  所以写进去一个buffer就是1/16000s，那么写进八个buffer就是8/16000=500us。所以执行一句i2s_read就会耗时500us，八个数组都会有数据/所以如果想用此存储录音的话，那么要么提高采样频率，要么就每次采集都使用8个数组，但这样会导致数组过大。</span></span><br><span class="line">    <span class="comment">//另外2khz的音质好像也并没有太差，还是可以勉强接受的</span></span><br><span class="line">    <span class="keyword">if</span> (bytes_read &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int16_t</span> xx = (sBuffer[<span class="number">6</span>] &gt;&gt; <span class="number">22</span>);<span class="comment">//32位数据  但是麦克风的24位是在高位的  最高位是符号位</span></span><br><span class="line">        xx = xx + <span class="number">128</span>;</span><br><span class="line">        <span class="comment">//record[a]=xx;</span></span><br><span class="line">        sigmaDeltaWrite(<span class="number">0</span>, xx);</span><br><span class="line">    &#125;</span><br><span class="line">    delayMicroseconds(<span class="number">62</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Serial.println(<span class="string">&quot;开始播放&quot;</span>);</span><br><span class="line">    <span class="comment">// delay(2);</span></span><br><span class="line">     Serial.println(micros());</span><br><span class="line">     <span class="keyword">for</span>(<span class="type">int</span> d=<span class="number">0</span>;d&lt;<span class="number">16000</span>;d++)</span><br><span class="line">     &#123;</span><br><span class="line">       sigmaDeltaWrite(<span class="number">0</span>, record[d]);</span><br><span class="line">     delayMicroseconds(<span class="number">62</span>);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/19/I2S/" data-id="cllwhzcx90002rov73ov53gzi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-5.8-LVGL" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/08/19/5.8-LVGL/" class="article-date">
+  <time datetime="2022-08-19T04:34:44.091Z" itemprop="datePublished">2022-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="LVGL"><a href="#LVGL" class="headerlink" title="LVGL"></a>LVGL</h2><p>日期：5.8<br>  今天学习了LVGL，整体思路是初始化SPI ，然后初始化I2C(用来判断TP  touchpanel)</p>
+<p>1.结构体不能初始化,typdef struct是分号  enmu是逗号</p>
+<p>2.结构体赋值的时候有的好像要加（）<br>3.调用结构体的时候不能直呼其名，比如</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">boards_info_t</span> *g_board = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+
+<p>注意label 才能set text ，obj不可以设置text  ，否则会严重的跑飞</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">lv_obj_t</span> *self2 = lv_obj_create(lv_scr_act());<span class="comment">//wrong</span></span><br><span class="line"><span class="type">lv_obj_t</span> *self2 = lv_label_create(lv_scr_act());</span><br><span class="line">lv_label_set_text(self2, <span class="string">&quot;buf&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>#调色板  拾色器<br>       首先 s3不支持ledc的高速模式 不支持HS_MODE 所以要换成LSmode 另外也要把定时器换成定时器1 timer1<br>调色板 有两种模式 一种 hsv  这种好提取  结构体里面用.提取  而不是-&gt;提取<br>另一种 lv_color_t  里面的ch结构体里面有  red  blue  green_h green_l<br>所以  color.ch.red<br>程序如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">lv_obj_t</span> *cpicker;</span><br><span class="line"><span class="type">lv_color_t</span> clor;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">slider_event_cb1</span><span class="params">(<span class="type">lv_event_t</span> *e)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">lv_event_code_t</span> code = lv_event_get_code(e);</span><br><span class="line">    <span class="keyword">if</span> (code == LV_EVENT_RELEASED)</span><br><span class="line">    &#123;</span><br><span class="line">        clor = lv_colorwheel_get_rgb(cpicker);</span><br><span class="line">        <span class="comment">//  int a = lv_arc_get_value(arc);</span></span><br><span class="line">        ESP_LOGI(TAG, <span class="string">&quot;红%d&quot;</span>, clor.ch.red);</span><br><span class="line">        ESP_LOGI(TAG, <span class="string">&quot;绿%d&quot;</span>, (clor.ch.green_h * <span class="number">8</span> + clor.ch.green_l));</span><br><span class="line">        ESP_LOGI(TAG, <span class="string">&quot;蓝%d&quot;</span>, clor.ch.blue);</span><br><span class="line">        ledc_set_duty(LEDC_HS_MODE, LEDC_HS_CH0_CHANNEL, clor.ch.red * <span class="number">32</span>);</span><br><span class="line">        ledc_update_duty(LEDC_HS_MODE, LEDC_HS_CH0_CHANNEL);</span><br><span class="line">        ledc_set_duty(LEDC_HS_MODE, LEDC_HS_CH1_CHANNEL, clor.ch.green_h * <span class="number">128</span> + clor.ch.green_l * <span class="number">16</span>);</span><br><span class="line">        ledc_update_duty(LEDC_HS_MODE, LEDC_HS_CH1_CHANNEL);</span><br><span class="line">        ledc_set_duty(LEDC_LS_MODE, LEDC_LS_CH2_CHANNEL, clor.ch.blue * <span class="number">32</span>);</span><br><span class="line">        ledc_update_duty(LEDC_LS_MODE, LEDC_LS_CH2_CHANNEL);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">cpicker = lv_colorwheel_create(lv_scr_act(), <span class="literal">true</span>);</span><br><span class="line">lv_obj_set_size(cpicker, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line">lv_obj_add_event_cb(cpicker, slider_event_cb1, LV_EVENT_ALL, <span class="literal">NULL</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>#乐鑫的boot动画</p>
+<p>static void anim_timer_cb(lv_timer_t *timer)<br>{<br>    static int32_t count = -90;<br>    lv_obj_t *page = (lv_obj_t *) timer-&gt;user_data;<br>    static lv_obj_t *img_logo = NULL;<br>    static lv_obj_t *img_text = NULL;</p>
+<pre><code>if (-90 == count) &#123;
+    LV_IMG_DECLARE(esp_logo);
+    img_logo = lv_img_create(page);
+    lv_img_set_src(img_logo, &amp;esp_logo);
+    lv_obj_center(img_logo);
+&#125;
+
+if (count &lt; 90) &#123;
+    lv_coord_t arc_start = count &gt; 0 ? (1 - cosf(count / 180.0f * PI)) * 270 : 0;
+    lv_coord_t arc_len = (sinf(count / 180.0f * PI) + 1) * 135;
+
+    for (size_t i = 0; i &lt; sizeof(arc) / sizeof(arc[0]); i++) &#123;
+        lv_arc_set_bg_angles(arc[i], arc_start, arc_len);
+        lv_arc_set_rotation(arc[i], (count + 120 * (i + 1)) % 360);
+    &#125;
+&#125;
+
+if (count == 90) &#123;
+    for (size_t i = 0; i &lt; sizeof(arc) / sizeof(arc[0]); i++) &#123;
+        lv_obj_del(arc[i]);
+    &#125;
+
+    LV_IMG_DECLARE(esp_text);
+    img_text = lv_img_create(page);
+    lv_img_set_src(img_text, &amp;esp_text);
+    lv_obj_set_style_img_opa(img_text, 0, 0);
+&#125;
+
+if ((count &gt;= 100) &amp;&amp; (count &lt;= 180)) &#123;
+    lv_coord_t offset = (sinf((count - 140) * 2.25f / 90.0f) + 1) * 15.0f;
+    lv_obj_align(img_logo, LV_ALIGN_CENTER, 0, -offset);
+    lv_obj_align(img_text, LV_ALIGN_CENTER, 0, 2 * offset);
+    lv_obj_set_style_img_opa(img_text, offset / 30.0f * 255, 0);
+&#125;
+
+if ((count += 2) &gt;= 300) &#123;
+    lv_timer_del(timer);
+    lv_obj_del(page);
+
+ 
+&#125;
+</code></pre>
+<p>}</p>
+<p>void boot_animate_start()<br>{<br>    // g_boot_anim_end_cb = fn;</p>
+<pre><code>lv_obj_t *page = lv_obj_create(lv_scr_act());
+lv_obj_set_size(page, lv_obj_get_width(lv_obj_get_parent(page)), lv_obj_get_height(lv_obj_get_parent(page)));
+lv_obj_clear_flag(page, LV_OBJ_FLAG_SCROLLABLE);
+lv_obj_set_style_radius(page, 0, LV_PART_MAIN);
+
+const lv_color_t arc_color[] = &#123;
+    LV_COLOR_MAKE(237, 228, 239),
+    LV_COLOR_MAKE(211, 211, 211),
+    LV_COLOR_MAKE(239, 218, 218),
+&#125;;
+for (size_t i = 0; i &lt; sizeof(arc) / sizeof(arc[0]); i++) &#123;
+    arc[i] = lv_arc_create(page);
+    lv_obj_set_size(arc[i], 220 - 30 * i, 220 - 30 * i);
+    lv_arc_set_bg_angles(arc[i], 120 * i, 0 + 120 * i);
+    lv_arc_set_value(arc[i], 0);
+    lv_obj_remove_style(arc[i], NULL, LV_PART_KNOB);
+    lv_obj_set_style_arc_width(arc[i], 9, 0);
+    lv_obj_set_style_arc_color(arc[i], arc_color[i], 0);
+    lv_obj_center(arc[i]);
+&#125;
+
+/* Create a timer to update time */
+lv_timer_create(anim_timer_cb, 20, page);
+</code></pre>
+<p>}</p>
+<p>  boot_animate_start(); </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#时间设置</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line">static void clock_run_cb(lv_timer_t *timer)</span><br><span class="line">&#123;</span><br><span class="line">    lv_obj_t *lab_time = (lv_obj_t *) timer-&gt;user_data;</span><br><span class="line">    time_t now;</span><br><span class="line">    struct tm timeinfo;</span><br><span class="line">    time(&amp;now);</span><br><span class="line">    localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">    lv_label_set_text_fmt(lab_time, &quot;%02u:%02u:%02u&quot;, timeinfo.tm_hour, timeinfo.tm_min,timeinfo.tm_sec);</span><br><span class="line">    ESP_LOGI(TAG,&quot;6&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   lv_obj_t *lab_time = lv_label_create(lv_scr_act());</span><br><span class="line">    lv_label_set_text_static(lab_time, &quot;23:59&quot;);</span><br><span class="line">    lv_obj_align(lab_time, LV_ALIGN_LEFT_MID, 0, 0);</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">    lv_timer_t *timer = lv_timer_create(clock_run_cb, 1000, (void *) lab_time);//每一秒钟进入一次循环  时间并不是lvgl给的 而是esp32系统的时间         每次开机默认00：00</span><br><span class="line">    clock_run_cb(timer);</span><br><span class="line"></span><br><span class="line">  上面的两句或者 or    直接这一句lv_timer_create(clock_run_cb, 1000, (void *) lab_time);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>可以运用sntp更新实施时间   </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">      <span class="type">time_t</span> now;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tm</span> <span class="title">timeinfo</span>;</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">time_sync_notification_cb</span><span class="params">(<span class="keyword">struct</span> timeval *tv)</span></span><br><span class="line">&#123;</span><br><span class="line">  ESP_LOGI(TAG, <span class="string">&quot;Notification of a time synchronization event&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">initialize_sntp</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line"> ESP_LOGI(TAG, <span class="string">&quot;Initializing SNTP&quot;</span>);</span><br><span class="line">  sntp_setoperatingmode(SNTP_OPMODE_POLL);</span><br><span class="line">  sntp_setservername(<span class="number">0</span>, <span class="string">&quot;pool.ntp.org&quot;</span>);</span><br><span class="line">  sntp_set_time_sync_notification_cb(time_sync_notification_cb);</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_SNTP_TIME_SYNC_METHOD_SMOOTH</span></span><br><span class="line">  sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  sntp_init();</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">obtain_time</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">  ESP_ERROR_CHECK( nvs_flash_init() );</span><br><span class="line">  ESP_ERROR_CHECK(esp_netif_init());</span><br><span class="line">  ESP_ERROR_CHECK( esp_event_loop_create_default() );</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.</span></span><br><span class="line"><span class="comment">  * Read &quot;Establishing Wi-Fi or Ethernet Connection&quot; section in</span></span><br><span class="line"><span class="comment">  * examples/protocols/README.md for more information about this function.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  ESP_ERROR_CHECK(example_connect());</span><br><span class="line">  initialize_sntp();</span><br><span class="line">  <span class="comment">// wait for time to be set</span></span><br><span class="line">  <span class="type">time_t</span> now = <span class="number">0</span>;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tm</span> <span class="title">timeinfo</span> =</span> &#123; <span class="number">0</span> &#125;;</span><br><span class="line">  <span class="type">int</span> retry = <span class="number">0</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">int</span> retry_count = <span class="number">10</span>;</span><br><span class="line">  <span class="keyword">while</span> (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET &amp;&amp; ++retry &lt; retry_count) &#123;</span><br><span class="line">    ESP_LOGI(TAG, <span class="string">&quot;Waiting for system time to be set... (%d/%d)&quot;</span>, retry, retry_count);</span><br><span class="line">    vTaskDelay(<span class="number">2000</span> / portTICK_PERIOD_MS);</span><br><span class="line">  &#125;</span><br><span class="line">  time(&amp;now);</span><br><span class="line">  localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">  ESP_ERROR_CHECK( example_disconnect() );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sntp_start</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  time(&amp;now);</span><br><span class="line">  localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">  <span class="comment">// Is time set? If not, tm_year will be (1970 - 1900).</span></span><br><span class="line">  <span class="keyword">if</span> (timeinfo.tm_year &lt; (<span class="number">2016</span> - <span class="number">1900</span>)) &#123;</span><br><span class="line">    ESP_LOGI(TAG, <span class="string">&quot;Time is not set yet. Connecting to WiFi and getting time over NTP.&quot;</span>);</span><br><span class="line">    obtain_time();</span><br><span class="line">    <span class="comment">// update &#x27;now&#x27; variable with current time</span></span><br><span class="line">    time(&amp;now);</span><br><span class="line">  &#125;</span><br><span class="line"> <span class="type">char</span> strftime_buf[<span class="number">64</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Set timezone to China Standard Time</span></span><br><span class="line">  setenv(<span class="string">&quot;TZ&quot;</span>, <span class="string">&quot;CST-8&quot;</span>, <span class="number">1</span>);</span><br><span class="line">  tzset();</span><br><span class="line">  localtime_r(&amp;now, &amp;timeinfo);</span><br><span class="line">  strftime(strftime_buf, <span class="keyword">sizeof</span>(strftime_buf), <span class="string">&quot;%c&quot;</span>, &amp;timeinfo);</span><br><span class="line">  ESP_LOGI(TAG, <span class="string">&quot;The current date/time in Shanghai is: %s&quot;</span>, strftime_buf);</span><br><span class="line">  vTaskDelete(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line">xTaskCreate(sntp_start, <span class="string">&quot;ana&quot;</span>, <span class="number">4</span>*<span class="number">1024</span>, <span class="literal">NULL</span>,<span class="number">5</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>比如有一个按钮，我按了这个按钮，就会进入另一个界面<br>第一步 删除目前的页面    方法就是通过点击事件 传一个参  然后在event里面获取这个参，然后删除<br>第二面 ui要打开的界面</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">btnpressed</span><span class="params">(<span class="type">lv_event_t</span> *e)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="type">lv_obj_t</span> *obj = lv_event_get_user_data(e);</span><br><span class="line"> lv_obj_del(obj);</span><br><span class="line"> <span class="comment">//下面就要要打开的界面</span></span><br><span class="line"> cpicker = lv_colorwheel_create(lv_scr_act(),<span class="literal">true</span>);</span><br><span class="line">lv_obj_set_size(cpicker, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">lv_obj_t</span> *img_btn = lv_btn_create(lv_scr_act());</span><br><span class="line">lv_obj_add_event_cb(img_btn, btnpressed, LV_EVENT_CLICKED, lab_time);<span class="comment">//lab_time就是当前的页面也就是要删除的界面</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>#键盘输入密码</p>
+<p>键盘模式<br>  lv_keyboard_set_mode(keyboard1, LV_KEYBOARD_MODE_TEXT_LOWER);<br>LV_KEYBOARD_MODE_TEXT_LOWER - Display lower case letters</p>
+<p>LV_KEYBOARD_MODE_TEXT_UPPER - Display upper case letters</p>
+<p>LV_KEYBOARD_MODE_TEXT_SPECIAL - Display special characters</p>
+<p>LV_KEYBOARD_MODE_NUMBER - Display numbers, +/- sign, and decimal dot.</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/XiaoXiaoPengBo/article/details/113999080">https://blog.csdn.net/XiaoXiaoPengBo/article/details/113999080</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">ta_event_cb</span><span class="params">(<span class="type">lv_event_t</span> * e)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">lv_event_code_t</span> code = lv_event_get_code(e);</span><br><span class="line">    <span class="type">lv_obj_t</span> * ta = lv_event_get_target(e);</span><br><span class="line">    <span class="type">lv_obj_t</span> * kb = lv_event_get_user_data(e);</span><br><span class="line"></span><br><span class="line">      </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(code == LV_EVENT_FOCUSED) &#123;</span><br><span class="line">        <span class="keyword">if</span>(lv_indev_get_type(lv_indev_get_act()) != LV_INDEV_TYPE_KEYPAD) &#123;</span><br><span class="line">            lv_keyboard_set_textarea(kb, ta);</span><br><span class="line">            lv_obj_set_style_max_height(kb, LV_HOR_RES * <span class="number">2</span> / <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">            <span class="comment">// lv_obj_update_layout(tv);   /*Be sure the sizes are recalculated*/</span></span><br><span class="line">            <span class="comment">// lv_obj_set_height(tv, LV_VER_RES - lv_obj_get_height(kb));</span></span><br><span class="line">            lv_obj_clear_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line">            lv_obj_scroll_to_view_recursive(ta, LV_ANIM_OFF);</span><br><span class="line">        &#125;</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(code == LV_EVENT_DEFOCUSED) &#123;</span><br><span class="line">        lv_keyboard_set_textarea(kb, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="comment">// lv_obj_set_height(tv, LV_VER_RES);</span></span><br><span class="line">        lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line">        lv_indev_reset(<span class="literal">NULL</span>, ta);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(code == LV_EVENT_READY || code == LV_EVENT_CANCEL) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// lv_obj_set_height(tv, LV_VER_RES);</span></span><br><span class="line">        lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line">        lv_obj_clear_state(ta, LV_STATE_FOCUSED);</span><br><span class="line">        lv_indev_reset(<span class="literal">NULL</span>, ta);   <span class="comment">/*To forget the last clicked object to make it focusable again*/</span></span><br><span class="line">    <span class="comment">//   printf(&quot;Value: %s\n&quot;, lv_textarea_get_text(ta));</span></span><br><span class="line">      <span class="type">char</span> *csgo=lv_textarea_get_text(user_name);</span><br><span class="line">       </span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;password: %s\n&quot;</span>,csgo);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">     <span class="type">lv_obj_t</span> *page = lv_obj_create(lv_scr_act());</span><br><span class="line"> </span><br><span class="line">    <span class="type">lv_obj_t</span> * kb = lv_keyboard_create(lv_scr_act());</span><br><span class="line">    lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);</span><br><span class="line"></span><br><span class="line">    <span class="type">lv_obj_t</span> * user_name_label = lv_label_create(page);</span><br><span class="line">    lv_label_set_text(user_name_label, <span class="string">&quot;User name&quot;</span>);</span><br><span class="line">    <span class="comment">// lv_obj_add_style(user_name_label, &amp;style_text_muted, 0);</span></span><br><span class="line"></span><br><span class="line">     user_name = lv_textarea_create(page);</span><br><span class="line">    lv_textarea_set_one_line(user_name, <span class="literal">true</span>);</span><br><span class="line">    <span class="comment">// lv_textarea_set_placeholder_text(user_name, &quot;Your name&quot;);</span></span><br><span class="line">    lv_obj_add_event_cb(user_name, ta_event_cb, LV_EVENT_ALL, kb);</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>arduino 配置lvgl<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/unclejin_/article/details/123994267">https://blog.csdn.net/unclejin_/article/details/123994267</a></p>
+<p>独立的idf  lvgl工程<br><a target="_blank" rel="noopener" href="https://www.pudn.com/news/6228cf089ddf223e1ad138ed.html">https://www.pudn.com/news/6228cf089ddf223e1ad138ed.html</a><br>注意1. #define SPI_HOST_MAX 3<br>2.屏幕分辨率尽量设大一点<br>3.也不需要引用lv_qrcode.h直接写也不会报错<br>可以在打开cpu和fps显示</p>
+<p>近几日LV_port的心得<br>1.首先颜色不一致，表现为png图片严重色彩失真，方法就是首先 再tft里面 invert color<br>然后在lvgl-color_Setting里面swap 2bit<br>2.然后就是顺序显示的问题，比如我在while（1）{lv_handle()}前面写的函数，并不会运行，只有lv_handle开始了才能运行，所以之前的函数不能有阻塞，所以考虑使用  time_cb来实现，显示完之后记得删除。<br>下面是示例</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">anim_timer_cb</span><span class="params">(<span class="type">lv_timer_t</span> *timer)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">static</span> <span class="type">int32_t</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="type">lv_obj_t</span> *page = (<span class="type">lv_obj_t</span> *)timer-&gt;user_data;</span><br><span class="line">    <span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">static</span> <span class="type">lv_style_t</span> style; <span class="comment">//创建style</span></span><br><span class="line">        lv_style_init(&amp;style);   <span class="comment">//初始化style</span></span><br><span class="line">                                 <span class="comment">//    lv_style_set_radius(&amp;style,5);                  //设置样式的圆角</span></span><br><span class="line"></span><br><span class="line">        lv_style_set_bg_opa(&amp;style, LV_OPA_COVER);                            <span class="comment">//设置样式透明度</span></span><br><span class="line">        lv_style_set_bg_color(&amp;style, lv_palette_lighten(LV_PALETTE_RED, <span class="number">1</span>)); <span class="comment">//设置主背景颜色 调色板减轻，后面参数越高则也淡</span></span><br><span class="line"></span><br><span class="line">        obj = lv_obj_create(lv_scr_act());</span><br><span class="line">        lv_obj_add_style(obj, &amp;style, <span class="number">0</span>);</span><br><span class="line">        lv_obj_set_width(obj, Width);   <span class="comment">//宽度</span></span><br><span class="line">        lv_obj_set_height(obj, Height); <span class="comment">//高度</span></span><br><span class="line">        lv_obj_center(obj);             <span class="comment">//居中对象</span></span><br><span class="line"></span><br><span class="line">        <span class="type">static</span> <span class="type">lv_style_t</span> font_style;</span><br><span class="line">        lv_style_init(&amp;font_style);</span><br><span class="line">        lv_style_set_text_font(&amp;font_style, &amp;lv_font_montserrat_24);</span><br><span class="line"></span><br><span class="line">        <span class="type">lv_obj_t</span> *text2 = lv_label_create(obj);</span><br><span class="line">        lv_label_set_text(text2, <span class="string">&quot;WELCOME&quot;</span>);</span><br><span class="line">        lv_obj_add_style(text2, &amp;font_style, <span class="number">0</span>);</span><br><span class="line">        lv_obj_center(text2);</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, count);</span><br><span class="line">    <span class="keyword">if</span> (count == <span class="number">90</span>)</span><br><span class="line">    </span><br><span class="line">        lv_obj_del(obj); <span class="comment">//删除图片</span></span><br><span class="line">        <span class="type">lv_color_t</span> bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, <span class="number">5</span>);</span><br><span class="line">        <span class="type">lv_color_t</span> fg_color = lv_palette_darken(LV_PALETTE_BLUE, <span class="number">4</span>);</span><br><span class="line">        qr = lv_qrcode_create(lv_scr_act(), <span class="number">150</span>, fg_color, bg_color);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*Set data*/</span></span><br><span class="line">        lv_qrcode_update(qr, data, <span class="built_in">strlen</span>(data));</span><br><span class="line">        lv_obj_center(qr);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*Add a border with bg_color*/</span></span><br><span class="line">        lv_obj_set_style_border_color(qr, bg_color, <span class="number">0</span>);</span><br><span class="line">        lv_obj_set_style_border_width(qr, <span class="number">5</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (count == <span class="number">190</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        lv_obj_del(qr); <span class="comment">//删除图片</span></span><br><span class="line">        slider = lv_slider_create(lv_scr_act());</span><br><span class="line"></span><br><span class="line">        lv_obj_add_event_cb(slider, slider_event_cb, LV_EVENT_ALL, <span class="literal">NULL</span>);</span><br><span class="line">        lv_obj_refresh_ext_draw_size(slider);</span><br><span class="line">        lv_obj_set_width(slider, <span class="number">150</span>); <span class="comment">//宽度</span></span><br><span class="line">        lv_slider_set_range(slider, <span class="number">0</span>, <span class="number">400</span>);</span><br><span class="line">        lv_obj_center(slider);</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(count&gt;<span class="number">190</span>)</span><br><span class="line">     lv_slider_set_value(slider, count - <span class="number">190</span>, LV_ANIM_ON);</span><br><span class="line">    <span class="keyword">if</span> (count  &gt;= <span class="number">590</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        lv_timer_del(timer);</span><br><span class="line">        lv_obj_del(page);</span><br><span class="line">    &#125;</span><br><span class="line">    count=count+<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">qr_show</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">lv_obj_t</span> *page = lv_obj_create(lv_scr_act());</span><br><span class="line"></span><br><span class="line">    lv_timer_create(anim_timer_cb, <span class="number">20</span>, page);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这是图片显示的方法<br>        LV_IMG_DECLARE(welcome);//declear的是你在网站命名的名字<br>        img = lv_img_create(lv_scr_act());<br>        lv_img_set_src(img, &amp;welcome);<br>        // lv_obj_set_pos(img, 1, 5);<br>        // lv_img_set_angle(img, 458);//旋转<br>        lv_obj_center(img);</p>
+<p>5。另外有关字体格式，也就是先顶一个style，然后lable去添加这个style</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">lv_style_t</span> font_style;</span><br><span class="line"> lv_style_init(&amp;font_style);</span><br><span class="line"> lv_style_set_text_font(&amp;font_style, &amp;lv_font_montserrat_24);<span class="comment">//注意这个字号，需要在config里面开启，建议一开始就全部开启</span></span><br><span class="line"></span><br><span class="line"> <span class="type">lv_obj_t</span> *text2 = lv_label_create(obj);</span><br><span class="line"> lv_label_set_text(text2, <span class="string">&quot;WELCOME&quot;</span>);</span><br><span class="line"> lv_obj_add_style(text2, &amp;font_style, <span class="number">0</span>);</span><br><span class="line"> lv_obj_center(text2);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/08/19/5.8-LVGL/" data-id="cl3v46du40006lsv7fbjg8ruc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-数码管" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/" class="article-date">
@@ -174,36 +410,6 @@
     </div>
     <footer class="article-footer">
       <a data-url="http://example.com/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/" data-id="cl56nc29w00009cv72mr91rmi" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-蓝牙键盘" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/" class="article-date">
-  <time datetime="2022-07-03T12:34:15.462Z" itemprop="datePublished">2022-07-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="蓝牙键盘"><a href="#蓝牙键盘" class="headerlink" title="蓝牙键盘"></a>蓝牙键盘</h2><p>日期：7.3<br>arduino很方便但是不支持c3</p>
-<p>idf 有两个hid device  人机交互设备的意思<br>ble里面的可以连接手机  并且控制音量和播放暂停 以及控制输入法 但是不能够连接我的电脑<br>ble里面的支持c3<br>外面的就不支持c3  因为 c3好像不支持经典蓝牙</p>
-<p>python的sendkeys不能够弹响我的钢琴</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/" data-id="cl56nc2an00029cv784sk3jor" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,140 +541,11 @@
 
 
   
-    <article id="post-5-15无刷电机" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" class="article-date">
-  <time datetime="2022-05-15T14:10:18.000Z" itemprop="datePublished">2022-05-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/">5-15无刷电机</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.无刷电机有上下桥臂，上下桥臂不能够同时导通，用驱动板驱动无刷电机，使用PWM驱动还是？</p>
-<p>2.按键的判断并不容易，如果放在while循环里面说没检测到一次低电平就切换状态，就算消抖了，也会相当于发生了很多次，最后只有二分之一的概率落在彼此</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/15/5-15%E6%97%A0%E5%88%B7%E7%94%B5%E6%9C%BA/" data-id="cl3v46dtn0003lsv7b4iffpm8" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-esp32" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/14/esp32/" class="article-date">
-  <time datetime="2022-05-14T15:52:45.000Z" itemprop="datePublished">2022-05-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/14/esp32/">esp32</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.其中 GPIO 34­39 仅用作输入管脚，</p>
-<p>2.串口下载<br>首先3.3V 给开发板供电，然后接地，注意idf.py menuconfig里面的console设置为defalut usart0<br>然后IO0接地  EN给高电平（给低电平会复位）   然后strapping管脚（esp32-&gt;IO2,   esp32s3-&gt;IO46)也要对应低电平（好像不是必须的）<br>RST和BOOT是可以正常使用的。<br>如果第一次就不可以正常烧录，RST一下，注意要RST前就要拉低IO0。所以怀疑烧录的本质就是先拉底IO0,然后重启。<br>一般会出现下载一次之后无法再下载的问题，此时拔下重插电源即可 ，怀疑是EN没给低电平 没复位</p>
-<p>#MAC 获取无：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span> *mac[<span class="number">8</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">char</span> ok[<span class="number">12</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">esp_efuse_mac_get_default(&amp;mac) ;</span><br><span class="line"><span class="built_in">sprintf</span>(ok,<span class="string">&quot;%02x%02x&quot;</span>,(<span class="type">int</span>)mac[<span class="number">0</span>],(<span class="type">int</span>)mac[<span class="number">1</span>]);</span><br><span class="line">mac_addr[<span class="number">0</span>]=ok[<span class="number">6</span>];</span><br><span class="line">mac_addr[<span class="number">1</span>]=ok[<span class="number">7</span>];</span><br><span class="line">mac_addr[<span class="number">2</span>]=ok[<span class="number">4</span>];</span><br><span class="line">mac_addr[<span class="number">3</span>]=ok[<span class="number">5</span>];</span><br><span class="line">mac_addr[<span class="number">4</span>]=ok[<span class="number">2</span>];</span><br><span class="line">mac_addr[<span class="number">5</span>]=ok[<span class="number">3</span>];</span><br><span class="line">mac_addr[<span class="number">6</span>]=ok[<span class="number">0</span>];</span><br><span class="line">mac_addr[<span class="number">7</span>]=ok[<span class="number">1</span>];</span><br><span class="line">mac_addr[<span class="number">8</span>]=ok[<span class="number">10</span>];</span><br><span class="line">mac_addr[<span class="number">9</span>]=ok[<span class="number">11</span>];</span><br><span class="line">mac_addr[<span class="number">10</span>]=ok[<span class="number">8</span>];</span><br><span class="line">mac_addr[<span class="number">11</span>]=ok[<span class="number">9</span>];</span><br><span class="line"><span class="built_in">sprintf</span>(payload,<span class="string">&quot;dd:%.*s&quot;</span>,<span class="number">12</span>,mac_addr);</span><br><span class="line">ESP_LOGI(TAG,<span class="string">&quot;%s&quot;</span>,payload);</span><br></pre></td></tr></table></figure>
-
-<p>时间获取</p>
-<p>(66条消息) 【ESP32-IDF】 05-3 WIFI-esp32获取网络时间_Ciaran-byte的博客-CSDN博客_esp32获取网络时间<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41741344/article/details/118613486">https://blog.csdn.net/qq_41741344/article/details/118613486</a></p>
-<p>连接本地就直接输入ip4地址即可<br>若要和 域名之类的服务器建立tcp连接</p>
-<p>要先dns解析！！！</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">       <span class="comment">// 1、定义一个hints结构体，用来设置函数的getaddrinfo()的使用方式</span></span><br><span class="line">   <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span> =</span> &#123;</span><br><span class="line">       .ai_family = AF_INET,           <span class="comment">/* 指定返回地址的协议簇，AF_INET(IPv4)、AF_INET6(IPv6)、AF_UNSPEC(IPv4 and IPv6)*/</span></span><br><span class="line">       .ai_socktype = SOCK_STREAM,     <span class="comment">/* 设定返回地址的socket类型，流式套接字 */</span>     </span><br><span class="line">   &#125;;</span><br><span class="line"><span class="comment">// 2、使用getaddrinfo()开始解析,定义一个struct addrinfo结构体指针，用来获取解析结果</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> *<span class="title">result</span>;</span></span><br><span class="line">   <span class="type">int</span> err;</span><br><span class="line">   err = getaddrinfo(<span class="string">&quot;espslr.maxhom.com&quot;</span>, <span class="string">&quot;8591&quot;</span>, &amp;hints, &amp;result);</span><br><span class="line">   <span class="keyword">if</span>(err != <span class="number">0</span>)        <span class="comment">/* 返回值不为0，函数执行失败*/</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;getaddrinfo err: %d \n&quot;</span>,err);</span><br><span class="line">       	<span class="comment">// 3、将获取到的信息打印出来</span></span><br><span class="line">   <span class="type">char</span> buf[<span class="number">100</span>];                      <span class="comment">/* 用来存储IP地址字符串 */</span></span><br><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span>  *<span class="title">ipv4</span> =</span> <span class="literal">NULL</span>;   <span class="comment">/* IPv4地址结构体指针 */</span></span><br><span class="line">   <span class="keyword">if</span>(result-&gt;ai_family == AF_INET) </span><br><span class="line">   &#123;</span><br><span class="line">       ipv4 = (<span class="keyword">struct</span> sockaddr_in *)result-&gt;ai_addr;</span><br><span class="line">       inet_ntop(result-&gt;ai_family, &amp;ipv4-&gt;sin_addr, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;[IPv4-]%s [port]%d \n&quot;</span>,buf,ntohs(ipv4-&gt;sin_port));</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;got IPv4 err !!!\n&quot;</span>);</span><br><span class="line">   <span class="comment">// 4、释放addrinfo 内存</span></span><br><span class="line">   freeaddrinfo(result);    </span><br></pre></td></tr></table></figure>
-
-<p>#tcp客户端  与服务器断开之后重连的方法:<br>就是要关闭sock不然一直请求就会不行</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (err == <span class="number">-1</span>) &#123;</span><br><span class="line">     shutdown(sock, <span class="number">0</span>);</span><br><span class="line">      close(sock);</span><br><span class="line">      ESP_LOGE(TAG, <span class="string">&quot;Socket unable to connect: errno %d&quot;</span>, errno);</span><br><span class="line">      sock =  socket(addr_family, SOCK_STREAM, ip_protocol);</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">      err = connect(sock, (<span class="keyword">struct</span> sockaddr *)&amp;dest_addr, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in6));</span><br><span class="line">      vTaskDelay(<span class="number">500</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<p>另外这个是阻塞式的<br>int len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);<br>读不到一直读</p>
-<p>#gpio中断读取上升和下降沿之间的时间</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> IRAM_ATTR <span class="title function_">gpio_isr_handler</span><span class="params">(<span class="type">void</span>* arg)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">   gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_POSEDGE);</span><br><span class="line">   time_now_before[<span class="number">0</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span>&#123;</span><br><span class="line">       gpio_set_intr_type(GPIO_INPUT_IO_1, GPIO_INTR_NEGEDGE);</span><br><span class="line">   time_now_before[<span class="number">1</span>] = esp_timer_get_time();</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="type">uint32_t</span> gpio_num = (<span class="type">uint32_t</span>) arg;</span><br><span class="line">    xQueueSendFromISR(gpio_evt_queue, &amp;gpio_num, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/14/esp32/" data-id="cl3v46dub000alsv75f8p3xod" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mcp23017" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/13/mcp23017/" class="article-date">
-  <time datetime="2022-05-13T04:38:10.000Z" itemprop="datePublished">2022-05-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/mcp23017/">mcp23017</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.bank=0是指的IIC协议<br>2.IODIR就是用来决定输出还是输入   默认是输入<br>3。若想设置上拉输出的话  GPPU寄存器<br>4.若想写高低电平 就用GPIO    若想读GPIO也用读GPIO<br>下面是写</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">     	i2c_master_start(cmd);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Set all as outputs on A</span></span><br><span class="line">     	i2c_master_stop(cmd);</span><br><span class="line">     i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">     	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">         cmd = i2c_cmd_link_create();</span><br><span class="line">     	i2c_master_start(cmd);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0x12</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">     	i2c_master_write_byte(cmd, <span class="number">0xF0</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">     	i2c_master_stop(cmd);</span><br><span class="line">     i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">     	i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
-<p>下面是读</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">       <span class="type">i2c_cmd_handle_t</span>  cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x00</span>, ACK_CHECK_EN);<span class="comment">//Access IODIRA</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//FF就是全输入</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line">            cmd = i2c_cmd_link_create();</span><br><span class="line">        	i2c_master_start(cmd);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | WRITE_BIT, ACK_CHECK_EN);</span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0x0C</span>, ACK_CHECK_EN);<span class="comment">//Access GPPU</span></span><br><span class="line">        	i2c_master_write_byte(cmd, <span class="number">0xFF</span>, ACK_CHECK_EN);<span class="comment">//全部上拉</span></span><br><span class="line">        	i2c_master_stop(cmd);</span><br><span class="line">            i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">        	i2c_cmd_link_delete(cmd);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//下面读取输入的值</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> data=<span class="number">11</span>;</span><br><span class="line">    cmd = i2c_cmd_link_create();</span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_WRITE, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0X12</span>, ACK_CHECK_EN);<span class="comment">//</span></span><br><span class="line">    i2c_master_start(cmd);</span><br><span class="line">    i2c_master_write_byte(cmd, <span class="number">0x20</span> &lt;&lt; <span class="number">1</span> | I2C_MASTER_READ, ACK_CHECK_EN);</span><br><span class="line">    i2c_master_read(cmd, &amp;data, <span class="number">100</span>, I2C_MASTER_LAST_NACK);<span class="comment">//</span></span><br><span class="line">    i2c_master_stop(cmd);</span><br><span class="line">    i2c_master_cmd_begin(I2C_NUM_1, cmd, <span class="number">1000</span> / portTICK_RATE_MS);</span><br><span class="line">    i2c_cmd_link_delete(cmd);</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/13/mcp23017/" data-id="cl3v46duj000clsv7atv26mny" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -501,7 +578,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -514,23 +591,23 @@
       <ul>
         
           <li>
+            <a href="/2022/08/31/ES8311/">ES8311</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98%E5%92%8C%E6%9C%89%E7%BA%BF/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/I2S/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/19/5.8-LVGL/">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/23/%E6%95%B0%E7%A0%81%E7%AE%A1/">数码管 74HC595</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/22/esp32-spi/">esp32 spi st7735</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/04/BS8112%E8%A7%A6%E6%91%B8%E8%8A%AF%E7%89%87/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/07/03/%E8%93%9D%E7%89%99%E9%94%AE%E7%9B%98/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/22/%E6%8E%89%E7%94%B5%E5%AD%98%E5%82%A8/">掉电存储</a>
           </li>
         
       </ul>
@@ -545,7 +622,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2022 Castiel<br>
+      &copy; 2023 Castiel<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
