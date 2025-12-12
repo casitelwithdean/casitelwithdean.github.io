@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grand Luxury Photo Tree</title>
     <style>
+        /* 原有的CSS样式保持不变 */
         body {
             margin: 0;
             overflow: hidden;
@@ -367,12 +368,10 @@
         let handLandmarker, video, webcamCanvas, webcamCtx;
         let caneTexture;
 
-        // 新增：从photo文件夹加载图片的函数
+        // 新增：从photo文件夹加载图片的函数（简化版）
         async function loadPhotosFromFolder() {
-            try {
-                // 获取photo文件夹下的所有图片
-                // 注意：浏览器出于安全限制，不能直接读取本地文件夹
-                // 这里使用假设的图片列表方式
+            return new Promise((resolve) => {
+                // 先尝试加载预定义的图片路径
                 const photoList = [
                     'photo/photo1.jpg',
                     'photo/photo2.jpg',
@@ -384,90 +383,107 @@
                     'photo/photo8.jpg'
                 ];
                 
-                // 如果实际服务器上有photo文件夹，可以使用这种方式
-                // 这里模拟加载过程
-                
-                // 显示加载进度
-                const loader = document.getElementById('loader');
                 const loaderText = document.querySelector('.loader-text');
-                
+                const textureLoader = new THREE.TextureLoader();
                 let loadedCount = 0;
-                const totalPhotos = photoList.length;
                 
-                for (const photoPath of photoList) {
-                    try {
-                        // 使用相对路径加载图片
-                        const textureLoader = new THREE.TextureLoader();
+                // 为每个图片加载添加超时处理
+                const loadPromises = photoList.map((photoPath, index) => {
+                    return new Promise((imgResolve) => {
+                        // 设置超时（5秒）
+                        const timeoutId = setTimeout(() => {
+                            console.warn(`加载超时: ${photoPath}`);
+                            imgResolve();
+                        }, 5000);
                         
-                        // 使用Promise包装加载过程，以便处理错误
-                        await new Promise((resolve, reject) => {
-                            textureLoader.load(
-                                photoPath,
-                                (texture) => {
-                                    texture.colorSpace = THREE.SRGBColorSpace;
-                                    addPhotoToScene(texture);
-                                    loadedCount++;
-                                    
-                                    // 更新加载文本
-                                    loaderText.textContent = `Loading Christmas Memory (${loadedCount}/${totalPhotos})`;
-                                    
-                                    resolve();
-                                },
-                                undefined,
-                                (error) => {
-                                    console.warn(`Failed to load ${photoPath}:`, error);
-                                    resolve(); // 继续加载其他图片
-                                }
-                            );
-                        });
-                        
-                        // 短暂延迟，避免加载过快
-                        await new Promise(resolve => setTimeout(resolve, 100));
-                    } catch (err) {
-                        console.warn(`Error loading ${photoPath}:`, err);
-                    }
-                }
+                        textureLoader.load(
+                            photoPath,
+                            (texture) => {
+                                clearTimeout(timeoutId);
+                                texture.colorSpace = THREE.SRGBColorSpace;
+                                addPhotoToScene(texture);
+                                loadedCount++;
+                                loaderText.textContent = `加载照片 ${loadedCount}/${photoList.length}`;
+                                imgResolve();
+                            },
+                            undefined,
+                            (error) => {
+                                clearTimeout(timeoutId);
+                                console.warn(`无法加载 ${photoPath}:`, error);
+                                imgResolve();
+                            }
+                        );
+                    });
+                });
                 
-                // 加载完成后恢复默认文本
-                loaderText.textContent = 'Loading Christmas Memory';
-                
-                console.log(`成功加载了 ${loadedCount} 张照片`);
-                
-                // 如果没有加载到任何照片，使用默认照片
-                if (loadedCount === 0) {
-                    console.log('未找到photo文件夹中的图片，仅显示默认照片');
-                }
-                
-            } catch (error) {
-                console.error('Error loading photos from folder:', error);
-            }
+                // 等待所有图片加载完成（无论成功还是失败）
+                Promise.all(loadPromises).then(() => {
+                    console.log(`成功加载了 ${loadedCount} 张照片`);
+                    loaderText.textContent = '准备圣诞树...';
+                    resolve();
+                });
+            });
         }
 
         async function init() {
-            initThree();
-            setupEnvironment();
-            setupLights();
-            createTextures();
-            createParticles();
-            createDust();
-            createDefaultPhotos();
-            
-            // 新增：从photo文件夹加载图片
-            await loadPhotosFromFolder();
-            
-            setupPostProcessing();
-            setupEvents();
-            await initMediaPipe();
+            try {
+                initThree();
+                setupEnvironment();
+                setupLights();
+                createTextures();
+                createParticles();
+                createDust();
+                createDefaultPhotos();
+                
+                // 新增：从photo文件夹加载图片（添加超时保护）
+                const loader = document.getElementById('loader');
+                const loaderText = document.querySelector('.loader-text');
+                
+                // 设置总超时时间（10秒）
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('加载超时，请检查网络连接')), 10000);
+                });
+                
+                try {
+                    loaderText.textContent = '加载照片...';
+                    await Promise.race([loadPhotosFromFolder(), timeoutPromise]);
+                } catch (error) {
+                    console.warn('照片加载超时或失败:', error);
+                    loaderText.textContent = '使用默认照片...';
+                    // 继续使用已有的默认照片
+                }
+                
+                setupPostProcessing();
+                setupEvents();
+                
+                // 尝试初始化MediaPipe，但不阻塞主流程
+                setTimeout(async () => {
+                    try {
+                        await initMediaPipe();
+                    } catch (error) {
+                        console.warn('MediaPipe初始化失败:', error);
+                    }
+                }, 1000);
 
-            const loader = document.getElementById('loader');
-            loader.style.opacity = 0;
-            setTimeout(() => loader.remove(), 800);
+                // 隐藏加载界面
+                loader.style.opacity = 0;
+                setTimeout(() => {
+                    if (loader.parentNode) {
+                        loader.remove();
+                    }
+                }, 800);
 
-            animate();
-            
-            // 检测移动设备
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                document.getElementById('mobile-hint').style.display = 'block';
+                animate();
+                
+                // 检测移动设备
+                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    document.getElementById('mobile-hint').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('初始化失败:', error);
+                const loaderText = document.querySelector('.loader-text');
+                loaderText.textContent = '初始化失败，请刷新页面';
+                loaderText.style.color = '#ff6666';
             }
         }
 
@@ -1058,6 +1074,7 @@
             composer.render();
         }
 
+        // 立即开始初始化
         init();
     </script>
 </body>
