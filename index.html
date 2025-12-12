@@ -367,6 +367,82 @@
         let handLandmarker, video, webcamCanvas, webcamCtx;
         let caneTexture;
 
+        // 新增：从photo文件夹加载图片的函数
+        async function loadPhotosFromFolder() {
+            try {
+                // 获取photo文件夹下的所有图片
+                // 注意：浏览器出于安全限制，不能直接读取本地文件夹
+                // 这里使用假设的图片列表方式
+                const photoList = [
+                    'photo/photo1.jpg',
+                    'photo/photo2.jpg',
+                    'photo/photo3.jpg',
+                    'photo/photo4.jpg',
+                    'photo/photo5.jpg',
+                    'photo/photo6.jpg',
+                    'photo/photo7.jpg',
+                    'photo/photo8.jpg'
+                ];
+                
+                // 如果实际服务器上有photo文件夹，可以使用这种方式
+                // 这里模拟加载过程
+                
+                // 显示加载进度
+                const loader = document.getElementById('loader');
+                const loaderText = document.querySelector('.loader-text');
+                
+                let loadedCount = 0;
+                const totalPhotos = photoList.length;
+                
+                for (const photoPath of photoList) {
+                    try {
+                        // 使用相对路径加载图片
+                        const textureLoader = new THREE.TextureLoader();
+                        
+                        // 使用Promise包装加载过程，以便处理错误
+                        await new Promise((resolve, reject) => {
+                            textureLoader.load(
+                                photoPath,
+                                (texture) => {
+                                    texture.colorSpace = THREE.SRGBColorSpace;
+                                    addPhotoToScene(texture);
+                                    loadedCount++;
+                                    
+                                    // 更新加载文本
+                                    loaderText.textContent = `Loading Christmas Memory (${loadedCount}/${totalPhotos})`;
+                                    
+                                    resolve();
+                                },
+                                undefined,
+                                (error) => {
+                                    console.warn(`Failed to load ${photoPath}:`, error);
+                                    resolve(); // 继续加载其他图片
+                                }
+                            );
+                        });
+                        
+                        // 短暂延迟，避免加载过快
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    } catch (err) {
+                        console.warn(`Error loading ${photoPath}:`, err);
+                    }
+                }
+                
+                // 加载完成后恢复默认文本
+                loaderText.textContent = 'Loading Christmas Memory';
+                
+                console.log(`成功加载了 ${loadedCount} 张照片`);
+                
+                // 如果没有加载到任何照片，使用默认照片
+                if (loadedCount === 0) {
+                    console.log('未找到photo文件夹中的图片，仅显示默认照片');
+                }
+                
+            } catch (error) {
+                console.error('Error loading photos from folder:', error);
+            }
+        }
+
         async function init() {
             initThree();
             setupEnvironment();
@@ -375,6 +451,10 @@
             createParticles();
             createDust();
             createDefaultPhotos();
+            
+            // 新增：从photo文件夹加载图片
+            await loadPhotosFromFolder();
+            
             setupPostProcessing();
             setupEvents();
             await initMediaPipe();
