@@ -189,7 +189,7 @@
                 const photoPath = `photo/${fileName}`;
                 
                 try {
-                    const img = await loadImageWithTimeout(photoPath, 1000);
+                    const img = await loadImageWithTimeout(photoPath, 50);
                     if (img) {
                         addPhotoMesh(img);
                         loadedCount++;
