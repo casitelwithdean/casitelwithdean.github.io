@@ -209,70 +209,6 @@
             wrapper.classList.toggle('hide-ui');
         };
 
-        // 加载photo文件夹中的图片
-        async function loadPhotoFolderImages() {
-            const statusText = document.getElementById('status-text');
-            let loadedCount = 0;
-            const maxAttempts = 20; // 尝试加载最多20张图片
-            
-            // 定义可能的图片文件名模式
-            const filePatterns = [];
-            
-            // 添加photo1.jpg到photo20.jpg
-            for (let i = 1; i <= maxAttempts; i++) {
-                filePatterns.push(`photo${i}.jpg`);
-                filePatterns.push(`photo${i}.jpeg`);
-                filePatterns.push(`photo${i}.png`);
-                filePatterns.push(`photo${i}.JPG`);
-                filePatterns.push(`photo${i}.JPEG`);
-                filePatterns.push(`photo${i}.PNG`);
-            }
-            
-            // 添加一些常见的命名
-            filePatterns.push('photo.jpg', 'image.jpg', 'img.jpg', 'pic.jpg', 'picture.jpg');
-            
-            // 尝试加载每个文件
-            for (const fileName of filePatterns) {
-                try {
-                    const imgUrl = `photo/${fileName}`;
-                    const img = await loadImage(imgUrl);
-                    if (img) {
-                        addPhotoMesh(img);
-                        loadedCount++;
-                        console.log(`已加载图片: ${fileName}`);
-                    }
-                } catch (error) {
-                    // 文件不存在是预期的，这里静默失败
-                }
-            }
-            
-            if (loadedCount > 0) {
-                console.log(`成功加载了 ${loadedCount} 张照片`);
-                statusText.innerHTML = `系统就绪，已加载 ${loadedCount} 张照片`;
-            } else {
-                console.log('photo文件夹中没有找到图片，请上传照片');
-                statusText.innerHTML = "系统就绪，请上传或添加照片";
-            }
-        }
-
-        // 加载图片的辅助函数
-        function loadImage(src) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => resolve(img);
-                img.onerror = () => reject(new Error(`无法加载图片: ${src}`));
-                img.src = src;
-                
-                // 设置超时，避免长时间等待
-                setTimeout(() => {
-                    if (!img.complete) {
-                        reject(new Error('图片加载超时'));
-                    }
-                }, 1000);
-            });
-        }
-
         function initThree() {
             const container = document.getElementById('canvas-container');
             const wrapper = document.getElementById('canvas-wrapper');
@@ -789,7 +725,6 @@
 
         initThree();
         animate();
-        loadPhotoFolderImages(); // 自动加载photo文件夹中的图片
         setupMediaPipe();
     </script>
 </body>
