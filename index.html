@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jewel Christmas Tree - 静态照片版</title>
+    <title>Jewel Christmas Tree</title>
     <style>
         body { 
             margin: 0; 
@@ -15,47 +15,39 @@
             align-items: center;
             height: 100vh;
         }
-
         #canvas-wrapper {
             position: relative;
             box-shadow: 0 0 50px rgba(255, 215, 0, 0.1);
             background: #000;
         }
-
         #canvas-container { 
             width: 100%; 
             height: 100%; 
             display: block;
         }
-        
         #video-container {
             position: absolute; top: 20px; right: 20px; width: 160px; height: 120px; z-index: 2;
             border: none; border-radius: 8px; overflow: visible;
             transform: scaleX(-1); background: transparent; box-shadow: none; 
             transition: opacity 0.5s; 
         }
-
         #input-video { 
             width: 100%; height: 100%; object-fit: cover; 
             opacity: 0; position: absolute; top: 0; left: 0;
         }
-        
         #skeleton-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; pointer-events: none;
         }
-
         #ui-layer {
             position: absolute; top: 30px; left: 30px; z-index: 3; pointer-events: none;
             color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8);
             transition: opacity 0.5s;
         }
-
         h1 {
             font-weight: 200; letter-spacing: 4px; text-transform: uppercase; font-size: 2.2rem; margin: 0 0 15px 0;
             background: linear-gradient(to right, #fff, #d4af37, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
         .instructions {
             font-size: 0.9rem; color: #eee; line-height: 1.8; max-width: 320px;
             background: rgba(20, 20, 20, 0.7); padding: 15px; border-radius: 8px;
@@ -64,7 +56,6 @@
         }
         .highlight { color: #d4af37; font-weight: bold; }
         #status-text { margin-bottom: 10px; font-size: 1rem; color: #fff; font-weight: bold; }
-
         #upload-btn {
             pointer-events: auto; background: linear-gradient(45deg, #444, #666); border: 1px solid #888;
             color: #fff; padding: 10px 24px; cursor: pointer; text-transform: uppercase;
@@ -73,13 +64,11 @@
         }
         #upload-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.5); }
         #file-input { display: none; }
-        
         #loading {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #d4af37; font-size: 1.2rem; letter-spacing: 3px; z-index: 10; 
             pointer-events: none; transition: opacity 0.5s;
         }
-
         #fullscreen-btn {
             position: absolute; top: 30px; right: 200px; z-index: 20;
             background: rgba(0,0,0,0.5); color: #d4af37; border: 1px solid #d4af37;
@@ -88,16 +77,9 @@
             font-size: 1.2rem; transition: all 0.3s;
         }
         #fullscreen-btn:hover { background: #d4af37; color: #000; }
-
         .hide-ui #ui-layer, .hide-ui #upload-btn { opacity: 0; pointer-events: none; }
         .hide-ui #fullscreen-btn { opacity: 0.3; }
         .hide-ui #fullscreen-btn:hover { opacity: 1; }
-        
-        .photo-counter {
-            position: absolute; bottom: 30px; left: 30px; z-index: 3;
-            color: #d4af37; font-size: 0.9rem; background: rgba(0,0,0,0.7);
-            padding: 8px 15px; border-radius: 15px; border: 1px solid rgba(255,215,0,0.3);
-        }
     </style>
     <script type="importmap">
         {
@@ -111,17 +93,14 @@
 <body>
     <div id="canvas-wrapper">
         <div id="canvas-container"></div>
-        
         <div id="video-container">
             <video id="input-video" autoplay playsinline muted></video>
             <canvas id="skeleton-canvas"></canvas>
         </div>
-
         <button id="fullscreen-btn" onclick="toggleUI()" title="切换沉浸模式">⛶</button>
-
         <div id="ui-layer">
             <h1>Jewel Christmas</h1>
-            <div id="status-text">正在加载photo1.jpg到photo20.jpg...</div>
+            <div id="status-text">正在加载20张预设照片...</div>
             <div class="instructions">
                 • <span class="highlight">握拳</span> : 聚合成树<br/>
                 • <span class="highlight">张开手</span> : 星云散开<br/>
@@ -131,8 +110,6 @@
             <button id="upload-btn" onclick="document.getElementById('file-input').click()">上传额外照片</button>
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
-        
-        <div class="photo-counter" id="photo-counter">加载中...</div>
         <div id="loading">CRAFTING JEWELS...</div>
     </div>
 
@@ -144,14 +121,15 @@
         import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
         import { FilesetResolver, HandLandmarker } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0';
 
-        // --- Config ---
+        // --- 配置：直接假设这20张照片存在 ---
+        const PHOTO_PATHS = [];
+        for (let i = 1; i <= 20; i++) {
+            PHOTO_PATHS.push(`photo/photo${i}.jpg`);
+        }
+
         const CONFIG = {
             goldCount: 600, silverCount: 600, gemCount: 400, emeraldCount: 400,
-            dustCount: 1200, treeHeight: 75, maxRadius: 30,
-            photoNames: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg', 'photo5.jpg', 
-                        'photo6.jpg', 'photo7.jpg', 'photo8.jpg', 'photo9.jpg', 'photo10.jpg',
-                        'photo11.jpg', 'photo12.jpg', 'photo13.jpg', 'photo14.jpg', 'photo15.jpg',
-                        'photo16.jpg', 'photo17.jpg', 'photo18.jpg', 'photo19.jpg', 'photo20.jpg']
+            dustCount: 1200, treeHeight: 75, maxRadius: 30
         };
 
         const STATE = { TREE: 'tree', SCATTER: 'scatter', ZOOM: 'zoom' };
@@ -175,87 +153,122 @@
             document.getElementById('canvas-wrapper').classList.toggle('hide-ui');
         };
 
-        // --- 核心：加载photo1.jpg到photo20.jpg ---
-        async function loadStaticPhotos() {
+        // --- 核心：直接加载20张照片，不检查是否存在 ---
+        function loadPhotosDirectly() {
             const statusText = document.getElementById('status-text');
-            const photoCounter = document.getElementById('photo-counter');
             let loadedCount = 0;
-            let foundCount = 0;
+            let failedCount = 0;
             
-            statusText.innerHTML = "正在加载静态照片 (photo1.jpg - photo20.jpg)...";
+            statusText.innerHTML = `正在加载预设的20张照片...`;
             
-            for (let i = 0; i < CONFIG.photoNames.length; i++) {
-                const fileName = CONFIG.photoNames[i];
-                const photoPath = `photo/${fileName}`;
-                
-                try {
-                    const img = await loadImageWithTimeout(photoPath, 100);
-                    if (img) {
-                        addPhotoMesh(img);
+            // 使用Promise.all同时加载所有图片
+            const loadPromises = PHOTO_PATHS.map((path, index) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    
+                    // 设置超时时间更长（3秒）
+                    const timeoutId = setTimeout(() => {
+                        img.onload = img.onerror = null;
+                        console.log(`⏱️ ${path} 加载超时`);
+                        failedCount++;
+                        resolve(null);
+                    }, 3000);
+                    
+                    img.onload = () => {
+                        clearTimeout(timeoutId);
                         loadedCount++;
-                        console.log(`✅ 已加载: ${fileName}`);
-                    }
-                } catch (error) {
-                    console.log(`❌ 未找到: ${fileName}`);
+                        console.log(`✅ 已加载: ${path}`);
+                        addPhotoMesh(img);
+                        resolve(img);
+                    };
+                    
+                    img.onerror = () => {
+                        clearTimeout(timeoutId);
+                        console.log(`❌ 加载失败: ${path}`);
+                        failedCount++;
+                        resolve(null);
+                    };
+                    
+                    // 关键：直接加载，不检查是否存在
+                    img.src = path;
+                    
+                    // 添加随机查询参数避免缓存
+                    img.src = path + '?t=' + Date.now() + '&v=' + Math.random();
+                });
+            });
+            
+            // 所有图片加载完成后更新状态
+            Promise.all(loadPromises).then(() => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (loadedCount > 0) {
+                    statusText.innerHTML = `已加载 ${loadedCount} 张照片`;
+                    console.log(`🎉 成功加载 ${loadedCount}/20 张照片`);
+                } else {
+                    statusText.innerHTML = "系统就绪（未找到任何预设照片）";
+                    console.log("📁 未找到任何预设照片");
                 }
-                
-                // 更新计数器
-                foundCount = i + 1;
-                photoCounter.textContent = `扫描: ${foundCount}/20 | 找到: ${loadedCount}`;
-                
-                // 短暂延迟，避免请求过快
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-            
-            // 最终结果
-            if (loadedCount > 0) {
-                statusText.innerHTML = `系统就绪，已加载 ${loadedCount} 张照片`;
-                photoCounter.innerHTML = `✅ 已加载 <span style="color:#ffd700">${loadedCount}</span> 张照片`;
-                console.log(`🎉 成功加载 ${loadedCount}/20 张照片`);
-            } else {
-                statusText.innerHTML = "系统就绪（未找到任何照片）";
-                photoCounter.textContent = "⚠️ 未找到任何照片";
-                console.log("📁 未找到任何照片");
-            }
-            
-            // 5秒后隐藏计数器
-            setTimeout(() => {
-                photoCounter.style.opacity = '0';
-                photoCounter.style.transition = 'opacity 1s';
-            }, 5000);
-        }
-
-        // 带超时的图片加载函数
-        function loadImageWithTimeout(src, timeout) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                
-                let timer = setTimeout(() => {
-                    img.onload = img.onerror = null;
-                    reject(new Error('加载超时'));
-                }, timeout);
-                
-                img.onload = () => {
-                    clearTimeout(timer);
-                    resolve(img);
-                };
-                
-                img.onerror = () => {
-                    clearTimeout(timer);
-                    reject(new Error('加载失败'));
-                };
-                
-                img.src = src;
             });
         }
 
-        // --- Three.js初始化 ---
+        // --- 照片添加函数 ---
+        function addPhotoMesh(img) {
+            const tex = new THREE.Texture(img);
+            tex.needsUpdate = true;
+            tex.colorSpace = THREE.SRGBColorSpace;
+            
+            let w = 4, h = 4;
+            if (img.width > img.height) {
+                h = 4 * (img.height / img.width);
+            } else {
+                w = 4 * (img.width / img.height);
+            }
+
+            const geo = new THREE.PlaneGeometry(w, h);
+            const mat = new THREE.MeshBasicMaterial({ 
+                map: tex, 
+                side: THREE.DoubleSide, 
+                color: 0xcccccc 
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            // 添加金色边框
+            const frame = new THREE.Mesh(
+                new THREE.BoxGeometry(w + 0.2, h + 0.2, 0.1),
+                new THREE.MeshPhysicalMaterial({
+                    color: 0xffd700, roughness: 0.2, metalness: 1
+                })
+            );
+            frame.position.z = -0.06;
+            mesh.add(frame);
+
+            // 计算树形位置
+            const h_pos = (Math.random() - 0.5) * CONFIG.treeHeight;
+            const normH = (h_pos + CONFIG.treeHeight/2) / CONFIG.treeHeight;
+            const maxR = CONFIG.maxRadius * (1 - normH);
+            
+            const r = maxR * (0.3 + 0.6 * Math.sqrt(Math.random()));
+            const theta = Math.random() * Math.PI * 2;
+            
+            const treePos = new THREE.Vector3(r * Math.cos(theta), h_pos, r * Math.sin(theta));
+            const scatterPos = randomSpherePoint(50);
+
+            mesh.userData = {
+                treePos,
+                scatterPos,
+                baseRot: new THREE.Euler(0, Math.random() * Math.PI, 0)
+            };
+            mesh.position.copy(treePos);
+            photoMeshes.push(mesh);
+            mainGroup.add(mesh);
+        }
+
+        // --- 其他Three.js函数（保持原样）---
         function initThree() {
             const container = document.getElementById('canvas-container');
             const wrapper = document.getElementById('canvas-wrapper');
             
-            // 场景和相机
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x020202);
             updateDimensions();
@@ -263,7 +276,6 @@
             camera = new THREE.PerspectiveCamera(50, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000);
             camera.position.set(0, 0, 110);
             
-            // 渲染器
             renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
             renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
@@ -271,25 +283,21 @@
             renderer.toneMappingExposure = 1.0;
             container.appendChild(renderer.domElement);
             
-            // 环境光
             const pmremGenerator = new THREE.PMREMGenerator(renderer);
             scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambientLight);
             
-            // 主灯光
             const spotLight = new THREE.SpotLight(0xffddaa, 80);
             spotLight.position.set(30, 60, 50);
             spotLight.angle = Math.PI / 4;
             spotLight.penumbra = 1;
             scene.add(spotLight);
             
-            // 补光
             const blueLight = new THREE.PointLight(0xaaddff, 40, 100);
             blueLight.position.set(-30, -20, 30);
             scene.add(blueLight);
             
-            // 后期处理
             const renderScene = new RenderPass(scene, camera);
             const bloomPass = new UnrealBloomPass(
                 new THREE.Vector2(wrapper.clientWidth, wrapper.clientHeight), 1.5, 0.4, 0.85
@@ -302,7 +310,6 @@
             composer.addPass(renderScene);
             composer.addPass(bloomPass);
             
-            // 创建材质和网格
             createMaterialsAndMeshes();
             createDust();
             createStarField();
@@ -332,7 +339,6 @@
         }
 
         function createMaterialsAndMeshes() {
-            // 材质
             const goldMat = new THREE.MeshPhysicalMaterial({
                 color: 0xffaa00, metalness: 1.0, roughness: 0.15, clearcoat: 1.0, 
                 emissive: 0xaa5500, emissiveIntensity: 0.1
@@ -350,19 +356,16 @@
                 thickness: 1.5, emissive: 0x002211, emissiveIntensity: 0.2
             });
 
-            // 几何体
             const sphereGeo = new THREE.SphereGeometry(0.7, 16, 16);
             const boxGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
             const diamondGeo = new THREE.OctahedronGeometry(0.8, 0);
             const coneGeo = new THREE.ConeGeometry(0.5, 1.2, 8);
 
-            // 实例化网格
             goldMesh = createInstancedMesh(sphereGeo, goldMat, CONFIG.goldCount, logicData.gold);
             silverMesh = createInstancedMesh(boxGeo, silverMat, CONFIG.silverCount, logicData.silver);
             gemMesh = createInstancedMesh(diamondGeo, gemMat, CONFIG.gemCount, logicData.gem);
             emeraldMesh = createInstancedMesh(coneGeo, emeraldMat, CONFIG.emeraldCount, logicData.emerald);
 
-            // 树顶星星
             const star = new THREE.Mesh(
                 new THREE.OctahedronGeometry(3.0, 0),
                 new THREE.MeshPhysicalMaterial({ 
@@ -455,12 +458,10 @@
             scene.add(stars);
         }
 
-        // --- 动画循环 ---
         function animate() {
             requestAnimationFrame(animate);
             time += 0.01;
 
-            // 更新实例化网格
             updateInstancedMesh(goldMesh, logicData.gold);
             updateInstancedMesh(silverMesh, logicData.silver);
             updateInstancedMesh(gemMesh, logicData.gem);
@@ -469,7 +470,6 @@
             updateDust();
             updatePhotos();
             
-            // 更新星星
             if (logicData.star) {
                 let target = currentState === STATE.TREE ? 
                     logicData.star.userData.treePos : logicData.star.userData.scatterPos;
@@ -477,7 +477,6 @@
                 logicData.star.rotation.y += 0.01;
             }
 
-            // 状态逻辑
             if (currentState === STATE.ZOOM) {
                 rotationVelocity.x = 0;
                 rotationVelocity.y = 0;
@@ -621,7 +620,6 @@
             navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
                 video.srcObject = stream;
                 video.addEventListener("loadeddata", () => {
-                    document.getElementById('loading').style.display = 'none';
                     predictWebcam(handLandmarker, video);
                 });
             });
@@ -756,58 +754,6 @@
             composer.passes[1].resolution.set(dims.width, dims.height);
         }
 
-        // --- 照片添加函数 ---
-        function addPhotoMesh(img) {
-            const tex = new THREE.Texture(img);
-            tex.needsUpdate = true;
-            tex.colorSpace = THREE.SRGBColorSpace;
-            
-            let w = 4, h = 4;
-            if (img.width > img.height) {
-                h = 4 * (img.height / img.width);
-            } else {
-                w = 4 * (img.width / img.height);
-            }
-
-            const geo = new THREE.PlaneGeometry(w, h);
-            const mat = new THREE.MeshBasicMaterial({ 
-                map: tex, 
-                side: THREE.DoubleSide, 
-                color: 0xcccccc 
-            });
-            const mesh = new THREE.Mesh(geo, mat);
-            
-            // 添加金色边框
-            const frame = new THREE.Mesh(
-                new THREE.BoxGeometry(w + 0.2, h + 0.2, 0.1),
-                new THREE.MeshPhysicalMaterial({
-                    color: 0xffd700, roughness: 0.2, metalness: 1
-                })
-            );
-            frame.position.z = -0.06;
-            mesh.add(frame);
-
-            // 计算树形位置
-            const h_pos = (Math.random() - 0.5) * CONFIG.treeHeight;
-            const normH = (h_pos + CONFIG.treeHeight/2) / CONFIG.treeHeight;
-            const maxR = CONFIG.maxRadius * (1 - normH);
-            
-            const r = maxR * (0.3 + 0.6 * Math.sqrt(Math.random()));
-            const theta = Math.random() * Math.PI * 2;
-            
-            const treePos = new THREE.Vector3(r * Math.cos(theta), h_pos, r * Math.sin(theta));
-            const scatterPos = randomSpherePoint(50);
-
-            mesh.userData = {
-                treePos,
-                scatterPos,
-                baseRot: new THREE.Euler(0, Math.random() * Math.PI, 0)
-            };
-            mesh.position.copy(treePos);
-            photoMeshes.push(mesh);
-            mainGroup.add(mesh);
-        }
-
         // --- 文件上传处理 ---
         document.getElementById('file-input').addEventListener('change', function(e) {
             const files = e.target.files;
@@ -820,24 +766,16 @@
                     img.src = evt.target.result;
                     img.onload = () => {
                         addPhotoMesh(img);
-                        // 更新计数器
-                        const counter = document.getElementById('photo-counter');
-                        counter.style.opacity = '1';
-                        counter.innerHTML = `📸 已上传 <span style="color:#ffd700">${photoMeshes.length}</span> 张照片`;
                     };
                 };
                 reader.readAsDataURL(files[i]);
             }
-            
-            setTimeout(() => {
-                document.getElementById('photo-counter').style.opacity = '0';
-            }, 3000);
         });
 
         // --- 初始化 ---
         initThree();
         animate();
-        loadStaticPhotos(); // 加载静态照片
+        loadPhotosDirectly(); // 直接加载20张照片
         setupMediaPipe();
     </script>
 </body>
