@@ -5,28 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jewel Christmas Tree</title>
     <style>
-        /* [保持所有CSS样式不变] */
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Helvetica Neue', Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #canvas-wrapper { position: relative; box-shadow: 0 0 50px rgba(255, 215, 0, 0.1); background: #000; }
-        #canvas-container { width: 100%; height: 100%; display: block; }
-        #video-container { position: absolute; top: 20px; right: 20px; width: 160px; height: 120px; z-index: 2; border: none; border-radius: 8px; overflow: visible; transform: scaleX(-1); background: transparent; box-shadow: none; transition: opacity 0.5s; }
-        #input-video { width: 100%; height: 100%; object-fit: cover; opacity: 0; position: absolute; top: 0; left: 0; }
-        #skeleton-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
-        #ui-layer { position: absolute; top: 30px; left: 30px; z-index: 3; pointer-events: none; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: opacity 0.5s; }
-        h1 { font-weight: 200; letter-spacing: 4px; text-transform: uppercase; font-size: 2.2rem; margin: 0 0 15px 0; background: linear-gradient(to right, #fff, #d4af37, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .instructions { font-size: 0.9rem; color: #eee; line-height: 1.8; max-width: 320px; background: rgba(20, 20, 20, 0.7); padding: 15px; border-radius: 8px; border-left: 3px solid #d4af37; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #000; 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #canvas-wrapper {
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.1);
+            background: #000;
+        }
+        #canvas-container { 
+            width: 100%; 
+            height: 100%; 
+            display: block;
+        }
+        #video-container {
+            position: absolute; top: 20px; right: 20px; width: 160px; height: 120px; z-index: 2;
+            border: none; border-radius: 8px; overflow: visible;
+            transform: scaleX(-1); background: transparent; box-shadow: none; 
+            transition: opacity 0.5s; 
+        }
+        #input-video { 
+            width: 100%; height: 100%; object-fit: cover; 
+            opacity: 0; position: absolute; top: 0; left: 0;
+        }
+        #skeleton-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none;
+        }
+        #ui-layer {
+            position: absolute; top: 30px; left: 30px; z-index: 3; pointer-events: none;
+            color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            transition: opacity 0.5s;
+        }
+        h1 {
+            font-weight: 200; letter-spacing: 4px; text-transform: uppercase; font-size: 2.2rem; margin: 0 0 15px 0;
+            background: linear-gradient(to right, #fff, #d4af37, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .instructions {
+            font-size: 0.9rem; color: #eee; line-height: 1.8; max-width: 320px;
+            background: rgba(20, 20, 20, 0.7); padding: 15px; border-radius: 8px;
+            border-left: 3px solid #d4af37; backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
         .highlight { color: #d4af37; font-weight: bold; }
         #status-text { margin-bottom: 10px; font-size: 1rem; color: #fff; font-weight: bold; }
-        #upload-btn { pointer-events: auto; background: linear-gradient(45deg, #444, #666); border: 1px solid #888; color: #fff; padding: 10px 24px; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; margin-top: 25px; transition: 0.3s; letter-spacing: 1px; border-radius: 20px; }
+        #upload-btn {
+            pointer-events: auto; background: linear-gradient(45deg, #444, #666); border: 1px solid #888;
+            color: #fff; padding: 10px 24px; cursor: pointer; text-transform: uppercase;
+            font-size: 0.8rem; margin-top: 25px; transition: 0.3s; 
+            letter-spacing: 1px; border-radius: 20px;
+        }
         #upload-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.5); }
         #file-input { display: none; }
-        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #d4af37; font-size: 1.2rem; letter-spacing: 3px; z-index: 10; pointer-events: none; transition: opacity 0.5s; }
-        #fullscreen-btn { position: absolute; top: 30px; right: 200px; z-index: 20; background: rgba(0,0,0,0.5); color: #d4af37; border: 1px solid #d4af37; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.3s; }
+        #loading {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #d4af37; font-size: 1.2rem; letter-spacing: 3px; z-index: 10; 
+            pointer-events: none; transition: opacity 0.5s;
+        }
+        #fullscreen-btn {
+            position: absolute; top: 30px; right: 200px; z-index: 20;
+            background: rgba(0,0,0,0.5); color: #d4af37; border: 1px solid #d4af37;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: all 0.3s;
+        }
         #fullscreen-btn:hover { background: #d4af37; color: #000; }
         .hide-ui #ui-layer, .hide-ui #upload-btn { opacity: 0; pointer-events: none; }
         .hide-ui #fullscreen-btn { opacity: 0.3; }
         .hide-ui #fullscreen-btn:hover { opacity: 1; }
-        #debug-info { position: absolute; bottom: 10px; right: 10px; color: #aaa; font-size: 0.8rem; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 5px; display: none; }
     </style>
     <script type="importmap">
         {
@@ -47,7 +100,7 @@
         <button id="fullscreen-btn" onclick="toggleUI()" title="切换沉浸模式">⛶</button>
         <div id="ui-layer">
             <h1>Jewel Christmas</h1>
-            <div id="status-text">正在加载照片...</div>
+            <div id="status-text">正在加载20张预设照片...</div>
             <div class="instructions">
                 • <span class="highlight">握拳</span> : 聚合成树<br/>
                 • <span class="highlight">张开手</span> : 星云散开<br/>
@@ -58,7 +111,6 @@
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
         <div id="loading">CRAFTING JEWELS...</div>
-        <div id="debug-info"></div>
     </div>
 
     <script type="module">
@@ -69,11 +121,10 @@
         import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
         import { FilesetResolver, HandLandmarker } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0';
 
-        // --- 修复版：直接加载照片（无检查）---
+        // --- 配置：直接假设这20张照片存在 ---
         const PHOTO_PATHS = [];
         for (let i = 1; i <= 20; i++) {
-            // 使用正确的相对路径
-            PHOTO_PATHS.push(`./photo/photo${i}.jpg`);
+            PHOTO_PATHS.push(`photo/photo${i}.jpg`);
         }
 
         const CONFIG = {
@@ -102,94 +153,62 @@
             document.getElementById('canvas-wrapper').classList.toggle('hide-ui');
         };
 
-        // --- 修复版照片加载 ---
-        async function loadPhotosDirectly() {
+        // --- 核心：直接加载20张照片，不检查是否存在 ---
+        function loadPhotosDirectly() {
             const statusText = document.getElementById('status-text');
             let loadedCount = 0;
-            let errorCount = 0;
+            let failedCount = 0;
             
-            console.log('开始加载照片...');
-            statusText.innerHTML = `正在加载照片 (0/20)...`;
+            statusText.innerHTML = `正在加载预设的20张照片...`;
             
-            // 创建加载数组
-            const loadPromises = [];
-            
-            for (let i = 0; i < PHOTO_PATHS.length; i++) {
-                const path = PHOTO_PATHS[i];
-                const promise = loadSinglePhoto(path, i + 1);
-                loadPromises.push(promise);
-                
-                // 每张照片延迟50ms，避免请求过载
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-            
-            // 等待所有加载完成
-            const results = await Promise.allSettled(loadPromises);
-            
-            // 统计结果
-            results.forEach(result => {
-                if (result.status === 'fulfilled' && result.value) {
-                    loadedCount++;
-                } else {
-                    errorCount++;
-                }
+            // 使用Promise.all同时加载所有图片
+            const loadPromises = PHOTO_PATHS.map((path, index) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    
+                    // 设置超时时间更长（3秒）
+                    const timeoutId = setTimeout(() => {
+                        img.onload = img.onerror = null;
+                        console.log(`⏱️ ${path} 加载超时`);
+                        failedCount++;
+                        resolve(null);
+                    }, 3000);
+                    
+                    img.onload = () => {
+                        clearTimeout(timeoutId);
+                        loadedCount++;
+                        console.log(`✅ 已加载: ${path}`);
+                        addPhotoMesh(img);
+                        resolve(img);
+                    };
+                    
+                    img.onerror = () => {
+                        clearTimeout(timeoutId);
+                        console.log(`❌ 加载失败: ${path}`);
+                        failedCount++;
+                        resolve(null);
+                    };
+                    
+                    // 关键：直接加载，不检查是否存在
+                    img.src = path;
+                    
+                    // 添加随机查询参数避免缓存
+                    img.src = path + '?t=' + Date.now() + '&v=' + Math.random();
+                });
             });
             
-            // 更新状态
-            if (loadedCount > 0) {
-                statusText.innerHTML = `已加载 ${loadedCount} 张照片`;
-                console.log(`🎉 成功加载 ${loadedCount}/20 张照片，失败 ${errorCount} 张`);
-            } else {
-                statusText.innerHTML = "系统就绪（未找到任何照片）";
-                console.log("📁 未找到任何照片");
-            }
-            
-            // 隐藏加载提示
-            document.getElementById('loading').style.display = 'none';
-            
-            // 如果一张都没加载到，显示测试信息
-            if (loadedCount === 0) {
-                console.warn('所有照片加载失败，可能是路径问题');
-                console.log('尝试的路径示例:', PHOTO_PATHS[0]);
-                console.log('当前页面URL:', window.location.href);
-                console.log('请确认photo文件夹与index.html在同一目录');
-            }
-        }
-        
-        // 加载单张照片
-        function loadSinglePhoto(path, photoNum) {
-            return new Promise((resolve) => {
-                const img = new Image();
+            // 所有图片加载完成后更新状态
+            Promise.all(loadPromises).then(() => {
+                document.getElementById('loading').style.display = 'none';
                 
-                // 设置跨域属性
-                img.crossOrigin = 'anonymous';
-                
-                // 添加版本号避免缓存
-                const versionedPath = path + '?v=' + Date.now();
-                
-                // 设置超时（5秒）
-                const timeoutId = setTimeout(() => {
-                    console.log(`⏱️ photo${photoNum}.jpg 加载超时`);
-                    img.onload = img.onerror = null;
-                    resolve(null);
-                }, 5000);
-                
-                img.onload = () => {
-                    clearTimeout(timeoutId);
-                    console.log(`✅ 成功加载: photo${photoNum}.jpg`);
-                    addPhotoMesh(img);
-                    resolve(img);
-                };
-                
-                img.onerror = (error) => {
-                    clearTimeout(timeoutId);
-                    console.log(`❌ 加载失败: photo${photoNum}.jpg`, error);
-                    resolve(null);
-                };
-                
-                // 开始加载
-                console.log(`尝试加载: ${versionedPath}`);
-                img.src = versionedPath;
+                if (loadedCount > 0) {
+                    statusText.innerHTML = `已加载 ${loadedCount} 张照片`;
+                    console.log(`🎉 成功加载 ${loadedCount}/20 张照片`);
+                } else {
+                    statusText.innerHTML = "系统就绪（未找到任何预设照片）";
+                    console.log("📁 未找到任何预设照片");
+                }
             });
         }
 
@@ -243,27 +262,6 @@
             mesh.position.copy(treePos);
             photoMeshes.push(mesh);
             mainGroup.add(mesh);
-        }
-
-        // --- 测试函数：验证照片是否存在 ---
-        function testPhotoPaths() {
-            console.log('=== 照片路径测试 ===');
-            console.log('当前页面URL:', window.location.href);
-            console.log('尝试的路径:');
-            
-            PHOTO_PATHS.forEach((path, i) => {
-                const testUrl = new URL(path, window.location.href);
-                console.log(`photo${i+1}: ${testUrl.href}`);
-                
-                // 创建一个测试请求
-                fetch(testUrl.href, { method: 'HEAD' })
-                    .then(response => {
-                        console.log(`photo${i+1}: ${response.ok ? '✅ 存在' : '❌ 不存在'}`);
-                    })
-                    .catch(error => {
-                        console.log(`photo${i+1}: ❌ 请求失败`, error);
-                    });
-            });
         }
 
         // --- 其他Three.js函数（保持原样）---
@@ -777,14 +775,7 @@
         // --- 初始化 ---
         initThree();
         animate();
-        
-        // 启动照片加载
-        setTimeout(() => {
-            loadPhotosDirectly();
-            // 可选：运行路径测试
-            // testPhotoPaths();
-        }, 100);
-        
+        loadPhotosDirectly(); // 直接加载20张照片
         setupMediaPipe();
     </script>
 </body>
