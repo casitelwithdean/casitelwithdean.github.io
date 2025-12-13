@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jewel Christmas Tree - Skeleton Mode</title>
+    <title>Jewel Christmas Tree</title>
     <style>
         body { 
             margin: 0; 
@@ -16,7 +16,6 @@
             height: 100vh;
         }
 
-        /* 4:3 容器 */
         #canvas-wrapper {
             position: relative;
             box-shadow: 0 0 50px rgba(255, 215, 0, 0.1);
@@ -29,32 +28,27 @@
             display: block;
         }
         
-        /* --- 修改部分开始 --- */
-        /* 摄像头容器：右上角，改为透明背景，去掉了边框 */
         #video-container {
             position: absolute; top: 20px; right: 20px; width: 160px; height: 120px; z-index: 2;
-            /* 原来的背景和边框已移除/设为透明 */
             border: none; 
             border-radius: 8px; 
-            overflow: visible; /* 允许线条稍微溢出一点看起来更自然 */
+            overflow: visible;
             transform: scaleX(-1); 
-            background: transparent; /* 背景透明 */
-            box-shadow: none; /* 去掉阴影 */
+            background: transparent;
+            box-shadow: none; 
             transition: opacity 0.5s; 
         }
 
-        /* 原始视频流：设置为不可见 (opacity: 0)，只用于后台计算 */
         #input-video { 
             width: 100%; height: 100%; object-fit: cover; 
-            opacity: 0; /* 关键修改：完全透明 */
+            opacity: 0;
             position: absolute; top: 0; left: 0;
         }
-        /* --- 修改部分结束 --- */
 
         #skeleton-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10;
-            pointer-events: none; /* 确保不阻挡鼠标事件 */
+            pointer-events: none;
         }
 
         #ui-layer {
@@ -77,17 +71,20 @@
         .highlight { color: #d4af37; font-weight: bold; }
         #status-text { margin-bottom: 10px; font-size: 1rem; color: #fff; font-weight: bold; }
 
-        /* 移除上传按钮样式 */
         #upload-btn {
-            display: none; /* 隐藏上传按钮 */
+            pointer-events: auto; background: linear-gradient(45deg, #444, #666); border: 1px solid #888;
+            color: #fff; padding: 10px 24px; cursor: pointer; text-transform: uppercase;
+            font-size: 0.8rem; margin-top: 25px; transition: 0.3s; 
+            letter-spacing: 1px; border-radius: 20px;
         }
+        #upload-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+        #file-input { display: none; }
         
         #loading {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #d4af37; font-size: 1.2rem; letter-spacing: 3px; z-index: 10; pointer-events: none; transition: opacity 0.5s;
         }
 
-        /* 全屏按钮 */
         #fullscreen-btn {
             position: absolute; top: 30px; right: 200px; z-index: 20;
             background: rgba(0,0,0,0.5); color: #d4af37; border: 1px solid #d4af37;
@@ -97,7 +94,6 @@
         }
         #fullscreen-btn:hover { background: #d4af37; color: #000; }
 
-        /* 隐藏 UI 的类 */
         .hide-ui #ui-layer, 
         .hide-ui #upload-btn {
             opacity: 0;
@@ -110,6 +106,21 @@
         .hide-ui #fullscreen-btn:hover {
             opacity: 1;
         }
+        
+        #debug-info {
+            position: absolute; bottom: 10px; right: 10px;
+            color: #aaa; font-size: 0.7rem; background: rgba(0,0,0,0.7);
+            padding: 5px; border-radius: 5px; max-width: 300px;
+            display: none;
+        }
+        
+        #test-btn {
+            pointer-events: auto;
+            background: rgba(0,0,0,0.7); color: #4CAF50; border: 1px solid #4CAF50;
+            padding: 5px 10px; cursor: pointer; font-size: 0.7rem; margin-top: 10px;
+            border-radius: 10px; transition: 0.3s;
+        }
+        #test-btn:hover { background: #4CAF50; color: #000; }
     </style>
     <script type="importmap">
         {
@@ -134,16 +145,19 @@
 
         <div id="ui-layer">
             <h1>Jewel Christmas</h1>
-            <div id="status-text">系统初始化...</div>
+            <div id="status-text">正在加载照片...</div>
             <div class="instructions">
                 • <span class="highlight">握拳</span> : 聚合成树<br/>
                 • <span class="highlight">张开手</span> : 星云散开<br/>
-                • <span class="highlight">向右划动</span> : 惯性拨动 (像拨地球仪)<br/>
-                • <span class="highlight">捏合手指</span> : 抓取照片(已预加载20张)
+                • <span class="highlight">向右划动</span> : 惯性拨动<br/>
+                • <span class="highlight">捏合手指</span> : 抓取照片
             </div>
-            <!-- 移除上传按钮 -->
+            <button id="upload-btn" onclick="document.getElementById('file-input').click()">上传照片</button>
+            <button id="test-btn" onclick="testPhotoPaths()">测试照片路径</button>
+            <input type="file" id="file-input" multiple accept="image/*">
         </div>
         <div id="loading">CRAFTING JEWELS...</div>
+        <div id="debug-info"></div>
     </div>
 
     <script type="module">
@@ -154,7 +168,12 @@
         import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
         import { FilesetResolver, HandLandmarker } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0';
 
-        // --- Config ---
+        // === 照片配置 ===
+        // 定义要加载的照片数量
+        const TOTAL_PHOTOS = 20;
+        let loadedPhotosCount = 0;
+        
+        // === 主要配置 ===
         const CONFIG = {
             goldCount: 600,     // 金球
             silverCount: 600,   // 银方块
@@ -162,13 +181,11 @@
             emeraldCount: 400,  // 祖母绿
             dustCount: 1200,    // 氛围粒子
             treeHeight: 75,
-            maxRadius: 30,
-            photoCount: 20      // 预加载的照片数量
+            maxRadius: 30
         };
 
         const STATE = { TREE: 'tree', SCATTER: 'scatter', ZOOM: 'zoom' };
         let currentState = STATE.TREE;
-        let targetState = STATE.TREE;
         
         let scene, camera, renderer, composer;
         let mainGroup = new THREE.Group();
@@ -205,14 +222,203 @@
             wrapper.classList.toggle('hide-ui');
         };
 
+        // === 修复版：智能照片加载系统 ===
+        async function loadPhotos() {
+            const statusText = document.getElementById('status-text');
+            let loadedCount = 0;
+            let failedCount = 0;
+            
+            statusText.innerHTML = `正在加载照片 (0/${TOTAL_PHOTOS})...`;
+            
+            // 检查当前环境：本地还是GitHub Pages
+            const isGitHubPages = window.location.hostname.includes('github.io');
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            
+            console.log('当前环境:', isGitHubPages ? 'GitHub Pages' : '本地');
+            console.log('基础路径:', basePath);
+            
+            // 尝试加载每张照片
+            for (let i = 1; i <= TOTAL_PHOTOS; i++) {
+                const photoName = `photo${i}.jpg`;
+                
+                // 尝试多种可能的路径
+                const possiblePaths = [
+                    // GitHub Pages路径
+                    `${basePath}photo/photo${i}.jpg`,
+                    `${basePath}photo${i}.jpg`,
+                    // 相对路径
+                    `./photo/photo${i}.jpg`,
+                    `photo/photo${i}.jpg`,
+                    `./photo${i}.jpg`,
+                    `photo${i}.jpg`,
+                    // 绝对路径
+                    `/photo/photo${i}.jpg`,
+                    `/${photoName}`
+                ];
+                
+                let loaded = false;
+                
+                // 尝试所有可能的路径
+                for (const path of possiblePaths) {
+                    try {
+                        const img = await tryLoadImage(path, i);
+                        if (img) {
+                            addPhotoMesh(img);
+                            loaded = true;
+                            loadedCount++;
+                            console.log(`✅ 成功加载: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        // 继续尝试下一个路径
+                        continue;
+                    }
+                }
+                
+                if (!loaded) {
+                    failedCount++;
+                    console.log(`❌ 加载失败: photo${i}.jpg`);
+                }
+                
+                // 更新状态
+                statusText.innerHTML = `正在加载照片 (${loadedCount}/${TOTAL_PHOTOS})...`;
+                
+                // 每张照片之间稍微延迟，避免请求过载
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+            
+            // 加载完成
+            if (loadedCount > 0) {
+                statusText.innerHTML = `已加载 ${loadedCount} 张照片`;
+                console.log(`✅ 照片加载完成: ${loadedCount}/${TOTAL_PHOTOS} 成功`);
+                
+                // 如果照片太少，创建一些示例照片
+                if (loadedCount < 5) {
+                    createSamplePhotos(5 - loadedCount);
+                    statusText.innerHTML = `已加载 ${loadedCount} 张照片 + 示例照片`;
+                }
+            } else {
+                // 如果没有照片，创建示例照片
+                createSamplePhotos(8);
+                statusText.innerHTML = "使用示例照片 (请上传或添加照片)";
+                console.log("📁 未找到照片，使用示例照片");
+            }
+            
+            // 隐藏加载提示
+            document.getElementById('loading').style.display = 'none';
+            loadedPhotosCount = loadedCount;
+        }
+        
+        // 尝试加载单张图片
+        function tryLoadImage(path, photoNum) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                
+                // 设置超时
+                const timeoutId = setTimeout(() => {
+                    img.onload = img.onerror = null;
+                    reject(new Error('timeout'));
+                }, 3000);
+                
+                img.onload = () => {
+                    clearTimeout(timeoutId);
+                    resolve(img);
+                };
+                
+                img.onerror = () => {
+                    clearTimeout(timeoutId);
+                    reject(new Error('load error'));
+                };
+                
+                // 添加时间戳避免缓存
+                const versionedPath = path + '?v=' + Date.now();
+                img.src = versionedPath;
+            });
+        }
+        
+        // 创建示例照片（如果没有真实照片）
+        function createSamplePhotos(count) {
+            console.log(`创建 ${count} 张示例照片`);
+            
+            for (let i = 0; i < count; i++) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 300;
+                const ctx = canvas.getContext('2d');
+                
+                // 生成随机颜色
+                const hue = i * 360 / count;
+                const color = `hsl(${hue}, 70%, 50%)`;
+                
+                // 绘制简单图形
+                ctx.fillStyle = '#111';
+                ctx.fillRect(0, 0, 400, 300);
+                
+                ctx.fillStyle = color;
+                ctx.fillRect(50, 50, 300, 200);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Photo ${i+1}`, 200, 140);
+                
+                ctx.font = '16px Arial';
+                ctx.fillText('上传照片替换', 200, 180);
+                
+                const img = new Image();
+                img.onload = () => {
+                    addPhotoMesh(img);
+                };
+                img.src = canvas.toDataURL('image/jpeg');
+            }
+        }
+        
+        // === 测试照片路径 ===
+        window.testPhotoPaths = function() {
+            const debugDiv = document.getElementById('debug-info');
+            debugDiv.style.display = 'block';
+            debugDiv.innerHTML = '<strong>照片路径测试:</strong><br>';
+            
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const testPaths = [
+                `${basePath}photo/photo1.jpg`,
+                `${basePath}photo1.jpg`,
+                './photo/photo1.jpg',
+                'photo/photo1.jpg',
+                './photo1.jpg',
+                'photo1.jpg'
+            ];
+            
+            debugDiv.innerHTML += `当前路径: ${window.location.href}<br>`;
+            debugDiv.innerHTML += `基础路径: ${basePath}<br><br>`;
+            
+            testPaths.forEach((path, index) => {
+                const testUrl = new URL(path, window.location.href);
+                debugDiv.innerHTML += `测试 ${index+1}: ${path}<br>`;
+                debugDiv.innerHTML += `完整URL: ${testUrl.href}<br>`;
+                
+                // 测试图片加载
+                const img = new Image();
+                img.onload = () => {
+                    debugDiv.innerHTML += `✅ 可用<br><br>`;
+                };
+                img.onerror = () => {
+                    debugDiv.innerHTML += `❌ 不可用<br><br>`;
+                };
+                img.src = testUrl.href;
+            });
+            
+            debugDiv.innerHTML += '<strong>提示:</strong> 照片应放在与HTML同级的"photo"文件夹中<br>';
+            debugDiv.innerHTML += '文件名: photo1.jpg 到 photo20.jpg';
+        };
+
+        // === Three.js初始化 ===
         function initThree() {
             const container = document.getElementById('canvas-container');
             const wrapper = document.getElementById('canvas-wrapper');
             
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x020202); 
-
-            // 初始化尺寸计算 (4:3)
             updateDimensions();
 
             camera = new THREE.PerspectiveCamera(50, wrapper.clientWidth / wrapper.clientHeight, 0.1, 1000);
@@ -270,11 +476,9 @@
             let width, height;
 
             if (windowAspect > targetAspect) {
-                // 窗口更宽，以高度为准
                 height = window.innerHeight;
                 width = height * targetAspect;
             } else {
-                // 窗口更高，以宽度为准
                 width = window.innerWidth;
                 height = width / targetAspect;
             }
@@ -388,7 +592,7 @@
             scene.add(stars);
         }
 
-        // --- Animation Loop ---
+        // === Animation Loop ===
         function animate() {
             requestAnimationFrame(animate);
             time += 0.01;
@@ -408,24 +612,20 @@
                 logicData.star.rotation.y += 0.01;
             }
 
-            // --- 物理惯性旋转逻辑 (核心修改) ---
+            // 物理惯性旋转逻辑
             if (currentState === STATE.ZOOM) {
-                // 缩放模式下：停止速度，但不重置角度！
                 rotationVelocity.x = 0;
                 rotationVelocity.y = 0;
-                // 注意：这里删除了 mainGroup.rotation 归正的代码，保持原角度
             } 
             else if (currentState === STATE.SCATTER) {
                 if (isHandPresent) {
                     const deltaX = handPos.x - lastHandPos.x;
                     const deltaY = handPos.y - lastHandPos.y;
                     
-                    // 1. 左右旋转 (Y轴) - 棘轮机制
                     if (deltaX > 0.002) { 
-                        rotationVelocity.y += deltaX * 0.15; // 力度系数
+                        rotationVelocity.y += deltaX * 0.15;
                     }
                     
-                    // 2. 上下微动 (X轴)
                     if (Math.abs(deltaY) > 0.002) {
                         rotationVelocity.x += deltaY * 0.05; 
                     }
@@ -434,7 +634,6 @@
                     lastHandPos.y = handPos.y;
                 }
                 
-                // 3. 物理模拟
                 rotationVelocity.y = Math.min(rotationVelocity.y, 0.05);
                 rotationVelocity.x = Math.max(Math.min(rotationVelocity.x, 0.02), -0.02);
 
@@ -502,7 +701,6 @@
             dustSystem.geometry.attributes.position.needsUpdate = true;
         }
 
-        // 核心修改：照片更新逻辑
         function updatePhotos() {
             photoMeshes.forEach((mesh, idx) => {
                 let targetPos, targetScale = 2.0; 
@@ -513,10 +711,7 @@
                 }
 
                 if (currentState === STATE.ZOOM && idx === zoomTargetIndex) {
-                    // 1. 计算"镜头正前方"的世界坐标
                     const targetWorldPos = new THREE.Vector3(0, 0, 80); 
-                    // 2. 将该世界坐标转换为 mainGroup 的局部坐标
-                    // 这样无论 mainGroup 怎么转，照片都会飞到相对镜头的正前方
                     targetPos = mainGroup.worldToLocal(targetWorldPos);
                     
                     targetScale = 4.0;
@@ -536,25 +731,74 @@
             });
         }
 
-        // --- Interaction ---
+        // === 添加照片网格 ===
+        function addPhotoMesh(img) {
+            const tex = new THREE.Texture(img);
+            tex.needsUpdate = true;
+            tex.colorSpace = THREE.SRGBColorSpace;
+            let w = 4, h = 4;
+            if(img.width > img.height) h = 4 * (img.height/img.width);
+            else w = 4 * (img.width/img.height);
+
+            const geo = new THREE.PlaneGeometry(w, h);
+            const mat = new THREE.MeshBasicMaterial({ 
+                map: tex, 
+                side: THREE.DoubleSide, 
+                color: 0xcccccc 
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            // 金色边框
+            const frame = new THREE.Mesh(
+                new THREE.BoxGeometry(w+0.2, h+0.2, 0.1), 
+                new THREE.MeshPhysicalMaterial({color:0xffd700, roughness:0.2, metalness:1})
+            );
+            frame.position.z = -0.06;
+            mesh.add(frame);
+
+            // 计算树形位置
+            const h_pos = (Math.random() - 0.5) * CONFIG.treeHeight;
+            const normH = (h_pos + CONFIG.treeHeight/2) / CONFIG.treeHeight;
+            const maxR = CONFIG.maxRadius * (1 - normH);
+            
+            const r = maxR * (0.3 + 0.6 * Math.sqrt(Math.random()));
+            const theta = Math.random() * Math.PI * 2;
+            
+            const treePos = new THREE.Vector3(r * Math.cos(theta), h_pos, r * Math.sin(theta));
+            const scatterPos = randomSpherePoint(50);
+
+            mesh.userData = { treePos, scatterPos, baseRot: new THREE.Euler(0, Math.random()*Math.PI, 0) };
+            mesh.position.copy(treePos);
+            photoMeshes.push(mesh);
+            mainGroup.add(mesh);
+        }
+
+        // === 手势识别 ===
         async function setupMediaPipe() {
-            const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-            const handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                baseOptions: {
-                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-                    delegate: "GPU"
-                },
-                runningMode: "VIDEO", numHands: 1
-            });
-            const video = document.getElementById("input-video");
-            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-                video.srcObject = stream;
-                video.addEventListener("loadeddata", () => {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('status-text').innerText = "系统就绪，请伸手";
-                    predictWebcam(handLandmarker, video);
+            try {
+                const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+                const handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                    baseOptions: {
+                        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+                        delegate: "GPU"
+                    },
+                    runningMode: "VIDEO", numHands: 1
                 });
-            });
+                const video = document.getElementById("input-video");
+                navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+                    video.srcObject = stream;
+                    video.addEventListener("loadeddata", () => {
+                        document.getElementById('status-text').innerText = "系统就绪，请伸手";
+                        predictWebcam(handLandmarker, video);
+                    });
+                }).catch(error => {
+                    console.error("摄像头访问失败:", error);
+                    document.getElementById('status-text').innerText = "摄像头不可用，使用键盘控制";
+                });
+            } catch (error) {
+                console.error("MediaPipe初始化失败:", error);
+                document.getElementById('status-text').innerText = "手势识别未启用，使用键盘控制";
+            }
         }
 
         let lastVideoTime = -1;
@@ -616,7 +860,6 @@
 
             if (isPinch && currentState === STATE.SCATTER) {
                 if (photoMeshes.length > 0) {
-                    targetState = STATE.ZOOM;
                     currentState = STATE.ZOOM;
                     status.innerHTML = "状态: <span style='color:#ffd700'>抓取照片</span>";
                     
@@ -638,7 +881,7 @@
                         zoomTargetIndex = bestIdx;
                     }
                 } else {
-                    status.innerHTML = "状态: <span style='color:#aaa'>没有预加载的照片</span>";
+                    status.innerHTML = "状态: <span style='color:#aaa'>请先上传照片</span>";
                 }
             } else if (isFist) {
                 currentState = STATE.TREE;
@@ -668,140 +911,66 @@
             composer.passes[1].resolution.set(dims.width, dims.height);
         }
 
-        // ===========================================
-        // 核心修改：静态加载照片文件夹中的图片
-        // ===========================================
-        async function loadStaticPhotos() {
-            const loadingText = document.getElementById('loading');
-            loadingText.textContent = "加载照片中...";
-            
-            let loadedCount = 0;
-            const totalPhotos = CONFIG.photoCount;
-            
-            for (let i = 1; i <= totalPhotos; i++) {
-                const imgPath = `photo/photo${i}.jpg`;
-                
-                try {
-                    const img = await loadImage(imgPath);
-                    addPhotoMesh(img);
-                    loadedCount++;
-                    
-                    // 更新加载状态
-                    loadingText.textContent = `加载照片: ${loadedCount}/${totalPhotos}`;
-                    
-                } catch (error) {
-                    console.warn(`无法加载图片: ${imgPath}`, error);
-                    // 如果图片不存在，可以创建一个占位图片
-                    createPlaceholderPhoto(i);
+        // === 文件上传 ===
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (!files.length) return;
+            for(let i=0; i<files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = new Image();
+                    img.src = evt.target.result;
+                    img.onload = () => { addPhotoMesh(img); }
+                }
+                reader.readAsDataURL(files[i]);
+            }
+            document.getElementById('status-text').innerHTML = `已添加 ${files.length} 张照片`;
+        });
+
+        // === 键盘快捷键 ===
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                toggleUI();
+            }
+            if (e.key === 't' || e.key === 'T') {
+                currentState = STATE.TREE;
+                document.getElementById('status-text').innerHTML = "状态: <span style='color:#00ff00'>聚合圣诞树</span>";
+            }
+            if (e.key === 's' || e.key === 'S') {
+                currentState = STATE.SCATTER;
+                document.getElementById('status-text').innerHTML = "状态: <span style='color:#00aaff'>星云散开</span>";
+            }
+            if (e.key === 'z' || e.key === 'Z') {
+                if (photoMeshes.length > 0 && currentState === STATE.SCATTER) {
+                    currentState = STATE.ZOOM;
+                    zoomTargetIndex = Math.floor(Math.random() * photoMeshes.length);
+                    document.getElementById('status-text').innerHTML = "状态: <span style='color:#ffd700'>抓取照片</span>";
                 }
             }
-            
-            // 更新状态文本
-            const statusText = document.getElementById('status-text');
-            if (loadedCount > 0) {
-                statusText.innerHTML = `已加载 ${loadedCount} 张照片<br>系统就绪，请伸手`;
-            } else {
-                statusText.innerHTML = "未找到照片，请确保 photo 文件夹存在<br>系统就绪，请伸手";
+            if (e.key === 'Escape') {
+                currentState = STATE.SCATTER;
+                zoomTargetIndex = -1;
+                document.getElementById('status-text').innerHTML = "状态: <span style='color:#00aaff'>星云散开</span>";
             }
-        }
+        });
+
+        // === 初始化 ===
+        initThree();
+        animate();
         
-        function loadImage(src) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = "anonymous"; // 处理跨域问题
-                img.onload = () => resolve(img);
-                img.onerror = () => reject(new Error(`无法加载图片: ${src}`));
-                img.src = src + '?' + new Date().getTime(); // 添加时间戳避免缓存
-            });
-        }
+        // 延迟启动照片加载
+        setTimeout(() => {
+            loadPhotos();
+        }, 100);
         
-        function createPlaceholderPhoto(index) {
-            // 创建一个占位图片
-            const canvas = document.createElement('canvas');
-            canvas.width = 400;
-            canvas.height = 300;
-            const ctx = canvas.getContext('2d');
-            
-            // 绘制渐变背景
-            const gradient = ctx.createLinearGradient(0, 0, 400, 300);
-            gradient.addColorStop(0, '#2c3e50');
-            gradient.addColorStop(1, '#34495e');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 400, 300);
-            
-            // 绘制文字
-            ctx.fillStyle = '#ecf0f1';
-            ctx.font = 'bold 40px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Photo ${index}`, 200, 150);
-            ctx.font = '20px Arial';
-            ctx.fillText('未找到图片文件', 200, 190);
-            
-            // 将canvas转换为图片
-            const img = new Image();
-            img.src = canvas.toDataURL('image/jpeg');
-            
-            // 等待图片加载完成
-            return new Promise((resolve) => {
-                img.onload = () => {
-                    addPhotoMesh(img);
-                    resolve();
-                };
-            });
-        }
-
-        function addPhotoMesh(img) {
-            const tex = new THREE.Texture(img);
-            tex.needsUpdate = true;
-            tex.colorSpace = THREE.SRGBColorSpace;
-            let w = 4, h = 4;
-            if(img.width > img.height) h = 4 * (img.height/img.width);
-            else w = 4 * (img.width/img.height);
-
-            const geo = new THREE.PlaneGeometry(w, h);
-            const mat = new THREE.MeshBasicMaterial({ 
-                map: tex, 
-                side: THREE.DoubleSide, 
-                color: 0xcccccc 
-            });
-            const mesh = new THREE.Mesh(geo, mat);
-            
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(w+0.2, h+0.2, 0.1), new THREE.MeshPhysicalMaterial({color:0xffd700, roughness:0.2, metalness:1}));
-            frame.position.z = -0.06;
-            mesh.add(frame);
-
-            const h_pos = (Math.random() - 0.5) * CONFIG.treeHeight;
-            const normH = (h_pos + CONFIG.treeHeight/2) / CONFIG.treeHeight;
-            const maxR = CONFIG.maxRadius * (1 - normH);
-            
-            const r = maxR * (0.3 + 0.6 * Math.sqrt(Math.random()));
-            const theta = Math.random() * Math.PI * 2;
-            
-            const treePos = new THREE.Vector3(r * Math.cos(theta), h_pos, r * Math.sin(theta));
-            const scatterPos = randomSpherePoint(50);
-
-            mesh.userData = { treePos, scatterPos, baseRot: new THREE.Euler(0, Math.random()*Math.PI, 0) };
-            mesh.position.copy(treePos);
-            photoMeshes.push(mesh);
-            mainGroup.add(mesh);
-        }
-
-        // 初始化Three.js并开始动画循环
-        async function initialize() {
-            initThree();
-            
-            // 先加载静态照片
-            await loadStaticPhotos();
-            
-            // 开始动画循环
-            animate();
-            
-            // 设置MediaPipe手势识别
-            setupMediaPipe();
-        }
-
-        // 启动整个应用
-        initialize();
+        // 启动手势识别
+        setupMediaPipe();
+        
+        console.log('Jewel Christmas Tree 已启动');
+        console.log('📸 正在加载照片...');
+        console.log('🎮 控制方式:');
+        console.log('  - 手势: 握拳/张开/捏合');
+        console.log('  - 键盘: T(树)/S(散开)/Z(抓取)/ESC(退出)');
     </script>
 </body>
 </html>
