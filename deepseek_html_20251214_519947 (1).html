@@ -115,14 +115,6 @@
             max-width: 80%; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2);
         }
         
-        /* 浏览器兼容性提示 */
-        .browser-warning {
-            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
-            background: rgba(255, 193, 7, 0.9); color: black; padding: 8px 16px;
-            border-radius: 8px; z-index: 30; font-size: 0.9rem; text-align: center;
-            max-width: 80%; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2);
-        }
-        
         /* 备用手势控制按钮 */
         #gesture-controls {
             position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -202,68 +194,6 @@
         <div id="loading">CRAFTING JEWELS...</div>
     </div>
 
-    <script>
-        // 检查浏览器兼容性
-        function checkBrowserCompatibility() {
-            const isEdge = navigator.userAgent.indexOf('Edg') > -1;
-            const isIE = navigator.userAgent.indexOf('Trident') > -1;
-            const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
-            const isSafari = navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Chrome') === -1;
-            
-            let issues = [];
-            
-            if (isIE) {
-                issues.push('Internet Explorer不支持此应用，请使用Chrome、Edge或Firefox');
-            }
-            
-            if (isEdge) {
-                issues.push('Edge浏览器可能需要更新到最新版本以获得最佳体验');
-            }
-            
-            if (isSafari) {
-                issues.push('Safari浏览器对手势识别的支持可能有限');
-            }
-            
-            // 检查WebGL支持
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            if (!gl) {
-                issues.push('您的浏览器不支持WebGL，3D效果可能无法显示');
-            }
-            
-            return issues;
-        }
-        
-        // 显示浏览器兼容性提示
-        function showBrowserWarning(issues) {
-            if (issues.length === 0) return;
-            
-            const warningDiv = document.createElement('div');
-            warningDiv.className = 'browser-warning';
-            
-            let content = '<strong>浏览器兼容性提示：</strong><br>';
-            issues.forEach(issue => {
-                content += `• ${issue}<br>`;
-            });
-            
-            warningDiv.innerHTML = content;
-            document.getElementById('canvas-wrapper').appendChild(warningDiv);
-            
-            // 10秒后自动移除
-            setTimeout(() => {
-                if (warningDiv.parentNode) warningDiv.remove();
-            }, 10000);
-        }
-        
-        // 页面加载时检查兼容性
-        document.addEventListener('DOMContentLoaded', function() {
-            const issues = checkBrowserCompatibility();
-            if (issues.length > 0) {
-                showBrowserWarning(issues);
-            }
-        });
-    </script>
-
     <script type="module">
         import * as THREE from 'three';
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -271,6 +201,12 @@
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
         
+        // 使用多个CDN源，防止单个CDN不可用
+        const MEDIAPIPE_CDNS = [
+            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0',
+            'https://unpkg.com/@mediapipe/tasks-vision@0.10.0'
+        ];
+
         // --- Config ---
         const CONFIG = {
             goldCount: 600,     // 金球
@@ -280,7 +216,8 @@
             dustCount: 1200,    // 氛围粒子
             treeHeight: 75,
             maxRadius: 30,
-            defaultPhotoCount: 20  // 默认图片数量
+            defaultPhotoCount: 20,  // 默认图片数量
+            modelLoadTimeout: 10000 // 模型加载超时时间（毫秒）
         };
 
         const STATE = { TREE: 'tree', SCATTER: 'scatter', ZOOM: 'zoom' };
@@ -319,7 +256,8 @@
         // MediaPipe 相关变量
         let handLandmarker = null;
         let isCameraActive = false;
-        let isEdgeBrowser = navigator.userAgent.indexOf('Edg') > -1;
+        let modelLoadAttempt = 0;
+        const MAX_MODEL_ATTEMPTS = 2;
 
         // UI Toggle
         window.toggleUI = function() {
@@ -403,44 +341,6 @@
             }
         };
 
-        // Edge浏览器特殊处理：使用脚本标签加载MediaPipe
-        function loadMediaPipeForEdge() {
-            return new Promise((resolve, reject) => {
-                // 先尝试直接导入
-                import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0')
-                    .then(module => {
-                        resolve(module);
-                    })
-                    .catch(error => {
-                        console.log('直接导入失败，尝试备用方法:', error);
-                        
-                        // 备用方法：通过全局变量
-                        if (window.mediapipe && window.mediapipe.tasks && window.mediapipe.tasks.vision) {
-                            resolve(window.mediapipe.tasks.vision);
-                        } else {
-                            // 最后尝试：动态创建script标签
-                            const script = document.createElement('script');
-                            script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0';
-                            script.type = 'text/javascript';
-                            
-                            script.onload = function() {
-                                if (window.mediapipe && window.mediapipe.tasks && window.mediapipe.tasks.vision) {
-                                    resolve(window.mediapipe.tasks.vision);
-                                } else {
-                                    reject(new Error('MediaPipe全局变量未找到'));
-                                }
-                            };
-                            
-                            script.onerror = function() {
-                                reject(new Error('MediaPipe脚本加载失败'));
-                            };
-                            
-                            document.head.appendChild(script);
-                        }
-                    });
-            });
-        }
-
         // 相机权限请求函数
         window.requestCameraPermission = async function() {
             const cameraBtn = document.getElementById('camera-btn');
@@ -457,40 +357,26 @@
                 status.innerText = "正在请求相机权限...";
                 
                 const video = document.getElementById("input-video");
-                
-                // Edge浏览器可能需要更简单的视频配置
-                const constraints = isEdgeBrowser ? {
-                    video: {
-                        facingMode: 'user'
-                    }
-                } : {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
                         facingMode: 'user',
                         width: { ideal: 640 },
                         height: { ideal: 480 }
                     } 
-                };
-                
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                });
                 
                 video.srcObject = stream;
                 isCameraActive = true;
+                
+                // 异步加载手势识别模型，不阻塞主流程
+                loadHandLandmarkerAsync();
                 
                 // 等待视频就绪
                 video.addEventListener("loadeddata", () => {
                     document.getElementById('loading').style.display = 'none';
                     status.innerText = "系统就绪，已加载默认照片";
                     
-                    // 尝试加载手势识别模型（Edge浏览器用特殊方法）
-                    if (isEdgeBrowser) {
-                        status.innerText += "\n正在为Edge浏览器加载手势识别...";
-                        loadHandLandmarkerForEdge();
-                    } else {
-                        status.innerText += "\n正在加载手势识别模型...";
-                        loadHandLandmarkerForChrome();
-                    }
-                    
-                    // 显示手动控制按钮
+                    // 如果模型加载失败，显示手动控制按钮
                     setTimeout(() => {
                         if (!handLandmarker) {
                             status.innerText += "\n（手势识别加载中，可使用手动控制）";
@@ -525,57 +411,37 @@
             }
         };
 
-        // Chrome/Firefox等浏览器的手势识别加载
-        async function loadHandLandmarkerForChrome() {
+        // 异步加载手势识别模型（不阻塞UI）
+        async function loadHandLandmarkerAsync() {
             const status = document.getElementById('status-text');
+            const cameraBtn = document.getElementById('camera-btn');
+            
+            // 如果已经尝试过多次，不再尝试
+            if (modelLoadAttempt >= MAX_MODEL_ATTEMPTS) {
+                console.log("已达到最大模型加载尝试次数，跳过手势识别");
+                return;
+            }
+            
+            modelLoadAttempt++;
             
             try {
-                // 使用更稳定的方法加载MediaPipe
-                const { FilesetResolver, HandLandmarker } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0');
+                console.log(`尝试加载手势识别模型 (第${modelLoadAttempt}次)...`);
                 
-                const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-                
-                handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                    baseOptions: {
-                        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task`,
-                        delegate: "GPU"
-                    },
-                    runningMode: "VIDEO", 
-                    numHands: 1,
-                    minHandDetectionConfidence: 0.5,
-                    minHandPresenceConfidence: 0.5,
-                    minTrackingConfidence: 0.5
+                // 设置超时
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('模型加载超时')), CONFIG.modelLoadTimeout);
                 });
                 
-                console.log("手势识别模型加载成功");
-                
-                // 更新状态并开始识别
-                if (isCameraActive) {
-                    status.innerText = "手势识别已就绪！请伸手控制";
-                    startHandRecognition();
-                }
-                
-            } catch (error) {
-                console.error("Chrome手势识别模型加载失败:", error);
-                showModelError("手势识别加载失败，已启用手动控制", true);
-                showManualGestureControls();
-            }
-        }
-
-        // Edge浏览器专用手势识别加载
-        async function loadHandLandmarkerForEdge() {
-            const status = document.getElementById('status-text');
-            
-            try {
-                // Edge浏览器可能不支持某些ES模块功能，使用更兼容的方法
-                const visionModule = await loadMediaPipeForEdge();
-                
-                // 使用setTimeout避免阻塞
-                setTimeout(async () => {
+                // 尝试不同的CDN
+                const loadPromise = (async () => {
                     try {
-                        const vision = await visionModule.FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+                        // 尝试第一个CDN
+                        const { FilesetResolver, HandLandmarker } = await importWithFallback(MEDIAPIPE_CDNS[0]);
                         
-                        handLandmarker = await visionModule.HandLandmarker.createFromOptions(vision, {
+                        const vision = await FilesetResolver.forVisionTasks(MEDIAPIPE_CDNS[0] + "/wasm");
+                        
+                        // 使用更小的模型以提高加载速度
+                        const handLandmarker = await HandLandmarker.createFromOptions(vision, {
                             baseOptions: {
                                 modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task`,
                                 delegate: "GPU"
@@ -587,34 +453,75 @@
                             minTrackingConfidence: 0.5
                         });
                         
-                        console.log("Edge手势识别模型加载成功");
+                        return handLandmarker;
+                    } catch (error) {
+                        console.warn("主CDN加载失败，尝试备用CDN:", error);
                         
-                        // 更新状态并开始识别
-                        if (isCameraActive) {
-                            status.innerText = "手势识别已就绪！请伸手控制";
-                            startHandRecognition();
+                        // 尝试备用CDN
+                        try {
+                            const { FilesetResolver, HandLandmarker } = await importWithFallback(MEDIAPIPE_CDNS[1]);
+                            
+                            const vision = await FilesetResolver.forVisionTasks(MEDIAPIPE_CDNS[1] + "/wasm");
+                            
+                            const handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                                baseOptions: {
+                                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task`,
+                                    delegate: "GPU"
+                                },
+                                runningMode: "VIDEO", 
+                                numHands: 1,
+                                minHandDetectionConfidence: 0.5,
+                                minHandPresenceConfidence: 0.5,
+                                minTrackingConfidence: 0.5
+                            });
+                            
+                            return handLandmarker;
+                        } catch (fallbackError) {
+                            throw new Error(`所有CDN加载失败: ${fallbackError.message}`);
                         }
-                        
-                    } catch (innerError) {
-                        console.error("Edge手势识别模型创建失败:", innerError);
-                        showModelError("Edge浏览器手势识别加载失败，已启用手动控制", true);
-                        showManualGestureControls();
                     }
-                }, 100);
+                })();
+                
+                // 竞态：要么成功加载，要么超时
+                const handLandmarker = await Promise.race([loadPromise, timeoutPromise]);
+                
+                console.log("手势识别模型加载成功");
+                window.handLandmarker = handLandmarker;
+                
+                // 更新状态
+                if (isCameraActive) {
+                    status.innerText = "手势识别已就绪！请伸手控制";
+                    // 开始手势识别
+                    predictWebcam(handLandmarker, document.getElementById("input-video"));
+                }
                 
             } catch (error) {
-                console.error("Edge手势识别模块加载失败:", error);
-                showModelError("手势识别加载失败，已启用手动控制", true);
-                showManualGestureControls();
+                console.error("手势识别模型加载失败:", error);
+                
+                if (modelLoadAttempt < MAX_MODEL_ATTEMPTS) {
+                    // 延迟后重试
+                    setTimeout(loadHandLandmarkerAsync, 2000);
+                } else {
+                    console.log("手势识别模型最终加载失败，启用手动控制");
+                    showModelError("手势识别加载失败，已启用手动控制", true);
+                    showManualGestureControls();
+                    
+                    if (isCameraActive) {
+                        status.innerText = "相机已启用，但手势识别不可用";
+                    }
+                }
             }
         }
 
-        // 开始手势识别
-        function startHandRecognition() {
-            if (!handLandmarker || !isCameraActive) return;
-            
-            const video = document.getElementById("input-video");
-            predictWebcam(handLandmarker, video);
+        // 动态导入MediaPipe，支持CDN回退
+        async function importWithFallback(url) {
+            try {
+                // 创建script标签加载模块
+                return await import(url);
+            } catch (error) {
+                console.warn(`从 ${url} 导入失败:`, error);
+                throw error;
+            }
         }
 
         // 手势识别预测循环
@@ -764,9 +671,14 @@
                             const status = document.getElementById('status-text');
                             if (status) {
                                 status.innerText = `已加载 ${loadedCount}/${CONFIG.defaultPhotoCount} 张默认照片`;
-                                // 显示手动控制提示
-                                status.innerText += "\n点击相机图标启用手势控制，或使用手动控制";
-                                showManualGestureControls();
+                                // 如果是移动设备，提示启用相机
+                                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                                    status.innerText += "\n请点击右上角相机图标启用手势控制";
+                                } else {
+                                    // 桌面设备显示手动控制提示
+                                    status.innerText += "\n点击相机图标启用手势控制，或使用手动控制";
+                                    showManualGestureControls();
+                                }
                             }
                         }, 500);
                     }
@@ -1190,7 +1102,7 @@
             document.getElementById('loading').style.display = 'none';
             const status = document.getElementById('status-text');
             if (status.innerText === "系统初始化...") {
-                status.innerText = "圣诞树已就绪！点击相机图标启用手势控制";
+                status.innerText = "圣诞树已就绪！";
                 showManualGestureControls();
             }
         }, 2000);
