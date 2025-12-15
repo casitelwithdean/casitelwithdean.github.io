@@ -111,6 +111,43 @@
         .hide-ui #fullscreen-btn:hover {
             opacity: 1;
         }
+
+        /* 加载进度条 */
+        #progress-container {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            display: none;
+        }
+        
+        #progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        #progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37, #ffd700);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        #progress-text {
+            color: #fff;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
     </style>
     <script type="importmap">
         {
@@ -146,6 +183,14 @@
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
         
+        <!-- 加载进度条 -->
+        <div id="progress-container">
+            <div id="progress-text">正在加载照片...</div>
+            <div id="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+        </div>
+        
         <div id="loading">CRAFTING JEWELS...</div>
     </div>
 
@@ -166,7 +211,9 @@
             dustCount: 1200,
             treeHeight: 75,
             maxRadius: 30,
-            autoPhotoCount: 20  // 自动加载的图片数量
+            autoPhotoCount: 20,
+            maxConcurrentLoads: 6, // 并发加载数量，提高加载速度
+            photoBasePath: 'photo'  // 照片文件夹路径
         };
 
         const STATE = { TREE: 'tree', SCATTER: 'scatter', ZOOM: 'zoom' };
@@ -201,6 +248,11 @@
         
         // 物理惯性变量
         let rotationVelocity = { x: 0, y: 0 };
+
+        // 图片加载队列
+        let photoLoadQueue = [];
+        let loadingInProgress = false;
+        let loadedPhotoCount = 0;
 
         // UI Toggle
         window.toggleUI = function() {
@@ -266,8 +318,10 @@
             scene.add(mainGroup);
             window.addEventListener('resize', onWindowResize);
             
-            // 页面加载后自动加载图片
-            setTimeout(loadAutoPhotos, 1000);
+            // 立即开始加载图片（不等待Three.js完全初始化）
+            setTimeout(() => {
+                initPhotoLoading();
+            }, 100);
         }
 
         function updateDimensions() {
@@ -681,49 +735,151 @@
             composer.passes[1].resolution.set(dims.width, dims.height);
         }
 
-        // --- 简单的自动加载照片函数 ---
-        function loadAutoPhotos() {
-            console.log("开始自动加载照片...");
+        // --- 优化的图片加载逻辑 ---
+        async function initPhotoLoading() {
+            const progressContainer = document.getElementById('progress-container');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const statusText = document.getElementById('status-text');
             
-            let loadedCount = 0;
+            progressContainer.style.display = 'block';
+            progressText.textContent = '正在加载照片...';
+            statusText.innerHTML = '正在加载照片...';
             
-            // 循环加载 photo1.jpg 到 photo20.jpg
+            // 准备加载队列
+            photoLoadQueue = [];
             for (let i = 1; i <= CONFIG.autoPhotoCount; i++) {
-                // 使用 setTimeout 创建异步加载，避免阻塞
-                setTimeout(() => {
-                    const img = new Image();
-                    img.crossOrigin = "anonymous"; // 允许跨域
-                    
-                    // 尝试加载图片
-                    img.onload = function() {
-                        console.log(`成功加载: photo/photo${i}.jpg`);
-                        addPhotoMesh(img);
-                        loadedCount++;
-                        
-                        // 更新状态
-                        if (loadedCount > 0) {
-                            document.getElementById('status-text').innerHTML = 
-                                `已自动加载 ${loadedCount} 张照片，请伸手`;
-                        }
-                    };
-                    
-                    img.onerror = function() {
-                        console.log(`未找到: photo/photo${i}.jpg`);
-                    };
-                    
-                    // 加载图片 - 只尝试jpg格式
-                    img.src = `photo/photo${i}.jpg`;
-                    
-                }, i * 50); // 每张图片间隔50ms，避免同时请求太多
+                photoLoadQueue.push({
+                    index: i,
+                    // 只尝试jpg格式，简化路径
+                    path: `${CONFIG.photoBasePath}/photo${i}.jpg`
+                });
             }
             
-            // 3秒后检查加载情况
+            loadedPhotoCount = 0;
+            loadingInProgress = true;
+            
+            // 开始并发加载
+            await loadPhotosConcurrently();
+            
+            // 加载完成
+            loadingInProgress = false;
+            
+            if (photoMeshes.length > 0) {
+                progressText.textContent = `加载完成: ${photoMeshes.length} 张照片`;
+                statusText.innerHTML = `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
+            } else {
+                progressText.textContent = '未找到照片，请手动上传';
+                statusText.innerHTML = '未找到自动加载的照片，请手动上传';
+            }
+            
+            // 2秒后隐藏进度条
             setTimeout(() => {
-                if (loadedCount === 0) {
-                    document.getElementById('status-text').innerHTML = 
-                        "未找到自动加载的照片，请手动上传";
+                progressContainer.style.display = 'none';
+                progressFill.style.width = '0%';
+            }, 2000);
+        }
+        
+        // 并发加载图片
+        async function loadPhotosConcurrently() {
+            const activeLoads = [];
+            const maxConcurrent = CONFIG.maxConcurrentLoads;
+            
+            while (photoLoadQueue.length > 0) {
+                // 如果当前活跃的加载数量小于最大并发数，启动新的加载
+                while (activeLoads.length < maxConcurrent && photoLoadQueue.length > 0) {
+                    const photoItem = photoLoadQueue.shift();
+                    const loadPromise = loadSinglePhoto(photoItem);
+                    activeLoads.push(loadPromise);
                 }
-            }, 3000);
+                
+                // 等待任意一个加载完成
+                if (activeLoads.length > 0) {
+                    await Promise.race(activeLoads.map(p => p.catch(e => e)));
+                    
+                    // 移除已完成的加载
+                    for (let i = activeLoads.length - 1; i >= 0; i--) {
+                        const promise = activeLoads[i];
+                        if (promise._isFulfilled) {
+                            activeLoads.splice(i, 1);
+                        }
+                    }
+                }
+                
+                // 更新进度
+                updateProgress();
+                
+                // 短暂延迟，避免阻塞UI
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
+            
+            // 等待所有剩余的加载完成
+            await Promise.allSettled(activeLoads);
+        }
+        
+        // 加载单张图片
+        async function loadSinglePhoto(photoItem) {
+            return new Promise(async (resolve) => {
+                try {
+                    const img = await loadImageFast(photoItem.path);
+                    if (img) {
+                        // 立即添加到场景（不等待）
+                        addPhotoMesh(img);
+                        loadedPhotoCount++;
+                        console.log(`成功加载: ${photoItem.path}`);
+                    }
+                } catch (error) {
+                    // 静默失败，不显示错误
+                } finally {
+                    // 标记为已完成
+                    resolve();
+                }
+            });
+        }
+        
+        // 快速加载图片函数
+        function loadImageFast(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                
+                // 设置超时时间缩短为3秒
+                const timeout = setTimeout(() => {
+                    img.onload = null;
+                    img.onerror = null;
+                    reject(new Error('加载超时'));
+                }, 3000);
+                
+                img.onload = () => {
+                    clearTimeout(timeout);
+                    resolve(img);
+                };
+                
+                img.onerror = () => {
+                    clearTimeout(timeout);
+                    reject(new Error('加载失败'));
+                };
+                
+                // 添加时间戳防止缓存，使用随机参数确保每次都重新请求
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(7);
+                img.src = `${src}?t=${timestamp}&r=${random}`;
+            });
+        }
+        
+        // 更新进度条
+        function updateProgress() {
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill && progressText) {
+                const total = CONFIG.autoPhotoCount;
+                const loaded = loadedPhotoCount;
+                const percent = Math.round((loaded / total) * 100);
+                
+                progressFill.style.width = `${percent}%`;
+                progressText.textContent = `正在加载照片 (${loaded}/${total})`;
+            }
         }
 
         document.getElementById('file-input').addEventListener('change', function(e) {
@@ -742,8 +898,10 @@
                         loadedCount++;
                         
                         if (loadedCount === files.length) {
-                            document.getElementById('status-text').innerHTML = 
-                                `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
+                            const status = document.getElementById('status-text');
+                            if (status) {
+                                status.innerHTML = `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
+                            }
                         }
                     };
                 };
@@ -792,14 +950,15 @@
             mesh.position.copy(treePos);
             photoMeshes.push(mesh);
             mainGroup.add(mesh);
-            
-            console.log(`照片已添加，当前总数: ${photoMeshes.length}`);
         }
 
         // 初始化
         initThree();
         animate();
         setupMediaPipe();
+        
+        // 显示加载状态
+        document.getElementById('loading').textContent = '初始化3D场景...';
     </script>
 </body>
-</html
+</html>
