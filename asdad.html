@@ -79,26 +79,9 @@
             color: #fff; padding: 10px 24px; cursor: pointer; text-transform: uppercase;
             font-size: 0.8rem; margin-top: 25px; transition: 0.3s; 
             letter-spacing: 1px; border-radius: 20px;
-            display: inline-block;
-            margin-right: 10px;
         }
         #upload-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.5); }
         #file-input { display: none; }
-        
-        /* 手动开启相机按钮 */
-        #camera-btn {
-            pointer-events: auto; background: linear-gradient(45deg, #2a4e8c, #3a6ed8); border: 1px solid #4a8eff;
-            color: #fff; padding: 10px 20px; cursor: pointer; text-transform: uppercase;
-            font-size: 0.8rem; margin-top: 25px; transition: 0.3s; 
-            letter-spacing: 1px; border-radius: 20px;
-            display: inline-block;
-        }
-        #camera-btn:hover { background: #4a8eff; color: #fff; box-shadow: 0 0 20px rgba(74, 142, 255, 0.5); }
-        #camera-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
         
         #loading {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -117,8 +100,7 @@
 
         /* 隐藏 UI 的类 */
         .hide-ui #ui-layer, 
-        .hide-ui #upload-btn,
-        .hide-ui #camera-btn {
+        .hide-ui #upload-btn {
             opacity: 0;
             pointer-events: none;
         }
@@ -128,18 +110,6 @@
         }
         .hide-ui #fullscreen-btn:hover {
             opacity: 1;
-        }
-        
-        /* 相机权限提示 */
-        .camera-warning {
-            color: #ff9900;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            padding: 8px;
-            background: rgba(255, 153, 0, 0.1);
-            border-radius: 5px;
-            border-left: 3px solid #ff9900;
-            display: none;
         }
     </style>
     <script type="importmap">
@@ -172,13 +142,7 @@
                 • <span class="highlight">向右划动</span> : 惯性拨动 (像拨地球仪)<br/>
                 • <span class="highlight">捏合手指</span> : 抓取照片(需上传)
             </div>
-            <div>
-                <button id="upload-btn" onclick="document.getElementById('file-input').click()">上传更多照片</button>
-                <button id="camera-btn" onclick="manualStartCamera()">开启摄像头</button>
-            </div>
-            <div class="camera-warning" id="camera-warning">
-                摄像头未开启，手势识别不可用。请点击上方"开启摄像头"按钮。
-            </div>
+            <button id="upload-btn" onclick="document.getElementById('file-input').click()">上传更多照片</button>
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
         
@@ -237,70 +201,11 @@
         
         // 物理惯性变量
         let rotationVelocity = { x: 0, y: 0 };
-        
-        // MediaPipe相关变量
-        let handLandmarker = null;
-        let cameraActive = false;
 
         // UI Toggle
         window.toggleUI = function() {
             const wrapper = document.getElementById('canvas-wrapper');
             wrapper.classList.toggle('hide-ui');
-        };
-
-        // 手动开启相机函数
-        window.manualStartCamera = async function() {
-            const cameraBtn = document.getElementById('camera-btn');
-            const warning = document.getElementById('camera-warning');
-            const statusText = document.getElementById('status-text');
-            
-            cameraBtn.disabled = true;
-            cameraBtn.textContent = '正在开启...';
-            statusText.innerHTML = '正在请求摄像头权限...';
-            
-            try {
-                if (!handLandmarker) {
-                    // 初始化MediaPipe
-                    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-                    handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                        baseOptions: {
-                            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-                            delegate: "GPU"
-                        },
-                        runningMode: "VIDEO", numHands: 1
-                    });
-                }
-                
-                const video = document.getElementById("input-video");
-                
-                // 请求摄像头权限
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        facingMode: 'user'
-                    } 
-                });
-                
-                video.srcObject = stream;
-                video.addEventListener("loadeddata", () => {
-                    cameraActive = true;
-                    cameraBtn.style.display = 'none';
-                    warning.style.display = 'none';
-                    statusText.innerHTML = `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
-                    
-                    // 开始手势识别
-                    predictWebcam(handLandmarker, video);
-                });
-                
-            } catch (error) {
-                console.error("手动开启摄像头失败:", error);
-                cameraBtn.disabled = false;
-                cameraBtn.textContent = '开启摄像头';
-                statusText.innerHTML = `摄像头开启失败: ${error.message}`;
-                warning.style.display = 'block';
-                warning.innerHTML = `摄像头开启失败: ${error.message}<br>请检查摄像头权限或连接。`;
-            }
         };
 
         function initThree() {
@@ -633,73 +538,43 @@
         async function setupMediaPipe() {
             try {
                 const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-                handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                const handLandmarker = await HandLandmarker.createFromOptions(vision, {
                     baseOptions: {
                         modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
                         delegate: "GPU"
                     },
                     runningMode: "VIDEO", numHands: 1
                 });
+                const video = document.getElementById("input-video");
                 
-                // 自动尝试开启摄像头
-                autoStartCamera();
-                
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            width: { ideal: 640 },
+                            height: { ideal: 480 },
+                            facingMode: 'user'
+                        } 
+                    }).then((stream) => {
+                        video.srcObject = stream;
+                        video.addEventListener("loadeddata", () => {
+                            document.getElementById('loading').style.display = 'none';
+                            predictWebcam(handLandmarker, video);
+                        });
+                    }).catch((error) => {
+                        console.warn("摄像头访问失败:", error);
+                        document.getElementById('loading').style.display = 'none';
+                    });
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                }
             } catch (error) {
                 console.error("MediaPipe初始化失败:", error);
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('status-text').innerHTML = "手势识别初始化失败";
-                showCameraButton();
             }
-        }
-        
-        // 自动开启摄像头
-        async function autoStartCamera() {
-            const video = document.getElementById("input-video");
-            const statusText = document.getElementById('status-text');
-            
-            try {
-                // 自动请求摄像头权限
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        facingMode: 'user'
-                    } 
-                });
-                
-                video.srcObject = stream;
-                video.addEventListener("loadeddata", () => {
-                    cameraActive = true;
-                    document.getElementById('loading').style.display = 'none';
-                    statusText.innerHTML = `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
-                    
-                    // 开始手势识别
-                    predictWebcam(handLandmarker, video);
-                });
-                
-            } catch (error) {
-                console.warn("自动摄像头请求失败:", error);
-                document.getElementById('loading').style.display = 'none';
-                statusText.innerHTML = `系统就绪，已加载 ${photoMeshes.length} 张照片`;
-                
-                // 显示手动开启相机按钮
-                showCameraButton();
-            }
-        }
-        
-        // 显示手动开启相机按钮
-        function showCameraButton() {
-            const cameraBtn = document.getElementById('camera-btn');
-            const warning = document.getElementById('camera-warning');
-            
-            cameraBtn.style.display = 'inline-block';
-            warning.style.display = 'block';
         }
 
         let lastVideoTime = -1;
         async function predictWebcam(handLandmarker, video) {
-            if (!cameraActive || !handLandmarker) return;
-            
             if (video.currentTime !== lastVideoTime) {
                 lastVideoTime = video.currentTime;
                 const result = handLandmarker.detectForVideo(video, performance.now());
@@ -828,7 +703,7 @@
                         // 更新状态
                         if (loadedCount > 0) {
                             document.getElementById('status-text').innerHTML = 
-                                `已自动加载 ${loadedCount} 张照片`;
+                                `已自动加载 ${loadedCount} 张照片，请伸手`;
                         }
                     };
                     
@@ -844,11 +719,9 @@
             
             // 3秒后检查加载情况
             setTimeout(() => {
-                const statusText = document.getElementById('status-text');
                 if (loadedCount === 0) {
-                    statusText.innerHTML = "未找到自动加载的照片，请手动上传";
-                } else if (!cameraActive) {
-                    statusText.innerHTML = `已自动加载 ${loadedCount} 张照片`;
+                    document.getElementById('status-text').innerHTML = 
+                        "未找到自动加载的照片，请手动上传";
                 }
             }, 3000);
         }
@@ -869,12 +742,8 @@
                         loadedCount++;
                         
                         if (loadedCount === files.length) {
-                            const statusText = document.getElementById('status-text');
-                            if (cameraActive) {
-                                statusText.innerHTML = `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
-                            } else {
-                                statusText.innerHTML = `已加载 ${photoMeshes.length} 张照片`;
-                            }
+                            document.getElementById('status-text').innerHTML = 
+                                `系统就绪，已加载 ${photoMeshes.length} 张照片，请伸手`;
                         }
                     };
                 };
@@ -933,4 +802,4 @@
         setupMediaPipe();
     </script>
 </body>
-</html>
+</html
