@@ -29,11 +29,9 @@
             display: block;
         }
         
-        /* --- 修改部分开始 --- */
         /* 摄像头容器：右上角，改为透明背景，去掉了边框 */
         #video-container {
             position: absolute; top: 20px; right: 20px; width: 160px; height: 120px; z-index: 2;
-            /* 原来的背景和边框已移除/设为透明 */
             border: none; 
             border-radius: 8px; 
             overflow: visible; /* 允许线条稍微溢出一点看起来更自然 */
@@ -49,7 +47,6 @@
             opacity: 0; /* 关键修改：完全透明 */
             position: absolute; top: 0; left: 0;
         }
-        /* --- 修改部分结束 --- */
 
         #skeleton-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -91,6 +88,40 @@
             color: #d4af37; font-size: 1.2rem; letter-spacing: 3px; z-index: 10; pointer-events: none; transition: opacity 0.5s;
         }
 
+        /* 相机权限按钮 */
+        #camera-btn {
+            position: absolute; top: 30px; right: 250px; z-index: 20;
+            background: rgba(0,0,0,0.5); color: #00aaff; border: 1px solid #00aaff;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: all 0.3s;
+            pointer-events: auto;
+        }
+        #camera-btn:hover { background: #00aaff; color: #000; }
+        #camera-btn.active { background: #00aaff; color: #000; }
+        #camera-btn.loading { opacity: 0.5; cursor: wait; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; }
+        }
+        
+        /* 备用手势控制按钮 */
+        #gesture-controls {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.7); padding: 10px; border-radius: 20px;
+            display: flex; gap: 10px; z-index: 25; backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .gesture-btn {
+            background: rgba(0,0,0,0.5); color: #00aaff; border: 1px solid #00aaff;
+            padding: 8px 16px; border-radius: 15px; cursor: pointer;
+            font-size: 0.9rem; transition: all 0.3s;
+        }
+        .gesture-btn:hover { background: #00aaff; color: #000; }
+        
         /* 全屏按钮 */
         #fullscreen-btn {
             position: absolute; top: 30px; right: 200px; z-index: 20;
@@ -98,6 +129,7 @@
             width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; transition: all 0.3s;
+            pointer-events: auto;
         }
         #fullscreen-btn:hover { background: #d4af37; color: #000; }
 
@@ -108,10 +140,12 @@
             pointer-events: none;
         }
         
-        .hide-ui #fullscreen-btn {
+        .hide-ui #fullscreen-btn,
+        .hide-ui #camera-btn {
             opacity: 0.3;
         }
-        .hide-ui #fullscreen-btn:hover {
+        .hide-ui #fullscreen-btn:hover,
+        .hide-ui #camera-btn:hover {
             opacity: 1;
         }
     </style>
@@ -119,7 +153,8 @@
         {
             "imports": {
                 "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+                "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.13/+esm"
             }
         }
     </script>
@@ -134,6 +169,7 @@
             <canvas id="skeleton-canvas"></canvas>
         </div>
 
+        <button id="camera-btn" onclick="requestCameraPermission()" title="启用相机">📷</button>
         <button id="fullscreen-btn" onclick="toggleUI()" title="切换沉浸模式">⛶</button>
 
         <div id="ui-layer">
@@ -157,7 +193,9 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-        import { FilesetResolver, HandLandmarker } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0';
+        
+        // 使用 importmap 中配置的路径导入 MediaPipe
+        import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 
         // --- Config ---
         const CONFIG = {
@@ -167,7 +205,8 @@
             emeraldCount: 400,  // 祖母绿
             dustCount: 1200,    // 氛围粒子
             treeHeight: 75,
-            maxRadius: 30
+            maxRadius: 30,
+            defaultPhotoCount: 20  // 默认图片数量
         };
 
         const STATE = { TREE: 'tree', SCATTER: 'scatter', ZOOM: 'zoom' };
@@ -203,11 +242,368 @@
         // 物理惯性变量
         let rotationVelocity = { x: 0, y: 0 };
 
+        // MediaPipe 相关变量
+        let handLandmarker = null;
+        let isCameraActive = false;
+
         // UI Toggle
         window.toggleUI = function() {
             const wrapper = document.getElementById('canvas-wrapper');
             wrapper.classList.toggle('hide-ui');
         };
+
+        // 显示备用手势控制按钮
+        function showManualGestureControls() {
+            let controlsDiv = document.getElementById('gesture-controls');
+            if (!controlsDiv) {
+                controlsDiv = document.createElement('div');
+                controlsDiv.id = 'gesture-controls';
+                controlsDiv.innerHTML = `
+                    <button class="gesture-btn" onclick="manualGesture('fist')">握拳（聚合成树）</button>
+                    <button class="gesture-btn" onclick="manualGesture('open')">张开（星云散开）</button>
+                    <button class="gesture-btn" onclick="manualGesture('pinch')">捏合（抓取照片）</button>
+                `;
+                document.getElementById('canvas-wrapper').appendChild(controlsDiv);
+            }
+        }
+
+        // 备用手势控制
+        window.manualGesture = function(type) {
+            const status = document.getElementById('status-text');
+            
+            switch(type) {
+                case 'fist':
+                    currentState = STATE.TREE;
+                    zoomTargetIndex = -1;
+                    rotationVelocity.x = 0;
+                    rotationVelocity.y = 0;
+                    status.innerHTML = "状态: <span style='color:#00ff00'>手动控制 - 聚合圣诞树</span>";
+                    break;
+                    
+                case 'open':
+                    if (currentState === STATE.ZOOM) {
+                        currentState = STATE.SCATTER;
+                        zoomTargetIndex = -1;
+                    } else if (currentState === STATE.TREE) {
+                        currentState = STATE.SCATTER;
+                    }
+                    status.innerHTML = "状态: <span style='color:#00aaff'>手动控制 - 星云散开</span>";
+                    break;
+                    
+                case 'pinch':
+                    if (currentState === STATE.SCATTER && photoMeshes.length > 0) {
+                        currentState = STATE.ZOOM;
+                        status.innerHTML = "状态: <span style='color:#ffd700'>手动控制 - 抓取照片</span>";
+                        
+                        if (zoomTargetIndex === -1 && photoMeshes.length > 0) {
+                            zoomTargetIndex = Math.floor(Math.random() * photoMeshes.length);
+                        }
+                    }
+                    break;
+            }
+        };
+
+        // 加载手势识别模型 - 简单可靠的版本
+        async function loadHandLandmarker() {
+            const status = document.getElementById('status-text');
+            
+            try {
+                console.log("开始加载手势识别模型...");
+                
+                // 使用更稳定的WASM路径
+                const vision = await FilesetResolver.forVisionTasks(
+                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.13/wasm"
+                );
+                
+                console.log("MediaPipe初始化成功，开始加载手部关键点模型...");
+                
+                // 使用正确的模型路径
+                handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                    baseOptions: {
+                        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+                        delegate: "GPU"
+                    },
+                    runningMode: "VIDEO",
+                    numHands: 2
+                });
+                
+                console.log("手势识别模型加载成功！");
+                
+                return handLandmarker;
+                
+            } catch (error) {
+                console.error("手势识别模型加载失败:", error);
+                throw error;
+            }
+        }
+
+        // 相机权限请求函数
+        window.requestCameraPermission = async function() {
+            const cameraBtn = document.getElementById('camera-btn');
+            const status = document.getElementById('status-text');
+            
+            if (isCameraActive) {
+                status.innerText = "相机已启用，请伸手";
+                return;
+            }
+            
+            try {
+                cameraBtn.classList.add('loading');
+                cameraBtn.disabled = true;
+                status.innerText = "正在请求相机权限...";
+                
+                const video = document.getElementById("input-video");
+                
+                // 使用简化的摄像头配置，兼容性更好
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                isCameraActive = true;
+                
+                // 等待视频就绪
+                const videoReady = new Promise((resolve) => {
+                    if (video.readyState >= 3) {
+                        resolve();
+                    } else {
+                        video.addEventListener('loadeddata', resolve, { once: true });
+                    }
+                });
+                
+                await videoReady;
+                
+                document.getElementById('loading').style.display = 'none';
+                status.innerText = "相机已启用，正在加载手势识别模型...";
+                
+                // 加载手势识别模型
+                try {
+                    if (!handLandmarker) {
+                        handLandmarker = await loadHandLandmarker();
+                    }
+                    
+                    status.innerText = "手势识别已就绪！请伸手控制";
+                    console.log("开始手势识别...");
+                    
+                    // 开始手势识别
+                    predictWebcam();
+                    
+                } catch (modelError) {
+                    console.warn("手势识别模型加载失败，启用手动控制:", modelError);
+                    status.innerText = "相机已启用，但手势识别不可用，请使用手动控制";
+                    showManualGestureControls();
+                }
+                
+                // 更新按钮状态
+                cameraBtn.classList.remove('loading');
+                cameraBtn.classList.add('active');
+                cameraBtn.title = "相机已启用";
+                cameraBtn.disabled = false;
+                
+            } catch (error) {
+                console.error("相机权限请求失败:", error);
+                cameraBtn.classList.remove('loading');
+                cameraBtn.disabled = false;
+                
+                if (error.name === 'NotAllowedError') {
+                    status.innerHTML = "<span style='color:#ff4444'>相机权限被拒绝</span>";
+                    status.innerHTML += "<br><span style='font-size:0.9em;color:#aaa'>请允许访问相机以使用手势控制</span>";
+                    showManualGestureControls();
+                } else if (error.name === 'NotFoundError') {
+                    status.innerHTML = "<span style='color:#ff4444'>未找到可用的相机设备</span>";
+                    showManualGestureControls();
+                } else {
+                    status.innerHTML = `<span style='color:#ff4444'>相机初始化失败: ${error.message}</span>`;
+                    showManualGestureControls();
+                }
+            }
+        };
+
+        // 手势识别预测循环 - 简化版
+        let lastVideoTime = -1;
+        
+        async function predictWebcam() {
+            if (!handLandmarker || !isCameraActive) return;
+            
+            const video = document.getElementById("input-video");
+            
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                
+                try {
+                    const results = handLandmarker.detectForVideo(video, performance.now());
+                    
+                    const canvas = document.getElementById('skeleton-canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = video.videoWidth || 640;
+                    canvas.height = video.videoHeight || 480;
+                    
+                    // 清除画布
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    if (results.landmarks && results.landmarks.length > 0) {
+                        const landmarks = results.landmarks[0];
+                        isHandPresent = true;
+                        
+                        // 绘制手部关键点
+                        drawSkeleton(ctx, landmarks, canvas.width, canvas.height);
+                        
+                        // 处理手势
+                        handleGesture(landmarks);
+                    } else {
+                        isHandPresent = false;
+                    }
+                } catch (error) {
+                    console.error("手势识别出错:", error);
+                }
+            }
+            
+            // 继续下一帧
+            requestAnimationFrame(predictWebcam);
+        }
+        
+        function drawSkeleton(ctx, landmarks, w, h) {
+            if (!landmarks || landmarks.length === 0) return;
+            
+            ctx.strokeStyle = '#00ff88';
+            ctx.fillStyle = '#ff0044';
+            ctx.lineWidth = 2;
+            
+            // 手部连接线
+            const connections = [
+                [0,1],[1,2],[2,3],[3,4],           // 大拇指
+                [0,5],[5,6],[6,7],[7,8],           // 食指
+                [5,9],[9,10],[10,11],[11,12],      // 中指
+                [9,13],[13,14],[14,15],[15,16],    // 无名指
+                [13,17],[17,18],[18,19],[19,20],   // 小指
+                [0,17]                             // 手掌
+            ];
+            
+            ctx.beginPath();
+            for (const [start, end] of connections) {
+                if (landmarks[start] && landmarks[end]) {
+                    ctx.moveTo(landmarks[start].x * w, landmarks[start].y * h);
+                    ctx.lineTo(landmarks[end].x * w, landmarks[end].y * h);
+                }
+            }
+            ctx.stroke();
+            
+            // 绘制关键点
+            for (let i = 0; i < landmarks.length; i++) {
+                if (landmarks[i]) {
+                    ctx.beginPath();
+                    ctx.arc(landmarks[i].x * w, landmarks[i].y * h, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function handleGesture(landmarks) {
+            if (!landmarks || landmarks.length < 21) return;
+            
+            // 计算手掌中心位置
+            const palmX = 1 - (landmarks[0].x + landmarks[9].x) / 2;
+            const palmY = (landmarks[0].y + landmarks[9].y) / 2;
+            handPos.x = handPos.x * 0.8 + palmX * 0.2;
+            handPos.y = handPos.y * 0.8 + palmY * 0.2;
+
+            // 检测握拳
+            let folded = 0;
+            [8, 12, 16, 20].forEach(i => { 
+                if (landmarks[i] && landmarks[0]) {
+                    const d = Math.sqrt(
+                        Math.pow(landmarks[i].x - landmarks[0].x, 2) + 
+                        Math.pow(landmarks[i].y - landmarks[0].y, 2)
+                    );
+                    if (d < 0.35) folded++; 
+                }
+            });
+            
+            // 检测捏合手势
+            const dPinch = landmarks[4] && landmarks[8] ? 
+                Math.sqrt(
+                    Math.pow(landmarks[4].x - landmarks[8].x, 2) + 
+                    Math.pow(landmarks[4].y - landmarks[8].y, 2)
+                ) : 1;
+            
+            const isPinch = dPinch < 0.1;
+            const isFist = folded >= 3; // 降低阈值，更容易检测
+            const isOpen = !isFist && !isPinch;
+
+            const status = document.getElementById('status-text');
+
+            if (isPinch && currentState === STATE.SCATTER) {
+                if (photoMeshes.length > 0) {
+                    currentState = STATE.ZOOM;
+                    status.innerHTML = "状态: <span style='color:#ffd700'>抓取照片</span> (共" + photoMeshes.length + "张)";
+                    
+                    if (zoomTargetIndex === -1 && photoMeshes.length > 0) {
+                        zoomTargetIndex = Math.floor(Math.random() * photoMeshes.length);
+                    }
+                }
+            } else if (isFist) {
+                currentState = STATE.TREE;
+                zoomTargetIndex = -1;
+                rotationVelocity.x = 0;
+                rotationVelocity.y = 0;
+                status.innerHTML = "状态: <span style='color:#00ff00'>聚合圣诞树</span> (共" + photoMeshes.length + "张照片)";
+            } else if (isOpen) {
+                if (currentState === STATE.ZOOM && !isPinch) {
+                    currentState = STATE.SCATTER;
+                    zoomTargetIndex = -1;
+                } else if (currentState === STATE.TREE) {
+                    currentState = STATE.SCATTER;
+                    lastHandPos.x = handPos.x;
+                    lastHandPos.y = handPos.y;
+                }
+                status.innerHTML = "状态: <span style='color:#00aaff'>星云散开</span> (共" + photoMeshes.length + "张照片)";
+            }
+        }
+
+        // 新增：加载默认图片的函数
+        function loadDefaultPhotos() {
+            let loadedCount = 0;
+            
+            for (let i = 1; i <= CONFIG.defaultPhotoCount; i++) {
+                const img = new Image();
+                // 假设图片在 photo 文件夹下，命名为 photo1.jpg, photo2.jpg, ...
+                img.src = `photo/photo${i}.jpg`;
+                
+                // 设置超时处理
+                const timeoutId = setTimeout(() => {
+                    console.warn(`照片 photo${i}.jpg 加载超时或不存在`);
+                }, 3000);
+                
+                img.onload = () => {
+                    clearTimeout(timeoutId);
+                    addPhotoMesh(img);
+                    loadedCount++;
+                    
+                    // 当所有图片都尝试加载后，更新状态
+                    if (i === CONFIG.defaultPhotoCount) {
+                        setTimeout(() => {
+                            const status = document.getElementById('status-text');
+                            if (status) {
+                                status.innerText = `已加载 ${loadedCount} 张默认照片`;
+                                status.innerText += "\n点击相机图标启用手势控制，或使用手动控制";
+                                showManualGestureControls();
+                            }
+                        }, 500);
+                    }
+                };
+                
+                img.onerror = () => {
+                    clearTimeout(timeoutId);
+                    console.warn(`无法加载照片: photo${i}.jpg`);
+                    loadedCount++;
+                };
+            }
+        }
 
         function initThree() {
             const container = document.getElementById('canvas-container');
@@ -266,6 +662,11 @@
 
             scene.add(mainGroup);
             window.addEventListener('resize', onWindowResize);
+            
+            // 加载默认图片
+            setTimeout(() => {
+                loadDefaultPhotos();
+            }, 100);
         }
 
         function updateDimensions() {
@@ -417,7 +818,6 @@
                 // 缩放模式下：停止速度，但不重置角度！
                 rotationVelocity.x = 0;
                 rotationVelocity.y = 0;
-                // 注意：这里删除了 mainGroup.rotation 归正的代码，保持原角度
             } 
             else if (currentState === STATE.SCATTER) {
                 if (isHandPresent) {
@@ -540,129 +940,6 @@
             });
         }
 
-        // --- Interaction ---
-        async function setupMediaPipe() {
-            const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-            const handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                baseOptions: {
-                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-                    delegate: "GPU"
-                },
-                runningMode: "VIDEO", numHands: 1
-            });
-            const video = document.getElementById("input-video");
-            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-                video.srcObject = stream;
-                video.addEventListener("loadeddata", () => {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('status-text').innerText = "系统就绪，请伸手";
-                    predictWebcam(handLandmarker, video);
-                });
-            });
-        }
-
-        let lastVideoTime = -1;
-        async function predictWebcam(handLandmarker, video) {
-            if (video.currentTime !== lastVideoTime) {
-                lastVideoTime = video.currentTime;
-                const result = handLandmarker.detectForVideo(video, performance.now());
-                
-                const canvas = document.getElementById('skeleton-canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                if (result.landmarks && result.landmarks.length > 0) {
-                    const landmarks = result.landmarks[0];
-                    isHandPresent = true;
-                    drawSkeleton(ctx, landmarks, canvas.width, canvas.height);
-                    handleGesture(landmarks);
-                } else {
-                    isHandPresent = false;
-                }
-            }
-            requestAnimationFrame(() => predictWebcam(handLandmarker, video));
-        }
-        
-        function drawSkeleton(ctx, landmarks, w, h) {
-            ctx.lineWidth = 3; ctx.strokeStyle = '#00ff88'; ctx.fillStyle = '#ff0044';
-            const connections = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
-            ctx.beginPath();
-            for (let i = 0; i < connections.length; i++) {
-                const start = landmarks[connections[i][0]], end = landmarks[connections[i][1]];
-                ctx.moveTo(start.x * w, start.y * h); ctx.lineTo(end.x * w, end.y * h);
-            }
-            ctx.stroke();
-            for(let i=0; i<landmarks.length; i++) {
-                ctx.beginPath(); ctx.arc(landmarks[i].x * w, landmarks[i].y * h, 4, 0, 2 * Math.PI); ctx.fill();
-            }
-        }
-
-        function handleGesture(landmarks) {
-            const palmX = 1 - (landmarks[0].x + landmarks[9].x) / 2;
-            const palmY = (landmarks[0].y + landmarks[9].y) / 2;
-            handPos.x = handPos.x * 0.8 + palmX * 0.2;
-            handPos.y = handPos.y * 0.8 + palmY * 0.2;
-
-            let folded = 0;
-            [8,12,16,20].forEach(i => { 
-                const d = Math.sqrt(Math.pow(landmarks[i].x-landmarks[0].x,2) + Math.pow(landmarks[i].y-landmarks[0].y,2));
-                if(d < 0.35) folded++; 
-            });
-            const dPinch = Math.sqrt(Math.pow(landmarks[4].x-landmarks[8].x,2) + Math.pow(landmarks[4].y-landmarks[8].y,2));
-            
-            const isPinch = dPinch < 0.1;
-            const isFist = folded >= 4;
-            const isOpen = !isFist && !isPinch;
-
-            const status = document.getElementById('status-text');
-
-            if (isPinch && currentState === STATE.SCATTER) {
-                if (photoMeshes.length > 0) {
-                    targetState = STATE.ZOOM;
-                    currentState = STATE.ZOOM;
-                    status.innerHTML = "状态: <span style='color:#ffd700'>抓取照片</span>";
-                    
-                    if (zoomTargetIndex === -1 && photoMeshes.length > 0) {
-                        // 智能选择：计算所有照片的世界坐标，选离相机最近的
-                        let minDist = Infinity;
-                        let bestIdx = 0;
-                        const camPos = camera.position;
-                        const worldPos = new THREE.Vector3();
-
-                        photoMeshes.forEach((mesh, idx) => {
-                            mesh.getWorldPosition(worldPos);
-                            const d = worldPos.distanceTo(camPos);
-                            if (d < minDist) {
-                                minDist = d;
-                                bestIdx = idx;
-                            }
-                        });
-                        zoomTargetIndex = bestIdx;
-                    }
-                } else {
-                    status.innerHTML = "状态: <span style='color:#aaa'>已加载" + photoMeshes.length + "张照片</span>";
-                }
-            } else if (isFist) {
-                currentState = STATE.TREE;
-                zoomTargetIndex = -1;
-                rotationVelocity.x = 0;
-                rotationVelocity.y = 0;
-                status.innerHTML = "状态: <span style='color:#00ff00'>聚合圣诞树</span>";
-            } else if (isOpen) {
-                if(currentState === STATE.ZOOM && !isPinch) {
-                    currentState = STATE.SCATTER;
-                    zoomTargetIndex = -1;
-                } else if (currentState === STATE.TREE) {
-                    currentState = STATE.SCATTER;
-                    lastHandPos.x = handPos.x;
-                    lastHandPos.y = handPos.y;
-                }
-                status.innerHTML = "状态: <span style='color:#00aaff'>星云散开</span>";
-            }
-        }
-
         function onWindowResize() {
             const dims = updateDimensions();
             camera.aspect = dims.width / dims.height;
@@ -684,114 +961,29 @@
                 }
                 reader.readAsDataURL(files[i]);
             }
-            alert(`已添加 ${files.length} 张照片`);
+            alert(`已添加 ${files.length} 张照片，现有照片总数: ${photoMeshes.length}`);
         });
 
-        // =========== 自动加载照片的函数 ===========
-        async function loadLocalPhotos() {
-            const statusText = document.getElementById('status-text');
-            statusText.innerText = "正在加载本地照片...";
-            
-            // 支持多种图片格式
-            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.svg'];
-            
-            // 尝试加载 photo1 到 photo20
-            let loadedCount = 0;
-            
-            for (let i = 1; i <= 20; i++) {
-                // 尝试不同的文件名模式
-                const filenameVariants = [
-                    `photo${i}.jpg`,
-                    `photo${i}.jpeg`, 
-                    `photo${i}.png`,
-                    `photo${i}.gif`,
-                    `photo${i}.webp`,
-                    `photo${String(i).padStart(2, '0')}.jpg`, // photo01.jpg 格式
-                    `photo${String(i).padStart(2, '0')}.png`
-                ];
-                
-                for (const filename of filenameVariants) {
-                    const imgPath = `photo/${filename}`;
-                    
-                    try {
-                        // 使用 Image 对象预加载
-                        const img = new Image();
-                        
-                        // 使用 Promise 包装图片加载
-                        const loadPromise = new Promise((resolve, reject) => {
-                            img.onload = () => resolve(img);
-                            img.onerror = () => reject(new Error(`无法加载: ${imgPath}`));
-                            img.src = imgPath;
-                            
-                            // 设置超时
-                            setTimeout(() => reject(new Error(`加载超时: ${imgPath}`)), 5000);
-                        });
-                        
-                        const loadedImg = await loadPromise;
-                        addPhotoMesh(loadedImg);
-                        loadedCount++;
-                        console.log(`成功加载: ${imgPath}`);
-                        break; // 成功加载后跳出循环
-                        
-                    } catch (error) {
-                        // 继续尝试下一个文件名
-                        continue;
-                    }
-                }
-                
-                // 每加载几张更新一次状态
-                if (i % 5 === 0) {
-                    statusText.innerText = `正在加载本地照片... (已加载 ${loadedCount} 张)`;
-                }
-            }
-            
-            if (loadedCount > 0) {
-                statusText.innerText = `已自动加载 ${loadedCount} 张照片`;
-                console.log(`总共加载了 ${loadedCount} 张照片`);
-            } else {
-                statusText.innerText = "未找到本地照片，请手动上传";
-                console.log("未找到本地照片文件");
-            }
-        }
-
-        // 修改 addPhotoMesh 函数以更好地处理服务器环境
         function addPhotoMesh(img) {
             const tex = new THREE.Texture(img);
             tex.needsUpdate = true;
             tex.colorSpace = THREE.SRGBColorSpace;
             let w = 4, h = 4;
-            
-            // 计算保持比例的尺寸
-            if(img.width > img.height) {
-                h = 4 * (img.height / img.width);
-            } else {
-                w = 4 * (img.width / img.height);
-            }
+            if(img.width > img.height) h = 4 * (img.height/img.width);
+            else w = 4 * (img.width/img.height);
 
             const geo = new THREE.PlaneGeometry(w, h);
             const mat = new THREE.MeshBasicMaterial({ 
                 map: tex, 
-                side: THREE.DoubleSide,
-                transparent: true,
-                alphaTest: 0.01  // 避免透明边缘问题
+                side: THREE.DoubleSide, 
+                color: 0xcccccc 
             });
-            
             const mesh = new THREE.Mesh(geo, mat);
             
-            // 金色相框
-            const frame = new THREE.Mesh(
-                new THREE.BoxGeometry(w + 0.2, h + 0.2, 0.1), 
-                new THREE.MeshPhysicalMaterial({
-                    color: 0xffd700, 
-                    roughness: 0.2, 
-                    metalness: 1,
-                    transparent: true
-                })
-            );
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(w+0.2, h+0.2, 0.1), new THREE.MeshPhysicalMaterial({color:0xffd700, roughness:0.2, metalness:1}));
             frame.position.z = -0.06;
             mesh.add(frame);
 
-            // 随机位置
             const h_pos = (Math.random() - 0.5) * CONFIG.treeHeight;
             const normH = (h_pos + CONFIG.treeHeight/2) / CONFIG.treeHeight;
             const maxR = CONFIG.maxRadius * (1 - normH);
@@ -802,36 +994,31 @@
             const treePos = new THREE.Vector3(r * Math.cos(theta), h_pos, r * Math.sin(theta));
             const scatterPos = randomSpherePoint(50);
 
-            mesh.userData = { 
-                treePos, 
-                scatterPos, 
-                baseRot: new THREE.Euler(0, Math.random() * Math.PI, 0),
-                originalWidth: img.width,
-                originalHeight: img.height
-            };
+            mesh.userData = { treePos, scatterPos, baseRot: new THREE.Euler(0, Math.random()*Math.PI, 0) };
             mesh.position.copy(treePos);
             photoMeshes.push(mesh);
             mainGroup.add(mesh);
+            
+            // 更新状态显示当前照片数量
+            const status = document.getElementById('status-text');
+            if (status && status.innerText.includes("就绪")) {
+                status.innerText = `系统就绪，已加载 ${photoMeshes.length} 张照片`;
+            }
         }
 
-        // =========== 初始化 ===========
-        async function init() {
-            initThree();
-            animate();
-            
-            // 先加载本地照片
-            await loadLocalPhotos();
-            
-            // 然后初始化摄像头
-            await setupMediaPipe();
-        }
-
-        // 启动程序
-        init().catch(error => {
-            console.error("初始化失败:", error);
-            document.getElementById('status-text').innerText = "初始化失败，请刷新页面";
+        // 在页面加载完成后开始初始化
+        initThree();
+        animate();
+        
+        // 初始化完成后更新状态
+        setTimeout(() => {
             document.getElementById('loading').style.display = 'none';
-        });
+            const status = document.getElementById('status-text');
+            if (status.innerText === "系统初始化...") {
+                status.innerText = "圣诞树已就绪！点击相机图标启用手势控制";
+                showManualGestureControls();
+            }
+        }, 2000);
     </script>
 </body>
 </html>
