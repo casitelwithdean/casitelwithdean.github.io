@@ -115,20 +115,31 @@
         }
         #fullscreen-btn:hover { background: #d4af37; color: #000; }
 
-        /* 隐藏 UI 的类 */
+    /* 在CSS部分添加 */
+        #canvas-wrapper.hide-ui #ui-layer,
+        #canvas-wrapper.hide-ui #upload-btn,
+        #canvas-wrapper.hide-ui #camera-btn {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #canvas-wrapper.hide-ui #fullscreen-btn {
+            opacity: 0.3;
+        }
+
+        /* 将原来的hide-ui类选择器删除或修改为默认状态 */
+        /* 删除或注释掉原来的这些规则：
         .hide-ui #ui-layer, 
         .hide-ui #upload-btn,
         .hide-ui #camera-btn {
             opacity: 0;
             pointer-events: none;
         }
-        
+
         .hide-ui #fullscreen-btn {
             opacity: 0.3;
         }
-        .hide-ui #fullscreen-btn:hover {
-            opacity: 1;
-        }
+        */
         
         /* 相机权限提示 */
         .camera-warning {
@@ -152,8 +163,8 @@
     </script>
 </head>
 <body>
-
-    <div id="canvas-wrapper">
+ 
+    <div id="canvas-wrapper" class="hide-ui">
         <div id="canvas-container"></div>
         
         <div id="video-container">
@@ -182,7 +193,7 @@
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
         
-        <div id="loading">CRAFTING JEWELS...</div>
+        <div id="loading">心如的圣诞小树...</div>
     </div>
 
     <script type="module">
