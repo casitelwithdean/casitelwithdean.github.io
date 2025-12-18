@@ -115,7 +115,38 @@
         }
         #fullscreen-btn:hover { background: #d4af37; color: #000; }
 
-    /* 在CSS部分添加 */
+        /* 音乐控制按钮 */
+        #music-btn {
+            position: absolute; top: 30px; right: 250px; z-index: 20;
+            background: rgba(0,0,0,0.5); color: #d4af37; border: 1px solid #d4af37;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: all 0.3s;
+        }
+        #music-btn:hover { background: #d4af37; color: #000; }
+        #music-btn.muted { color: #ff4444; border-color: #ff4444; }
+
+        /* 音乐状态提示 */
+        .music-status {
+            position: absolute;
+            top: 80px;
+            right: 200px;
+            color: #d4af37;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 20;
+            white-space: nowrap;
+        }
+        .music-status.show {
+            opacity: 1;
+        }
+
+        /* 在CSS部分添加 */
         #canvas-wrapper.hide-ui #ui-layer,
         #canvas-wrapper.hide-ui #upload-btn,
         #canvas-wrapper.hide-ui #camera-btn {
@@ -123,23 +154,11 @@
             pointer-events: none;
         }
 
-        #canvas-wrapper.hide-ui #fullscreen-btn {
+        #canvas-wrapper.hide-ui #fullscreen-btn,
+        #canvas-wrapper.hide-ui #music-btn,
+        #canvas-wrapper.hide-ui .music-status {
             opacity: 0.3;
         }
-
-        /* 将原来的hide-ui类选择器删除或修改为默认状态 */
-        /* 删除或注释掉原来的这些规则：
-        .hide-ui #ui-layer, 
-        .hide-ui #upload-btn,
-        .hide-ui #camera-btn {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .hide-ui #fullscreen-btn {
-            opacity: 0.3;
-        }
-        */
         
         /* 相机权限提示 */
         .camera-warning {
@@ -173,6 +192,8 @@
         </div>
 
         <button id="fullscreen-btn" onclick="toggleUI()" title="切换沉浸模式">⛶</button>
+        <button id="music-btn" onclick="toggleMusic()" title="播放/暂停音乐">♪</button>
+        <div class="music-status" id="music-status">正在播放: music1.mp3</div>
 
         <div id="ui-layer">
             <h1>心如的圣诞小树/h1>
@@ -213,7 +234,8 @@
             dustCount: 1200,
             treeHeight: 75,
             maxRadius: 30,
-            autoPhotoCount: 20  // 自动加载的图片数量
+            autoPhotoCount: 20,  // 自动加载的图片数量
+            musicCount: 10       // 音乐文件数量
         };
 
         const STATE = { TREE: 'tree', SCATTER: 'scatter', ZOOM: 'zoom' };
@@ -252,6 +274,108 @@
         // MediaPipe相关变量
         let handLandmarker = null;
         let cameraActive = false;
+
+        // 音乐相关变量
+        let bgmPlayer = null;
+        let currentMusicIndex = 1;
+        let isMusicPlaying = true;
+        let isMusicInitialized = false;
+
+        // 音乐控制函数
+        window.toggleMusic = function() {
+            if (!bgmPlayer) return;
+            
+            isMusicPlaying = !isMusicPlaying;
+            
+            if (isMusicPlaying) {
+                bgmPlayer.play().catch(e => console.log("播放失败:", e));
+                document.getElementById('music-btn').classList.remove('muted');
+                showMusicStatus(`继续播放: music${currentMusicIndex}.mp3`);
+            } else {
+                bgmPlayer.pause();
+                document.getElementById('music-btn').classList.add('muted');
+                showMusicStatus("音乐已暂停");
+            }
+        };
+
+        // 显示音乐状态提示
+        function showMusicStatus(message) {
+            const status = document.getElementById('music-status');
+            status.textContent = message;
+            status.classList.add('show');
+            
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 2000);
+        }
+
+        // 初始化背景音乐
+        function initBackgroundMusic() {
+            bgmPlayer = new Audio();
+            bgmPlayer.preload = "auto";
+            bgmPlayer.volume = 0.5; // 设置音量50%
+            bgmPlayer.loop = false; // 不循环单曲，我们将手动控制
+            
+            // 音乐播放结束事件
+            bgmPlayer.addEventListener('ended', playNextMusic);
+            
+            // 错误处理
+            bgmPlayer.addEventListener('error', (e) => {
+                console.log("音乐加载失败:", e);
+                // 尝试播放下一个
+                setTimeout(playNextMusic, 1000);
+            });
+            
+            // 页面可见性变化时处理音乐
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    bgmPlayer.pause();
+                } else if (isMusicPlaying && document.visibilityState === 'visible') {
+                    bgmPlayer.play().catch(e => console.log("恢复播放失败:", e));
+                }
+            });
+            
+            isMusicInitialized = true;
+            playMusic(currentMusicIndex);
+        }
+
+        // 播放指定索引的音乐
+        function playMusic(index) {
+            if (!bgmPlayer || !isMusicInitialized) return;
+            
+            // 确保索引在有效范围内
+            currentMusicIndex = Math.max(1, Math.min(index, CONFIG.musicCount));
+            
+            const musicUrl = `music/music${currentMusicIndex}.mp3`;
+            console.log(`正在加载音乐: ${musicUrl}`);
+            
+            // 设置新的音乐源
+            bgmPlayer.src = musicUrl;
+            
+            // 尝试播放
+            if (isMusicPlaying) {
+                bgmPlayer.play().then(() => {
+                    console.log(`开始播放: music${currentMusicIndex}.mp3`);
+                    showMusicStatus(`正在播放: music${currentMusicIndex}.mp3`);
+                }).catch(error => {
+                    console.log(`播放失败，尝试下一首: ${error.message}`);
+                    // 播放失败，尝试下一首
+                    setTimeout(playNextMusic, 1000);
+                });
+            }
+        }
+
+        // 播放下一个音乐
+        function playNextMusic() {
+            let nextIndex = currentMusicIndex + 1;
+            
+            // 如果超过最大值，回到第一首
+            if (nextIndex > CONFIG.musicCount) {
+                nextIndex = 1;
+            }
+            
+            playMusic(nextIndex);
+        }
 
         // UI Toggle
         window.toggleUI = function() {
@@ -374,6 +498,9 @@
             
             // 页面加载后自动加载图片
             setTimeout(loadAutoPhotos, 1000);
+            
+            // 初始化背景音乐（延迟一点，避免影响页面加载）
+            setTimeout(initBackgroundMusic, 2000);
         }
 
         function updateDimensions() {
